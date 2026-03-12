@@ -1,40 +1,84 @@
-/* ═══════════════════════════════════════
-   PARTICLE SYSTEM (background petals)
-═══════════════════════════════════════ */
-const canvas = document.getElementById("particles");
-const ctx = canvas.getContext("2d");
-let W,
-  H,
-  particles = [];
-
-function resizeCanvas() {
-  W = canvas.width = window.innerWidth;
-  H = canvas.height = window.innerHeight;
+/* LETTER CONTAINER */
+.letter-container {
+  position: absolute;
+  top: 50px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(760px, 92vw);           /* slightly wider base */
+  max-width: 780px;
+  z-index: 10;
+  opacity: 0;
+  pointer-events: none;
+  transition:
+    top 0.95s cubic-bezier(0.34, 1.48, 0.64, 1.2),
+    opacity 0.55s ease;
 }
-resizeCanvas();
-window.addEventListener("resize", resizeCanvas);
 
-class Particle {
-  constructor() {
-    this.reset(true);
+.letter-container.rising {
+  top: -580px;                       /* tuned rise distance – adjust if needed */
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.letter-container.settled {
+  position: relative;
+  top: auto;
+  left: auto;
+  transform: none;
+  opacity: 1;
+  pointer-events: auto;
+  transition: none;
+}
+
+/* LETTER PAPER — aim for ~1.45:1 ratio landscape */
+.letter-paper {
+  background: linear-gradient(180deg, #fffdf8 0%, #fdf8f0 100%);
+  border-radius: 5px;
+  aspect-ratio: 1.44 / 1;            /* ← most important change – real letter feeling */
+  width: 100%;
+  min-height: 380px;                 /* fallback if aspect-ratio not supported */
+  max-height: 94vh;                  /* prevent insane height on small screens */
+  box-shadow:
+    0 12px 48px rgba(0,0,0,0.11),
+    0 3px 8px rgba(0,0,0,0.07),
+    inset 0 0 0 1px rgba(201,169,110,0.18);
+  position: relative;
+  overflow: hidden;
+  display: grid;
+  grid-template-columns: 160px 1fr;  /* left panel still narrow */
+}
+
+/* Mobile – collapse to portrait/stacked */
+@media (max-width: 640px) {          /* slightly higher breakpoint feels better */
+  .letter-container {
+    width: min(94vw, 420px);
   }
 
-  reset(initial = false) {
-    this.x = Math.random() * W;
-    this.y = initial ? Math.random() * H : -20;
-    this.size = Math.random() * 6 + 2;
-    this.speedY = Math.random() * 0.55 + 0.2;
-    this.speedX = (Math.random() - 0.5) * 0.4;
-    this.rotation = Math.random() * Math.PI * 2;
-    this.rotSpeed = (Math.random() - 0.5) * 0.03;
-    this.alpha = Math.random() * 0.45 + 0.15;
-    this.type = Math.random() > 0.5 ? "petal" : "sparkle";
-    this.color = Math.random() > 0.5 ? "#e8b4b8" : "#c9a96e";
+  .letter-paper {
+    aspect-ratio: auto;              /* disable forced landscape ratio */
+    grid-template-columns: 1fr;
+    min-height: auto;
+    max-height: none;
   }
 
-  update() {
-    this.y += this.speedY;
-    this.x += this.speedX + Math.sin(this.y * 0.01) * 0.3;
+  .letter-container.rising {
+    top: -720px;                     /* more rise needed because taller now */
+  }
+
+  .letter-right-panel {
+    padding: 28px 24px 32px;
+  }
+
+  .letter-heading {
+    font-size: 34px;
+    margin-bottom: 20px;
+  }
+
+  .letter-body {
+    font-size: 15.5px;
+    line-height: 1.82;
+  }
+}    this.x += this.speedX + Math.sin(this.y * 0.01) * 0.3;
     this.rotation += this.rotSpeed;
     if (this.y > H + 20) this.reset();
   }
