@@ -1,0 +1,222 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Adrian Kyle Condeza — Portfolio</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&family=DM+Serif+Display:ital@0;1&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <!-- Loading Screen -->
+    <div id="loading-screen">
+      <div class="loader-content">
+        <div class="loader-ring"></div>
+        <p class="loader-label">Adrian Kyle</p>
+      </div>
+    </div>
+
+    <!-- Custom Cursor -->
+    <div id="cursor"></div>
+    <div id="cursor-trail"></div>
+
+    <!-- Ambient background orbs -->
+    <div class="bg-orb orb-1"></div>
+    <div class="bg-orb orb-2"></div>
+    <div class="bg-orb orb-3"></div>
+
+    <!-- Navigation -->
+    <nav id="navbar">
+      <div class="nav-inner">
+        <span class="nav-brand">AKC</span>
+        <ul class="nav-links">
+          <li><a href="#hero" class="nav-link">Home</a></li>
+          <li><a href="#about" class="nav-link">About</a></li>
+          <li><a href="#skills" class="nav-link">Skills</a></li>
+          <li><a href="#projects" class="nav-link">Projects</a></li>
+          <li><a href="#contact" class="nav-link">Contact</a></li>
+        </ul>
+        <div class="nav-right">
+          <button
+            class="dark-toggle"
+            id="dark-toggle"
+            aria-label="Toggle theme"
+          >
+            <span id="toggle-icon">🌙</span>
+          </button>
+          <button class="hamburger" id="hamburger" aria-label="Menu">
+            <span></span><span></span><span></span>
+          </button>
+        </div>
+      </div>
+      <div class="mobile-menu" id="mobile-menu">
+        <a href="#hero" class="mobile-link">Home</a>
+        <a href="#about" class="mobile-link">About</a>
+        <a href="#skills" class="mobile-link">Skills</a>
+        <a href="#projects" class="mobile-link">Projects</a>
+        <a href="#contact" class="mobile-link">Contact</a>
+      </div>
+    </nav>
+
+    <main>
+      <!-- HERO -->
+      <section id="hero" class="section hero-section">
+        <div class="container narrow">
+          <div class="hero-wrap fade-in">
+            <div class="avatar-wrap">
+              <div class="avatar-glass">
+                <div class="avatar-initials">AK</div>
+              </div>
+              <div class="avatar-status">
+                <span class="status-dot"></span>
+                <span class="status-text">Open to opportunities</span>
+              </div>
+            </div>
+            <h1 class="hero-name">Adrian Kyle Condeza</h1>
+            <p class="hero-role">
+              1st Year IT Student · Aspiring Computer Engineer
+            </p>
+            <p class="hero-tagline">
+              Building skills in web development and programming, one project at
+              a time.
+            </p>
+            <div class="hero-actions">
+              <a href="#contact" class="btn btn-primary">Get in Touch</a>
+              <a href="#about" class="btn btn-ghost">Learn More</a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ABOUT -->
+      <section id="about" class="section">
+        <div class="container narrow">
+          <div class="glass-card fade-in">
+            <span class="section-label">About Me</span>
+            <p class="about-para">
+              I am a first-year Information Technology student currently
+              building my foundation in programming and web development. I have
+              learned the basics of Java, HTML, CSS, and JavaScript, and I am
+              continuously improving my skills through practice and projects.
+            </p>
+            <p class="about-para">
+              I am passionate about technology and aim to become a computer
+              engineer and future entrepreneur. I focus on learning,
+              consistency, and developing real-world skills.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- SKILLS -->
+      <section id="skills" class="section">
+        <div class="container narrow">
+          <span class="section-label fade-in">Skills</span>
+          <div class="skills-grid fade-in delay-1">
+            <div class="skill-pill">
+              <span class="skill-icon">🌐</span>
+              <span class="skill-name">HTML</span>
+            </div>
+            <div class="skill-pill">
+              <span class="skill-icon">🎨</span>
+              <span class="skill-name">CSS</span>
+            </div>
+            <div class="skill-pill">
+              <span class="skill-icon">⚡</span>
+              <span class="skill-name">JavaScript</span>
+            </div>
+            <div class="skill-pill">
+              <span class="skill-icon">☕</span>
+              <span class="skill-name">Java (Basics)</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- PROJECTS -->
+      <section id="projects" class="section">
+        <div class="container narrow">
+          <span class="section-label fade-in">Projects</span>
+          <div class="glass-card fade-in delay-1 placeholder-card">
+            <div class="placeholder-icon">🚧</div>
+            <h3 class="placeholder-title">Coming Soon</h3>
+            <p class="placeholder-desc">
+              Currently working on personal projects to apply and improve my
+              skills. Check back soon!
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- CERTIFICATES -->
+      <section id="certificates" class="section">
+        <div class="container narrow">
+          <span class="section-label fade-in">Certificates</span>
+          <div class="glass-card fade-in delay-1 placeholder-card">
+            <div class="placeholder-icon">🎓</div>
+            <h3 class="placeholder-title">Coming Soon</h3>
+            <p class="placeholder-desc">
+              Actively learning and planning to earn certifications in
+              programming and IT.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- CONTACT -->
+      <section id="contact" class="section">
+        <div class="container narrow">
+          <span class="section-label fade-in">Contact</span>
+          <div class="contact-links fade-in delay-1">
+            <a href="mailto:kuyag100621@gmail.com" class="contact-card">
+              <span class="contact-icon">✉️</span>
+              <div class="contact-info">
+                <span class="contact-label">Email</span>
+                <span class="contact-value">kuyag100621@gmail.com</span>
+              </div>
+              <span class="contact-arrow">→</span>
+            </a>
+            <a
+              href="https://github.com/Cocokylez"
+              target="_blank"
+              class="contact-card"
+            >
+              <span class="contact-icon">🐙</span>
+              <div class="contact-info">
+                <span class="contact-label">GitHub</span>
+                <span class="contact-value">github.com/Cocokylez</span>
+              </div>
+              <span class="contact-arrow">→</span>
+            </a>
+          </div>
+          <div class="contact-form-wrap fade-in delay-2">
+            <div class="form-row">
+              <input type="text" class="form-input" placeholder="Your Name" />
+            </div>
+            <div class="form-row">
+              <input type="email" class="form-input" placeholder="Your Email" />
+            </div>
+            <div class="form-row">
+              <textarea
+                class="form-input form-textarea"
+                placeholder="Your Message"
+              ></textarea>
+            </div>
+            <button class="btn btn-primary btn-full">Send Message</button>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <p>© <span id="year"></span> Adrian Kyle Condeza · Built with care</p>
+    </footer>
+
+    <script src="script.js"></script>
+  </body>
+</html>
