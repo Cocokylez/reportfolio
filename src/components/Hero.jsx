@@ -22,14 +22,12 @@ export default function Hero() {
         <div className="flex flex-col items-center text-center">
           {/* Avatar */}
           <motion.div {...fadeUp(0)} className="mb-6 flex flex-col items-center gap-4">
-            <div className="avatar-glass">
-              <span
-                className="font-serif font-normal text-5xl
-                  bg-gradient-to-br from-[rgba(0,113,227,0.9)] to-[rgba(120,40,200,0.7)]
-                  bg-clip-text text-transparent select-none"
-              >
-                AK
-              </span>
+            <div className="avatar-glass overflow-hidden p-0">
+              <img
+                src="/pfp.jpg"
+                alt="Adrian Kyle Condeza"
+                className="w-full h-full object-cover object-top rounded-[35px]"
+              />
             </div>
 
             {/* Status badge */}
