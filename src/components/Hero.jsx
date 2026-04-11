@@ -6,23 +6,23 @@ const fadeUp = (delay = 0) => ({
   transition: { duration: 0.65, delay, ease: [0.4, 0, 0.2, 1] },
 })
 
-// Above head: 3 chips centered across the top
-// Left shoulder: 2-3 chips on left
-// Right shoulder: 2-3 chips on right
+// Above head: 3 chips spread across top of the 300px container
+// Left shoulder: chips sitting just outside left edge
+// Right shoulder: chips sitting just outside right edge
 const skills = [
-  // Above head (spread across top)
-  { label: 'HTML',          icon: '🌐', x: 20,   y: -52 },
-  { label: 'VS Code',       icon: '💻', x: 135,  y: -68 },
-  { label: 'CSS',           icon: '🎨', x: 250,  y: -52 },
+  // Above head
+  { label: 'HTML',          icon: '🌐', x: 0,    y: -48 },
+  { label: 'VS Code',       icon: '💻', x: 105,  y: -64 },
+  { label: 'CSS',           icon: '🎨', x: 215,  y: -48 },
 
-  // Left shoulder area
-  { label: 'Photoshop',     icon: '🖼️', x: -120, y: 80  },
-  { label: 'PixelLab',      icon: '✏️', x: -135, y: 165 },
-  { label: 'Alight Motion', icon: '🎬', x: -115, y: 250 },
+  // Left shoulder
+  { label: 'Photoshop',     icon: '🖼️', x: -115, y: 90  },
+  { label: 'PixelLab',      icon: '✏️', x: -128, y: 170 },
+  { label: 'Alight Motion', icon: '🎬', x: -108, y: 250 },
 
-  // Right shoulder area
-  { label: 'JavaScript',    icon: '⚡', x: 330,  y: 80  },
-  { label: 'Java',          icon: '☕', x: 345,  y: 165 },
+  // Right shoulder
+  { label: 'JavaScript',    icon: '⚡', x: 302,  y: 90  },
+  { label: 'Java',          icon: '☕', x: 308,  y: 170 },
 ]
 
 export default function Hero() {
@@ -94,7 +94,7 @@ export default function Hero() {
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.7, delay: 0.1 }}
             className="flex-shrink-0 relative"
-            style={{ width: '320px', height: '480px', margin: '80px 60px 0 60px' }}
+            style={{ width: '300px', height: '460px', marginTop: '60px', flexShrink: 0 }}
           >
             {/* Skill chips */}
             {skills.map((s, i) => (
@@ -173,14 +173,14 @@ export default function Hero() {
         }
         .hero-glow-ring {
           position: absolute;
-          inset: 8%;
+          top: 10%; left: 10%;
+          width: 80%; height: 80%;
           border-radius: 50%;
           z-index: 1;
           box-shadow:
-            0 0 0 1.5px rgba(0,113,227,0.5),
-            0 0 30px 8px rgba(0,113,227,0.3),
-            0 0 80px 20px rgba(0,113,227,0.15),
-            0 0 140px 40px rgba(120,40,200,0.1);
+            0 0 25px 8px rgba(0,113,227,0.4),
+            0 0 60px 18px rgba(0,113,227,0.2),
+            0 0 100px 30px rgba(120,40,200,0.12);
           animation: glowRingPulse 3s ease-in-out infinite;
         }
         @keyframes glowBreath {
@@ -188,8 +188,8 @@ export default function Hero() {
           50%       { opacity: 1;   transform: scale(1.18); }
         }
         @keyframes glowRingPulse {
-          0%, 100% { box-shadow: 0 0 0 1.5px rgba(0,113,227,0.5), 0 0 30px 8px rgba(0,113,227,0.3), 0 0 80px 20px rgba(0,113,227,0.15), 0 0 140px 40px rgba(120,40,200,0.1); }
-          50%       { box-shadow: 0 0 0 2px rgba(0,113,227,0.85), 0 0 50px 16px rgba(0,113,227,0.5), 0 0 110px 35px rgba(0,113,227,0.25), 0 0 200px 65px rgba(120,40,200,0.18); }
+          0%, 100% { box-shadow: 0 0 25px 8px rgba(0,113,227,0.4), 0 0 60px 18px rgba(0,113,227,0.2), 0 0 100px 30px rgba(120,40,200,0.12); }
+          50%       { box-shadow: 0 0 40px 14px rgba(0,113,227,0.65), 0 0 80px 28px rgba(0,113,227,0.35), 0 0 140px 50px rgba(120,40,200,0.22); }
         }
       `}</style>
     </section>
