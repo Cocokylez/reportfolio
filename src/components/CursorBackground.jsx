@@ -3,8 +3,8 @@ import { useEffect, useRef } from 'react'
 export default function CursorBackground() {
   const blobRef = useRef(null)
   const posRef  = useRef({ x: window.innerWidth / 2, y: window.innerHeight / 2 })
-  const animRef = useRef(null)
   const currRef = useRef({ x: window.innerWidth / 2, y: window.innerHeight / 2 })
+  const animRef = useRef(null)
 
   useEffect(() => {
     const onMove = (e) => {
@@ -12,7 +12,6 @@ export default function CursorBackground() {
     }
     window.addEventListener('mousemove', onMove)
 
-    // Smooth lerp animation — follows cursor with a slight lag
     const lerp = (a, b, t) => a + (b - a) * t
     const animate = () => {
       currRef.current.x = lerp(currRef.current.x, posRef.current.x, 0.07)
@@ -31,21 +30,34 @@ export default function CursorBackground() {
     }
   }, [])
 
+  // Detect dark mode via the .dark class on <html>
+  // We use a CSS variable approach so it adapts automatically
   return (
-    <div
-      ref={blobRef}
-      style={{
-        position: 'fixed',
-        width: '600px',
-        height: '600px',
-        borderRadius: '50%',
-        background: 'radial-gradient(circle, rgba(0,113,227,0.07) 0%, rgba(120,40,200,0.04) 50%, transparent 70%)',
-        transform: 'translate(-50%, -50%)',
-        pointerEvents: 'none',
-        zIndex: 0,
-        filter: 'blur(40px)',
-        transition: 'opacity 0.3s ease',
-      }}
-    />
+    <>
+      {/* Dark mode blob */}
+      <div
+        ref={blobRef}
+        className="cursor-bg-blob"
+      />
+      <style>{`
+        .cursor-bg-blob {
+          position: fixed;
+          width: 600px;
+          height: 600px;
+          border-radius: 50%;
+          transform: translate(-50%, -50%);
+          pointer-events: none;
+          z-index: 0;
+          filter: blur(40px);
+          /* Dark mode: soft blue/purple glow */
+          background: radial-gradient(circle, rgba(0,113,227,0.10) 0%, rgba(120,40,200,0.06) 50%, transparent 70%);
+        }
+        /* Light mode: warmer, subtler teal/indigo so it shows on white bg */
+        :root:not(.dark) .cursor-bg-blob {
+          background: radial-gradient(circle, rgba(0,113,227,0.08) 0%, rgba(99,102,241,0.05) 50%, transparent 70%);
+          filter: blur(50px);
+        }
+      `}</style>
+    </>
   )
 }

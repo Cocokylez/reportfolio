@@ -34,7 +34,7 @@ export default function Hero() {
   return (
     <section id="hero" className="relative z-10 pt-[120px] pb-[80px] px-0">
       <div className="max-w-[1100px] mx-auto px-8">
-        <div className="flex flex-col-reverse md:flex-row items-center justify-between gap-12 md:gap-4">
+        <div className="flex flex-col-reverse md:flex-row items-center justify-between gap-12 md:gap-16">
 
           {/* ── LEFT: Text ── */}
           <div className="flex-1 flex flex-col items-start text-left">
@@ -94,7 +94,7 @@ export default function Hero() {
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.7, delay: 0.1 }}
             className="flex-shrink-0 relative"
-            style={{ width: '300px', height: '460px', marginTop: '60px', flexShrink: 0 }}
+            style={{ width: '300px', height: '460px', flexShrink: 0 }}
           >
             {/* Skill chips */}
             {skills.map((s, i) => (
