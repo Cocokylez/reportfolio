@@ -163,33 +163,44 @@ export default function Hero() {
       <style>{`
         .hero-glow-blob {
           position: absolute;
-          width: 70%; height: 70%;
-          top: 15%; left: 15%;
+          width: 260px;
+          height: 260px;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -55%);
           border-radius: 50%;
-          background: radial-gradient(ellipse, rgba(0,113,227,0.32) 0%, rgba(100,30,200,0.18) 55%, transparent 80%);
-          filter: blur(26px);
+          background: radial-gradient(circle, rgba(0,113,227,0.30) 0%, rgba(100,30,200,0.16) 55%, transparent 78%);
+          filter: blur(24px);
           z-index: 1;
           animation: glowBreath 3s ease-in-out infinite;
         }
         .hero-glow-ring {
           position: absolute;
-          top: 10%; left: 10%;
-          width: 80%; height: 80%;
+          width: 260px;
+          height: 260px;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -55%);
           border-radius: 50%;
           z-index: 1;
           box-shadow:
-            0 0 25px 8px rgba(0,113,227,0.4),
-            0 0 60px 18px rgba(0,113,227,0.2),
-            0 0 100px 30px rgba(120,40,200,0.12);
+            0 0 0 1.5px rgba(0,113,227,0.45),
+            0 0 25px 8px rgba(0,113,227,0.35),
+            0 0 55px 18px rgba(0,113,227,0.18),
+            0 0 90px 28px rgba(120,40,200,0.12);
           animation: glowRingPulse 3s ease-in-out infinite;
         }
         @keyframes glowBreath {
-          0%, 100% { opacity: 0.6; transform: scale(1); }
-          50%       { opacity: 1;   transform: scale(1.18); }
+          0%, 100% { opacity: 0.65; transform: translate(-50%, -55%) scale(1); }
+          50%       { opacity: 1;   transform: translate(-50%, -55%) scale(1.12); }
         }
         @keyframes glowRingPulse {
-          0%, 100% { box-shadow: 0 0 25px 8px rgba(0,113,227,0.4), 0 0 60px 18px rgba(0,113,227,0.2), 0 0 100px 30px rgba(120,40,200,0.12); }
-          50%       { box-shadow: 0 0 40px 14px rgba(0,113,227,0.65), 0 0 80px 28px rgba(0,113,227,0.35), 0 0 140px 50px rgba(120,40,200,0.22); }
+          0%, 100% {
+            box-shadow: 0 0 0 1.5px rgba(0,113,227,0.45), 0 0 25px 8px rgba(0,113,227,0.35), 0 0 55px 18px rgba(0,113,227,0.18), 0 0 90px 28px rgba(120,40,200,0.12);
+          }
+          50% {
+            box-shadow: 0 0 0 2px rgba(0,113,227,0.8), 0 0 40px 14px rgba(0,113,227,0.55), 0 0 80px 28px rgba(0,113,227,0.28), 0 0 130px 45px rgba(120,40,200,0.2);
+          }
         }
       `}</style>
     </section>

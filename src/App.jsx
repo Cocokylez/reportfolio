@@ -1,6 +1,7 @@
 import { useDarkMode }   from './hooks/useDarkMode'
 import LoadingScreen     from './components/LoadingScreen'
 import CustomCursor      from './components/CustomCursor'
+import CursorBackground  from './components/CursorBackground'
 import Navbar            from './components/Navbar'
 import Hero              from './components/Hero'
 import About             from './components/About'
@@ -21,6 +22,7 @@ export default function App() {
     >
       <LoadingScreen />
       <CustomCursor />
+      <CursorBackground />
       <div className="orb orb-1" />
       <div className="orb orb-2" />
       <div className="orb orb-3" />

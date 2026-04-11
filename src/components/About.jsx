@@ -9,7 +9,7 @@ const fadeUp = (delay = 0) => ({
 
 export default function About() {
   return (
-    <section id="about" className="relative z-10 py-[100px]" style={{borderTop: "3px solid transparent", borderImage: "linear-gradient(90deg, transparent, #f59e0b, #fbbf24, #f59e0b, transparent) 1"}}> 
+    <section id="about" className="relative z-10 py-[100px]"> 
       <div className="max-w-[680px] mx-auto px-6">
         <motion.div {...fadeUp(0)} className="glass-card">
           <span className="section-label">About Me</span>
