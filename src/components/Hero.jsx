@@ -6,10 +6,6 @@ const fadeUp = (delay = 0) => ({
   transition: { duration: 0.65, delay, ease: [0.4, 0, 0.2, 1] },
 })
 
-// Arc arranged chips using precise pixel offsets from center of a 420x520 container
-// Arc sweeps from bottom-left → top → bottom-right like a halo behind the photo
-// Center of container: cx=210, cy=260
-// Arc radius: ~210px, spanning angles from 200° to 340° (top half arc)
 const ARC_CX = 210
 const ARC_CY = 280
 const ARC_RX = 200
@@ -41,7 +37,6 @@ export default function Hero() {
 
           {/* ── LEFT: Text ── */}
           <div className="flex-1 flex flex-col items-start text-left">
-
             <motion.div {...fadeUp(0)} className="mb-5">
               <div className="inline-flex items-center gap-[7px]
                 bg-white/65 dark:bg-[rgba(28,28,30,0.75)]
@@ -96,8 +91,7 @@ export default function Hero() {
             className="flex-shrink-0 relative"
             style={{ width: '420px', height: '520px' }}
           >
-
-            {/* Arc skill chips — BEHIND photo (z-0) */}
+            {/* Arc skill chips — behind photo */}
             {skills.map((s, i) => {
               const rad = degToRad(s.angle)
               const x = ARC_CX + ARC_RX * Math.cos(rad)
@@ -106,21 +100,11 @@ export default function Hero() {
                 <motion.div
                   key={s.label}
                   initial={{ opacity: 0, scale: 0.5 }}
-                  animate={{
-                    opacity: 1,
-                    scale: 1,
-                    y: [0, -8, 0],
-                  }}
+                  animate={{ opacity: 1, scale: 1, y: [0, -8, 0] }}
                   transition={{
                     opacity: { duration: 0.35, delay: 0.5 + i * 0.07 },
                     scale:   { duration: 0.35, delay: 0.5 + i * 0.07 },
-                    y: {
-                      duration: 2.6 + i * 0.25,
-                      repeat: Infinity,
-                      ease: 'easeInOut',
-                      delay: i * 0.18,
-                      repeatType: 'loop',
-                    },
+                    y: { duration: 2.6 + i * 0.25, repeat: Infinity, ease: 'easeInOut', delay: i * 0.18, repeatType: 'loop' },
                   }}
                   style={{
                     position: 'absolute',
@@ -145,30 +129,11 @@ export default function Hero() {
               )
             })}
 
-            {/* Radial glow blob behind photo */}
-            <div
-              style={{
-                position: 'absolute',
-                width: '60%',
-                height: '60%',
-                top: '20%',
-                left: '20%',
-                borderRadius: '50%',
-                background: 'radial-gradient(ellipse, rgba(0,113,227,0.32) 0%, rgba(100,30,200,0.18) 55%, transparent 80%)',
-                filter: 'blur(22px)',
-                animation: 'glowBreath 3s ease-in-out infinite',
-                zIndex: 1,
-              }}
-            />
+            {/* Pulsing glow blob behind photo — no outline ring */}
+            <div className="hero-glow-blob" />
 
-            {/* Profile photo — transparent PNG, no background, no border */}
-            <div
-              style={{
-                position: 'absolute',
-                inset: 0,
-                zIndex: 2,
-              }}
-            >
+            {/* Profile photo */}
+            <div style={{ position: 'absolute', inset: 0, zIndex: 2 }}>
               <img
                 src="/pfp.png"
                 alt="Adrian Kyle Condeza"
@@ -177,21 +142,31 @@ export default function Hero() {
                   height: '100%',
                   objectFit: 'contain',
                   objectPosition: 'bottom center',
-                  filter:
-                    'drop-shadow(0 0 16px rgba(0,113,227,0.50)) drop-shadow(0 0 48px rgba(0,113,227,0.25))',
                   background: 'transparent',
                 }}
               />
             </div>
-
           </motion.div>
+
         </div>
       </div>
 
       <style>{`
+        .hero-glow-blob {
+          position: absolute;
+          width: 65%;
+          height: 65%;
+          top: 17%;
+          left: 17%;
+          border-radius: 50%;
+          background: radial-gradient(ellipse, rgba(0,113,227,0.35) 0%, rgba(100,30,200,0.20) 50%, transparent 78%);
+          filter: blur(28px);
+          z-index: 1;
+          animation: glowBreath 3s ease-in-out infinite;
+        }
         @keyframes glowBreath {
-          0%, 100% { opacity: 0.65; transform: scale(1); }
-          50%       { opacity: 1;   transform: scale(1.15); }
+          0%, 100% { opacity: 0.6; transform: scale(1); }
+          50%       { opacity: 1;   transform: scale(1.18); }
         }
       `}</style>
     </section>
