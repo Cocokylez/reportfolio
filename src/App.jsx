@@ -9,6 +9,7 @@ import Projects          from './components/Projects'
 import Certificates      from './components/Certificates'
 import Contact           from './components/Contact'
 import Footer            from './components/Footer'
+import SectionDivider    from './components/SectionDivider'
 
 export default function App() {
   const [isDark, toggleDark] = useDarkMode()
@@ -22,7 +23,6 @@ export default function App() {
       <LoadingScreen />
       <CustomCursor />
 
-      {/* Ambient background orbs */}
       <div className="orb orb-1" />
       <div className="orb orb-2" />
       <div className="orb orb-3" />
@@ -31,10 +31,15 @@ export default function App() {
 
       <main className="relative z-10">
         <Hero />
+        <SectionDivider />
         <About />
+        <SectionDivider />
         <Skills />
+        <SectionDivider />
         <Projects />
+        <SectionDivider />
         <Certificates />
+        <SectionDivider />
         <Contact />
       </main>
 

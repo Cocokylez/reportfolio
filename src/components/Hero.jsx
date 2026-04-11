@@ -6,23 +6,17 @@ const fadeUp = (delay = 0) => ({
   transition: { duration: 0.65, delay, ease: [0.4, 0, 0.2, 1] },
 })
 
-const ARC_CX = 210
-const ARC_CY = 280
-const ARC_RX = 200
-const ARC_RY = 210
-
+// All chips on the LEFT side of the photo, arranged in a vertical arc
 const skills = [
-  { label: 'Photoshop',     icon: '🖼️', angle: 200 },
-  { label: 'PixelLab',      icon: '✏️', angle: 222 },
-  { label: 'Alight Motion', icon: '🎬', angle: 248 },
-  { label: 'VS Code',       icon: '💻', angle: 270 },
-  { label: 'Java',          icon: '☕', angle: 292 },
-  { label: 'HTML',          icon: '🌐', angle: 315 },
-  { label: 'CSS',           icon: '🎨', angle: 335 },
-  { label: 'JavaScript',    icon: '⚡', angle: 355 },
+  { label: 'VS Code',       icon: '💻', x: -130, y: 30  },
+  { label: 'Java',          icon: '☕', x: -155, y: 120 },
+  { label: 'HTML',          icon: '🌐', x: -140, y: 215 },
+  { label: 'CSS',           icon: '🎨', x: -145, y: 305 },
+  { label: 'JavaScript',    icon: '⚡', x: -125, y: 390 },
+  { label: 'Photoshop',     icon: '🖼️', x: -110, y: 470 },
+  { label: 'Alight Motion', icon: '🎬', x: -95,  y: 555 },
+  { label: 'PixelLab',      icon: '✏️', x: -85,  y: 640 },
 ]
-
-const degToRad = (d) => (d * Math.PI) / 180
 
 export default function Hero() {
   const scrollTo = (href) => {
@@ -37,6 +31,8 @@ export default function Hero() {
 
           {/* ── LEFT: Text ── */}
           <div className="flex-1 flex flex-col items-start text-left">
+
+            {/* Status badge */}
             <motion.div {...fadeUp(0)} className="mb-5">
               <div className="inline-flex items-center gap-[7px]
                 bg-white/65 dark:bg-[rgba(28,28,30,0.75)]
@@ -83,53 +79,53 @@ export default function Hero() {
             </motion.div>
           </div>
 
-          {/* ── RIGHT: Photo + Arc Skills ── */}
+          {/* ── RIGHT: Photo + Left-side floating skill chips ── */}
           <motion.div
             initial={{ opacity: 0, x: 30 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.7, delay: 0.1 }}
             className="flex-shrink-0 relative"
-            style={{ width: '420px', height: '520px' }}
+            style={{ width: '340px', height: '520px', marginLeft: '120px' }}
           >
-            {/* Arc skill chips — behind photo */}
-            {skills.map((s, i) => {
-              const rad = degToRad(s.angle)
-              const x = ARC_CX + ARC_RX * Math.cos(rad)
-              const y = ARC_CY + ARC_RY * Math.sin(rad)
-              return (
-                <motion.div
-                  key={s.label}
-                  initial={{ opacity: 0, scale: 0.5 }}
-                  animate={{ opacity: 1, scale: 1, y: [0, -8, 0] }}
-                  transition={{
-                    opacity: { duration: 0.35, delay: 0.5 + i * 0.07 },
-                    scale:   { duration: 0.35, delay: 0.5 + i * 0.07 },
-                    y: { duration: 2.6 + i * 0.25, repeat: Infinity, ease: 'easeInOut', delay: i * 0.18, repeatType: 'loop' },
-                  }}
-                  style={{
-                    position: 'absolute',
-                    left: x,
-                    top: y,
-                    transform: 'translate(-50%, -50%)',
-                    zIndex: 0,
-                  }}
-                  className="flex items-center gap-1.5
-                    bg-white/85 dark:bg-[rgba(20,20,28,0.90)]
-                    border border-white/60 dark:border-white/12
-                    backdrop-blur-md rounded-full
-                    px-2.5 py-[5px]
-                    shadow-[0_4px_24px_rgba(0,0,0,0.25)]
-                    text-[0.68rem] font-semibold
-                    text-[#1c1c1e] dark:text-[#f0f0f5]
-                    whitespace-nowrap cursor-default select-none"
-                >
-                  <span className="text-[13px] leading-none">{s.icon}</span>
-                  {s.label}
-                </motion.div>
-              )
-            })}
+            {/* Skill chips — all on the LEFT of the photo */}
+            {skills.map((s, i) => (
+              <motion.div
+                key={s.label}
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0, y: [0, -7, 0] }}
+                transition={{
+                  opacity: { duration: 0.35, delay: 0.5 + i * 0.07 },
+                  x:       { duration: 0.35, delay: 0.5 + i * 0.07 },
+                  y: {
+                    duration: 2.8 + i * 0.2,
+                    repeat: Infinity,
+                    ease: 'easeInOut',
+                    delay: i * 0.15,
+                    repeatType: 'loop',
+                  },
+                }}
+                style={{
+                  position: 'absolute',
+                  left: s.x,
+                  top: s.y,
+                  zIndex: 3,
+                }}
+                className="flex items-center gap-1.5
+                  bg-white/85 dark:bg-[rgba(20,20,28,0.90)]
+                  border border-white/60 dark:border-white/12
+                  backdrop-blur-md rounded-full
+                  px-2.5 py-[5px]
+                  shadow-[0_4px_24px_rgba(0,0,0,0.25)]
+                  text-[0.68rem] font-semibold
+                  text-[#1c1c1e] dark:text-[#f0f0f5]
+                  whitespace-nowrap cursor-default select-none"
+              >
+                <span className="text-[13px] leading-none">{s.icon}</span>
+                {s.label}
+              </motion.div>
+            ))}
 
-            {/* Pulsing glow blob behind photo — no outline ring */}
+            {/* Pulsing glow blob behind photo */}
             <div className="hero-glow-blob" />
 
             {/* Profile photo */}
