@@ -6,27 +6,27 @@ const fadeUp = (delay = 0) => ({
   transition: { duration: 0.65, delay, ease: [0.4, 0, 0.2, 1] },
 })
 
-// Skills arranged in a curved arc — angles sweep from bottom-left to bottom-right
-// behind the photo (like a rainbow/halo arc)
+// Arc arranged chips using precise pixel offsets from center of a 420x520 container
+// Arc sweeps from bottom-left → top → bottom-right like a halo behind the photo
+// Center of container: cx=210, cy=260
+// Arc radius: ~210px, spanning angles from 200° to 340° (top half arc)
+const ARC_CX = 210
+const ARC_CY = 280
+const ARC_RX = 200
+const ARC_RY = 210
+
 const skills = [
-  { label: 'Photoshop',     icon: '🖼️', angle: -150 },
-  { label: 'PixelLab',      icon: '✏️', angle: -120 },
-  { label: 'Alight Motion', icon: '🎬', angle: -90  },
-  { label: 'VS Code',       icon: '💻', angle: -60  },
-  { label: 'Java',          icon: '☕', angle: -30  },
-  { label: 'HTML',          icon: '🌐', angle: 0    },
-  { label: 'CSS',           icon: '🎨', angle: 30   },
-  { label: 'JavaScript',    icon: '⚡', angle: 60   },
+  { label: 'Photoshop',     icon: '🖼️', angle: 200 },
+  { label: 'PixelLab',      icon: '✏️', angle: 222 },
+  { label: 'Alight Motion', icon: '🎬', angle: 248 },
+  { label: 'VS Code',       icon: '💻', angle: 270 },
+  { label: 'Java',          icon: '☕', angle: 292 },
+  { label: 'HTML',          icon: '🌐', angle: 315 },
+  { label: 'CSS',           icon: '🎨', angle: 335 },
+  { label: 'JavaScript',    icon: '⚡', angle: 355 },
 ]
 
-// Convert polar angle to x/y position on an ellipse arc
-const getPos = (angleDeg, rx = 155, ry = 130, cx = 50, cy = 55) => {
-  const rad = (angleDeg - 90) * (Math.PI / 180)
-  return {
-    left: `${cx + rx * Math.cos(rad)}%`,
-    top:  `${cy + ry * Math.sin(rad)}%`,
-  }
-}
+const degToRad = (d) => (d * Math.PI) / 180
 
 export default function Hero() {
   const scrollTo = (href) => {
@@ -94,11 +94,14 @@ export default function Hero() {
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.7, delay: 0.1 }}
             className="flex-shrink-0 relative"
-            style={{ width: '360px', height: '460px' }}
+            style={{ width: '420px', height: '520px' }}
           >
-            {/* Curved arc skill chips — rendered BEHIND the photo (z-0) */}
+
+            {/* Arc skill chips — BEHIND photo (z-0) */}
             {skills.map((s, i) => {
-              const pos = getPos(s.angle)
+              const rad = degToRad(s.angle)
+              const x = ARC_CX + ARC_RX * Math.cos(rad)
+              const y = ARC_CY + ARC_RY * Math.sin(rad)
               return (
                 <motion.div
                   key={s.label}
@@ -106,70 +109,89 @@ export default function Hero() {
                   animate={{
                     opacity: 1,
                     scale: 1,
-                    y: [0, -7, 0],
+                    y: [0, -8, 0],
                   }}
                   transition={{
-                    opacity: { duration: 0.4, delay: 0.6 + i * 0.08 },
-                    scale:   { duration: 0.4, delay: 0.6 + i * 0.08 },
+                    opacity: { duration: 0.35, delay: 0.5 + i * 0.07 },
+                    scale:   { duration: 0.35, delay: 0.5 + i * 0.07 },
                     y: {
-                      duration: 2.8 + i * 0.3,
+                      duration: 2.6 + i * 0.25,
                       repeat: Infinity,
                       ease: 'easeInOut',
-                      delay: i * 0.2,
+                      delay: i * 0.18,
                       repeatType: 'loop',
                     },
                   }}
-                  className="absolute z-0 flex items-center gap-1.5
-                    bg-white/80 dark:bg-[rgba(22,22,28,0.88)]
-                    border border-white/60 dark:border-white/10
+                  style={{
+                    position: 'absolute',
+                    left: x,
+                    top: y,
+                    transform: 'translate(-50%, -50%)',
+                    zIndex: 0,
+                  }}
+                  className="flex items-center gap-1.5
+                    bg-white/85 dark:bg-[rgba(20,20,28,0.90)]
+                    border border-white/60 dark:border-white/12
                     backdrop-blur-md rounded-full
-                    px-2.5 py-1.5
-                    shadow-[0_4px_20px_rgba(0,0,0,0.22)]
+                    px-2.5 py-[5px]
+                    shadow-[0_4px_24px_rgba(0,0,0,0.25)]
                     text-[0.68rem] font-semibold
                     text-[#1c1c1e] dark:text-[#f0f0f5]
-                    whitespace-nowrap -translate-x-1/2 -translate-y-1/2"
-                  style={{ top: pos.top, left: pos.left }}
+                    whitespace-nowrap cursor-default select-none"
                 >
-                  <span className="text-sm leading-none">{s.icon}</span>
+                  <span className="text-[13px] leading-none">{s.icon}</span>
                   {s.label}
                 </motion.div>
               )
             })}
 
-            {/* Soft glow underneath — behind photo */}
+            {/* Radial glow blob behind photo */}
             <div
-              className="absolute z-[1] rounded-full"
               style={{
-                width: '70%',
-                height: '70%',
-                top: '15%',
-                left: '15%',
-                background: 'radial-gradient(ellipse, rgba(0,113,227,0.28) 0%, rgba(120,40,200,0.16) 50%, transparent 75%)',
-                filter: 'blur(18px)',
+                position: 'absolute',
+                width: '60%',
+                height: '60%',
+                top: '20%',
+                left: '20%',
+                borderRadius: '50%',
+                background: 'radial-gradient(ellipse, rgba(0,113,227,0.32) 0%, rgba(100,30,200,0.18) 55%, transparent 80%)',
+                filter: 'blur(22px)',
                 animation: 'glowBreath 3s ease-in-out infinite',
+                zIndex: 1,
               }}
             />
 
-            {/* Profile photo — transparent PNG, no border */}
-            <div className="absolute inset-0 z-[2]">
+            {/* Profile photo — transparent PNG, no background, no border */}
+            <div
+              style={{
+                position: 'absolute',
+                inset: 0,
+                zIndex: 2,
+              }}
+            >
               <img
                 src="/pfp.png"
                 alt="Adrian Kyle Condeza"
-                className="w-full h-full object-contain object-bottom drop-shadow-2xl"
                 style={{
-                  filter: 'drop-shadow(0 0 18px rgba(0,113,227,0.45)) drop-shadow(0 0 40px rgba(0,113,227,0.22))',
+                  width: '100%',
+                  height: '100%',
+                  objectFit: 'contain',
+                  objectPosition: 'bottom center',
+                  filter:
+                    'drop-shadow(0 0 16px rgba(0,113,227,0.50)) drop-shadow(0 0 48px rgba(0,113,227,0.25))',
+                  background: 'transparent',
                 }}
               />
             </div>
-          </motion.div>
 
+          </motion.div>
         </div>
       </div>
 
       <style>{`
         @keyframes glowBreath {
-          0%, 100% { opacity: 0.7; transform: scale(1); }
-          50%       { opacity: 1;   transform: scale(1.12); }
+          0%, 100% { opacity: 0.65; transform: scale(1); }
+          50%       { opacity: 1;   transform: scale(1.15); }
         }
       `}</style>
     </section>
