@@ -9,7 +9,7 @@ const fadeUp = (delay = 0) => ({
 
 export default function Certificates() {
   return (
-    <section id="certificates" className="relative z-10 py-[100px]">
+    <section id="certificates" className="relative z-10 py-[100px]" style={{borderTop: "3px solid transparent", borderImage: "linear-gradient(90deg, transparent, #8b5cf6, #a78bfa, #8b5cf6, transparent) 1"}}> 
       <div className="max-w-[680px] mx-auto px-6">
         <motion.span {...fadeUp(0)} className="section-label block">
           Certificates

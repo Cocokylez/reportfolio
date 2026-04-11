@@ -6,16 +6,23 @@ const fadeUp = (delay = 0) => ({
   transition: { duration: 0.65, delay, ease: [0.4, 0, 0.2, 1] },
 })
 
-// All chips on the LEFT side of the photo, arranged in a vertical arc
+// Above head: 3 chips centered across the top
+// Left shoulder: 2-3 chips on left
+// Right shoulder: 2-3 chips on right
 const skills = [
-  { label: 'VS Code',       icon: '💻', x: -130, y: 30  },
-  { label: 'Java',          icon: '☕', x: -155, y: 120 },
-  { label: 'HTML',          icon: '🌐', x: -140, y: 215 },
-  { label: 'CSS',           icon: '🎨', x: -145, y: 305 },
-  { label: 'JavaScript',    icon: '⚡', x: -125, y: 390 },
-  { label: 'Photoshop',     icon: '🖼️', x: -110, y: 470 },
-  { label: 'Alight Motion', icon: '🎬', x: -95,  y: 555 },
-  { label: 'PixelLab',      icon: '✏️', x: -85,  y: 640 },
+  // Above head (spread across top)
+  { label: 'HTML',          icon: '🌐', x: 20,   y: -52 },
+  { label: 'VS Code',       icon: '💻', x: 135,  y: -68 },
+  { label: 'CSS',           icon: '🎨', x: 250,  y: -52 },
+
+  // Left shoulder area
+  { label: 'Photoshop',     icon: '🖼️', x: -120, y: 80  },
+  { label: 'PixelLab',      icon: '✏️', x: -135, y: 165 },
+  { label: 'Alight Motion', icon: '🎬', x: -115, y: 250 },
+
+  // Right shoulder area
+  { label: 'JavaScript',    icon: '⚡', x: 330,  y: 80  },
+  { label: 'Java',          icon: '☕', x: 345,  y: 165 },
 ]
 
 export default function Hero() {
@@ -32,8 +39,25 @@ export default function Hero() {
           {/* ── LEFT: Text ── */}
           <div className="flex-1 flex flex-col items-start text-left">
 
-            {/* Status badge */}
-            <motion.div {...fadeUp(0)} className="mb-5">
+            <motion.h1
+              {...fadeUp(0)}
+              className="font-serif font-normal text-[clamp(2.4rem,5vw,3.6rem)]
+                tracking-[-0.02em] leading-[1.1] mb-3
+                text-[#1c1c1e] dark:text-[#f5f5f7]"
+            >
+              Adrian Kyle<br />Condeza
+            </motion.h1>
+
+            {/* Role */}
+            <motion.p
+              {...fadeUp(0.08)}
+              className="text-base font-medium mb-4 text-[rgb(var(--accent-rgb))]"
+            >
+              1st Year IT Student · Aspiring Computer Engineer
+            </motion.p>
+
+            {/* "Open to opportunities" badge — now below the name */}
+            <motion.div {...fadeUp(0.13)} className="mb-5">
               <div className="inline-flex items-center gap-[7px]
                 bg-white/65 dark:bg-[rgba(28,28,30,0.75)]
                 border border-black/7 dark:border-white/8
@@ -45,22 +69,7 @@ export default function Hero() {
               </div>
             </motion.div>
 
-            <motion.h1
-              {...fadeUp(0.08)}
-              className="font-serif font-normal text-[clamp(2.4rem,5vw,3.6rem)]
-                tracking-[-0.02em] leading-[1.1] mb-3
-                text-[#1c1c1e] dark:text-[#f5f5f7]"
-            >
-              Adrian Kyle<br />Condeza
-            </motion.h1>
-
-            <motion.p
-              {...fadeUp(0.14)}
-              className="text-base font-medium mb-4 text-[rgb(var(--accent-rgb))]"
-            >
-              1st Year IT Student · Aspiring Computer Engineer
-            </motion.p>
-
+            {/* Tagline */}
             <motion.p
               {...fadeUp(0.2)}
               className="text-[1.05rem] text-[#48484a] dark:text-[#aeaeb2] font-light
@@ -79,25 +88,25 @@ export default function Hero() {
             </motion.div>
           </div>
 
-          {/* ── RIGHT: Photo + Left-side floating skill chips ── */}
+          {/* ── RIGHT: Photo + Skill chips ── */}
           <motion.div
             initial={{ opacity: 0, x: 30 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.7, delay: 0.1 }}
             className="flex-shrink-0 relative"
-            style={{ width: '340px', height: '520px', marginLeft: '120px' }}
+            style={{ width: '320px', height: '480px', margin: '80px 60px 0 60px' }}
           >
-            {/* Skill chips — all on the LEFT of the photo */}
+            {/* Skill chips */}
             {skills.map((s, i) => (
               <motion.div
                 key={s.label}
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0, y: [0, -7, 0] }}
+                initial={{ opacity: 0, scale: 0.5 }}
+                animate={{ opacity: 1, scale: 1, y: [0, -8, 0] }}
                 transition={{
                   opacity: { duration: 0.35, delay: 0.5 + i * 0.07 },
-                  x:       { duration: 0.35, delay: 0.5 + i * 0.07 },
+                  scale:   { duration: 0.35, delay: 0.5 + i * 0.07 },
                   y: {
-                    duration: 2.8 + i * 0.2,
+                    duration: 2.6 + i * 0.22,
                     repeat: Infinity,
                     ease: 'easeInOut',
                     delay: i * 0.15,
@@ -125,10 +134,13 @@ export default function Hero() {
               </motion.div>
             ))}
 
-            {/* Pulsing glow blob behind photo */}
+            {/* Glow blob */}
             <div className="hero-glow-blob" />
 
-            {/* Profile photo */}
+            {/* Glow ring */}
+            <div className="hero-glow-ring" />
+
+            {/* Photo */}
             <div style={{ position: 'absolute', inset: 0, zIndex: 2 }}>
               <img
                 src="/pfp.png"
@@ -139,6 +151,7 @@ export default function Hero() {
                   objectFit: 'contain',
                   objectPosition: 'bottom center',
                   background: 'transparent',
+                  filter: 'drop-shadow(0 0 18px rgba(0,113,227,0.5)) drop-shadow(0 0 50px rgba(0,113,227,0.25))',
                 }}
               />
             </div>
@@ -150,19 +163,33 @@ export default function Hero() {
       <style>{`
         .hero-glow-blob {
           position: absolute;
-          width: 65%;
-          height: 65%;
-          top: 17%;
-          left: 17%;
+          width: 70%; height: 70%;
+          top: 15%; left: 15%;
           border-radius: 50%;
-          background: radial-gradient(ellipse, rgba(0,113,227,0.35) 0%, rgba(100,30,200,0.20) 50%, transparent 78%);
-          filter: blur(28px);
+          background: radial-gradient(ellipse, rgba(0,113,227,0.32) 0%, rgba(100,30,200,0.18) 55%, transparent 80%);
+          filter: blur(26px);
           z-index: 1;
           animation: glowBreath 3s ease-in-out infinite;
+        }
+        .hero-glow-ring {
+          position: absolute;
+          inset: 8%;
+          border-radius: 50%;
+          z-index: 1;
+          box-shadow:
+            0 0 0 1.5px rgba(0,113,227,0.5),
+            0 0 30px 8px rgba(0,113,227,0.3),
+            0 0 80px 20px rgba(0,113,227,0.15),
+            0 0 140px 40px rgba(120,40,200,0.1);
+          animation: glowRingPulse 3s ease-in-out infinite;
         }
         @keyframes glowBreath {
           0%, 100% { opacity: 0.6; transform: scale(1); }
           50%       { opacity: 1;   transform: scale(1.18); }
+        }
+        @keyframes glowRingPulse {
+          0%, 100% { box-shadow: 0 0 0 1.5px rgba(0,113,227,0.5), 0 0 30px 8px rgba(0,113,227,0.3), 0 0 80px 20px rgba(0,113,227,0.15), 0 0 140px 40px rgba(120,40,200,0.1); }
+          50%       { box-shadow: 0 0 0 2px rgba(0,113,227,0.85), 0 0 50px 16px rgba(0,113,227,0.5), 0 0 110px 35px rgba(0,113,227,0.25), 0 0 200px 65px rgba(120,40,200,0.18); }
         }
       `}</style>
     </section>

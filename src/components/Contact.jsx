@@ -42,7 +42,7 @@ export default function Contact() {
     `form-input ${errors[field] ? '!border-red-400/50 !shadow-[0_0_0_3px_rgba(255,59,48,0.08)]' : ''}`
 
   return (
-    <section id="contact" className="relative z-10 py-[100px]">
+    <section id="contact" className="relative z-10 py-[100px]" style={{borderTop: "3px solid transparent", borderImage: "linear-gradient(90deg, transparent, #f43f5e, #fb7185, #f43f5e, transparent) 1"}}> 
       <div className="max-w-[680px] mx-auto px-6">
         <motion.span {...fadeUp(0)} className="section-label block">
           Contact

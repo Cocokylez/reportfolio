@@ -16,7 +16,7 @@ const fadeUp = (delay = 0) => ({
 
 export default function Skills() {
   return (
-    <section id="skills" className="relative z-10 py-[100px]">
+    <section id="skills" className="relative z-10 py-[100px]" style={{borderTop: "3px solid transparent", borderImage: "linear-gradient(90deg, transparent, #06b6d4, #22d3ee, #06b6d4, transparent) 1"}}> 
       <div className="max-w-[680px] mx-auto px-6">
         <motion.span {...fadeUp(0)} className="section-label block">
           Skills
