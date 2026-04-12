@@ -15,17 +15,19 @@ const PHOTO_W = 220  // photo width
 const PHOTO_MID = PHOTO_L + PHOTO_W / 2  // 240 — horizontal center
 
 const skills = [
-  // Left side — 5 chips stacked vertically beside the circle
-  { label: 'HTML',          x: PHOTO_L - 108,  y: 30  },
-  { label: 'Photoshop',     x: PHOTO_L - 115,  y: 110 },
-  { label: 'PixelLab',      x: PHOTO_L - 105,  y: 190 },
-  { label: 'Alight Motion', x: PHOTO_L - 122,  y: 270 },
-  { label: 'CSS',           x: PHOTO_L - 95,   y: 350 },
+  // Above head — 3 chips centered on top
+  { label: 'HTML',          x: PHOTO_MID - 120, y: -40 },
+  { label: 'VS Code',       x: PHOTO_MID - 38,  y: -56 },
+  { label: 'CSS',           x: PHOTO_MID + 46,  y: -40 },
 
-  // Right side — 3 chips stacked vertically beside the circle
-  { label: 'VS Code',       x: PHOTO_L + PHOTO_W + 12, y: 60  },
-  { label: 'JavaScript',    x: PHOTO_L + PHOTO_W + 8,  y: 160 },
-  { label: 'Java',          x: PHOTO_L + PHOTO_W + 18, y: 260 },
+  // Left side — 3 chips
+  { label: 'Photoshop',     x: PHOTO_L - 115,   y: 80  },
+  { label: 'PixelLab',      x: PHOTO_L - 105,   y: 185 },
+  { label: 'Alight Motion', x: PHOTO_L - 122,   y: 290 },
+
+  // Right side — 2 chips
+  { label: 'JavaScript',    x: PHOTO_L + PHOTO_W + 10, y: 120 },
+  { label: 'Java',          x: PHOTO_L + PHOTO_W + 18, y: 230 },
 ]
 
 export default function Hero() {
@@ -125,61 +127,54 @@ export default function Hero() {
             {/* Glow ring */}
             <div className="hero-glow-ring" />
 
-            {/* Photo */}
-            <div
-              style={{
-                position: 'absolute',
-                left: PHOTO_L,
-                top: 10,
-                width: PHOTO_W,
-                height: 420,
-                zIndex: 2,
-                cursor: 'pointer',
-              }}
+            {/* Photo — interaction directly on the image, no big wrapper div */}
+            <img
+              src="/pfp.png"
+              alt="Adrian Kyle Condeza"
               onMouseEnter={() => setHovered(true)}
               onMouseLeave={() => setHovered(false)}
               onClick={() => setBubbleOpen(v => !v)}
-            >
-              <img
-                src="/pfp.png"
-                alt="Adrian Kyle Condeza"
-                style={{
-                  width: '100%', height: '100%',
-                  objectFit: 'contain',
-                  objectPosition: 'bottom center',
-                  background: 'transparent',
-                  filter: 'drop-shadow(0 0 18px rgba(0,113,227,0.5)) drop-shadow(0 0 50px rgba(0,113,227,0.25))',
-                  transition: 'transform 0.3s ease',
-                  transform: hovered ? 'scale(1.03)' : 'scale(1)',
-                }}
-              />
+              style={{
+                position: 'absolute',
+                left: PHOTO_L,
+                top: -20,
+                width: PHOTO_W,
+                height: 440,
+                objectFit: 'contain',
+                objectPosition: 'bottom center',
+                background: 'transparent',
+                filter: 'drop-shadow(0 0 18px rgba(0,113,227,0.5)) drop-shadow(0 0 50px rgba(0,113,227,0.25))',
+                transition: 'transform 0.3s ease',
+                transform: hovered ? 'scale(1.03)' : 'scale(1)',
+                zIndex: 2,
+                cursor: 'pointer',
+              }}
+            />
 
-              {/* Hover tooltip */}
-              <AnimatePresence>
-                {hovered && !bubbleOpen && (
-                  <motion.div
-                    initial={{ opacity: 0, y: 6, scale: 0.9 }}
-                    animate={{ opacity: 1, y: 0, scale: 1 }}
-                    exit={{ opacity: 0, y: 6, scale: 0.9 }}
-                    transition={{ duration: 0.18 }}
-                    style={{
-                      position: 'absolute',
-                      top: '15%',
-                      left: '50%',
-                      transform: 'translateX(-50%)',
-                      zIndex: 10,
-                      pointerEvents: 'none',
-                    }}
-                    className="px-3 py-1.5 rounded-full text-[0.72rem] font-semibold
-                      bg-[rgba(0,113,227,0.9)] text-white
-                      shadow-[0_4px_20px_rgba(0,113,227,0.5)]
-                      backdrop-blur-md whitespace-nowrap"
-                  >
-                    About Me
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </div>
+            {/* Hover tooltip */}
+            <AnimatePresence>
+              {hovered && !bubbleOpen && (
+                <motion.div
+                  initial={{ opacity: 0, y: 6, scale: 0.9 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  exit={{ opacity: 0, y: 6, scale: 0.9 }}
+                  transition={{ duration: 0.18 }}
+                  style={{
+                    position: 'absolute',
+                    top: 40,
+                    left: PHOTO_MID - 40,
+                    zIndex: 10,
+                    pointerEvents: 'none',
+                  }}
+                  className="px-3 py-1.5 rounded-full text-[0.72rem] font-semibold
+                    bg-[rgba(0,113,227,0.9)] text-white
+                    shadow-[0_4px_20px_rgba(0,113,227,0.5)]
+                    backdrop-blur-md whitespace-nowrap"
+                >
+                  About Me
+                </motion.div>
+              )}
+            </AnimatePresence>
 
             {/* Speech bubble — anchored LEFT of photo so it doesn't go off screen */}
             <AnimatePresence>
@@ -285,7 +280,7 @@ export default function Hero() {
         .hero-glow-blob {
           position: absolute;
           width: 240px; height: 240px;
-          top: calc(10px + 60px);
+          top: 50px;
           left: ${PHOTO_L + PHOTO_W / 2 - 120}px;
           border-radius: 50%;
           background: radial-gradient(circle, rgba(0,113,227,0.30) 0%, rgba(100,30,200,0.16) 55%, transparent 78%);
@@ -296,7 +291,7 @@ export default function Hero() {
         .hero-glow-ring {
           position: absolute;
           width: 240px; height: 240px;
-          top: calc(10px + 60px);
+          top: 50px;
           left: ${PHOTO_L + PHOTO_W / 2 - 120}px;
           border-radius: 50%;
           z-index: 1;
