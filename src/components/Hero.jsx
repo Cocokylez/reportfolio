@@ -1,5 +1,5 @@
 import { motion, AnimatePresence } from 'framer-motion'
-import { useState } from 'react'
+import { useState, useRef, useEffect } from 'react'
 
 const fadeUp = (delay = 0) => ({
   initial: { opacity: 0, y: 24 },
@@ -7,32 +7,54 @@ const fadeUp = (delay = 0) => ({
   transition: { duration: 0.65, delay, ease: [0.4, 0, 0.2, 1] },
 })
 
-// Photo is 220px wide, centered inside a 480px wide right column
-// Photo left edge starts at (480-220)/2 = 130px from container left
-// Chips are positioned relative to this 480px container
-const PHOTO_L = 130  // photo left edge inside container
-const PHOTO_W = 220  // photo width
-const PHOTO_MID = PHOTO_L + PHOTO_W / 2  // 240 — horizontal center
-
-const skills = [
-  // Above head — 3 chips centered on top
-  { label: 'HTML',          x: PHOTO_MID - 120, y: -40 },
-  { label: 'VS Code',       x: PHOTO_MID - 38,  y: -56 },
-  { label: 'CSS',           x: PHOTO_MID + 46,  y: -40 },
-
-  // Left side — 3 chips
-  { label: 'Photoshop',     x: PHOTO_L - 115,   y: 80  },
-  { label: 'PixelLab',      x: PHOTO_L - 105,   y: 185 },
-  { label: 'Alight Motion', x: PHOTO_L - 122,   y: 290 },
-
-  // Right side — 2 chips
-  { label: 'JavaScript',    x: PHOTO_L + PHOTO_W + 10, y: 120 },
-  { label: 'Java',          x: PHOTO_L + PHOTO_W + 18, y: 230 },
+// Chips defined as percentage offsets relative to the photo's actual size
+// anchorX/Y = 0 means photo left/top edge, 1 = right/bottom edge
+// offsetX/Y = extra px nudge outward after anchoring
+const CHIP_DEFS = [
+  // Above head — centered along top edge
+  { label: 'HTML',          ax: 0.05, ay: 0,    ox: 0,    oy: -36 },
+  { label: 'VS Code',       ax: 0.42, ay: 0,    ox: 0,    oy: -52 },
+  { label: 'CSS',           ax: 0.78, ay: 0,    ox: 0,    oy: -36 },
+  // Left side
+  { label: 'Photoshop',     ax: 0,    ay: 0.18, ox: -112, oy: 0   },
+  { label: 'PixelLab',      ax: 0,    ay: 0.42, ox: -102, oy: 0   },
+  { label: 'Alight Motion', ax: 0,    ay: 0.66, ox: -120, oy: 0   },
+  // Right side
+  { label: 'JavaScript',    ax: 1,    ay: 0.25, ox: 12,   oy: 0   },
+  { label: 'Java',          ax: 1,    ay: 0.50, ox: 18,   oy: 0   },
 ]
 
 export default function Hero() {
-  const [hovered, setHovered] = useState(false)
+  const [hovered, setHovered]     = useState(false)
   const [bubbleOpen, setBubbleOpen] = useState(false)
+  const [chipPositions, setChipPositions] = useState([])
+  const imgRef  = useRef(null)
+  const wrapRef = useRef(null)
+
+  // After mount (and on resize), measure where the photo actually is
+  // and compute each chip's position relative to the outer wrapper
+  useEffect(() => {
+    const compute = () => {
+      if (!imgRef.current || !wrapRef.current) return
+      const img  = imgRef.current.getBoundingClientRect()
+      const wrap = wrapRef.current.getBoundingClientRect()
+      // Photo rect relative to wrapper
+      const pl = img.left  - wrap.left
+      const pt = img.top   - wrap.top
+      const pw = img.width
+      const ph = img.height
+
+      setChipPositions(CHIP_DEFS.map(c => ({
+        label: c.label,
+        x: pl + c.ax * pw + c.ox,
+        y: pt + c.ay * ph + c.oy,
+      })))
+    }
+    // Small delay so layout settles
+    const t = setTimeout(compute, 120)
+    window.addEventListener('resize', compute)
+    return () => { clearTimeout(t); window.removeEventListener('resize', compute) }
+  }, [])
 
   const scrollTo = (href) => {
     const target = document.querySelector(href)
@@ -85,27 +107,78 @@ export default function Hero() {
             </motion.div>
           </div>
 
-          {/* ── RIGHT: Wide column to give chips room ── */}
+          {/* ── RIGHT: wrapper ref so we can measure ── */}
           <motion.div
+            ref={wrapRef}
             initial={{ opacity: 0, x: 30 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.7, delay: 0.1 }}
-            style={{
-              position: 'relative',
-              width: '480px',
-              height: '500px',
-              flexShrink: 0,
-            }}
+            style={{ position: 'relative', width: '360px', height: '500px', flexShrink: 0 }}
           >
-            {/* Skill chips — all positioned within the 480px wide container */}
-            {skills.map((s, i) => (
+            {/* Glow blob — behind photo, centered */}
+            <div className="hero-glow-blob" />
+            <div className="hero-glow-ring" />
+
+            {/* Photo */}
+            <img
+              ref={imgRef}
+              src="/pfp.png"
+              alt="Adrian Kyle Condeza"
+              onMouseEnter={() => setHovered(true)}
+              onMouseLeave={() => setHovered(false)}
+              onClick={() => setBubbleOpen(v => !v)}
+              style={{
+                position: 'absolute',
+                top: 0,
+                left: '50%',
+                transform: `translateX(-50%) ${hovered ? 'scale(1.03)' : 'scale(1)'}`,
+                width: '220px',
+                height: '460px',
+                objectFit: 'contain',
+                objectPosition: 'bottom center',
+                background: 'transparent',
+                filter: 'drop-shadow(0 0 18px rgba(0,113,227,0.5)) drop-shadow(0 0 50px rgba(0,113,227,0.25))',
+                transition: 'transform 0.3s ease',
+                zIndex: 2,
+                cursor: 'pointer',
+              }}
+            />
+
+            {/* Hover tooltip */}
+            <AnimatePresence>
+              {hovered && !bubbleOpen && (
+                <motion.div
+                  initial={{ opacity: 0, y: 6, scale: 0.9 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  exit={{ opacity: 0, y: 6, scale: 0.9 }}
+                  transition={{ duration: 0.18 }}
+                  style={{
+                    position: 'absolute',
+                    top: 60,
+                    left: '50%',
+                    transform: 'translateX(-50%)',
+                    zIndex: 10,
+                    pointerEvents: 'none',
+                  }}
+                  className="px-3 py-1.5 rounded-full text-[0.72rem] font-semibold
+                    bg-[rgba(0,113,227,0.9)] text-white
+                    shadow-[0_4px_20px_rgba(0,113,227,0.5)]
+                    backdrop-blur-md whitespace-nowrap"
+                >
+                  About Me
+                </motion.div>
+              )}
+            </AnimatePresence>
+
+            {/* Skill chips — positions computed from real photo measurements */}
+            {chipPositions.map((s, i) => (
               <motion.div
                 key={s.label}
                 initial={{ opacity: 0, scale: 0.5 }}
                 animate={{ opacity: 1, scale: 1, y: [0, -7, 0] }}
                 transition={{
-                  opacity: { duration: 0.35, delay: 0.5 + i * 0.07 },
-                  scale:   { duration: 0.35, delay: 0.5 + i * 0.07 },
+                  opacity: { duration: 0.35, delay: 0.6 + i * 0.07 },
+                  scale:   { duration: 0.35, delay: 0.6 + i * 0.07 },
                   y: { duration: 2.6 + i * 0.22, repeat: Infinity, ease: 'easeInOut', delay: i * 0.15, repeatType: 'loop' },
                 }}
                 style={{ position: 'absolute', left: s.x, top: s.y, zIndex: 3 }}
@@ -122,91 +195,23 @@ export default function Hero() {
               </motion.div>
             ))}
 
-            {/* Glow blob */}
-            <div className="hero-glow-blob" />
-            {/* Glow ring */}
-            <div className="hero-glow-ring" />
-
-            {/* Photo — interaction directly on the image, no big wrapper div */}
-            <img
-              src="/pfp.png"
-              alt="Adrian Kyle Condeza"
-              onMouseEnter={() => setHovered(true)}
-              onMouseLeave={() => setHovered(false)}
-              onClick={() => setBubbleOpen(v => !v)}
-              style={{
-                position: 'absolute',
-                left: PHOTO_L,
-                top: -20,
-                width: PHOTO_W,
-                height: 440,
-                objectFit: 'contain',
-                objectPosition: 'bottom center',
-                background: 'transparent',
-                filter: 'drop-shadow(0 0 18px rgba(0,113,227,0.5)) drop-shadow(0 0 50px rgba(0,113,227,0.25))',
-                transition: 'transform 0.3s ease',
-                transform: hovered ? 'scale(1.03)' : 'scale(1)',
-                zIndex: 2,
-                cursor: 'pointer',
-              }}
-            />
-
-            {/* Hover tooltip */}
-            <AnimatePresence>
-              {hovered && !bubbleOpen && (
-                <motion.div
-                  initial={{ opacity: 0, y: 6, scale: 0.9 }}
-                  animate={{ opacity: 1, y: 0, scale: 1 }}
-                  exit={{ opacity: 0, y: 6, scale: 0.9 }}
-                  transition={{ duration: 0.18 }}
-                  style={{
-                    position: 'absolute',
-                    top: 40,
-                    left: PHOTO_MID - 40,
-                    zIndex: 10,
-                    pointerEvents: 'none',
-                  }}
-                  className="px-3 py-1.5 rounded-full text-[0.72rem] font-semibold
-                    bg-[rgba(0,113,227,0.9)] text-white
-                    shadow-[0_4px_20px_rgba(0,113,227,0.5)]
-                    backdrop-blur-md whitespace-nowrap"
-                >
-                  About Me
-                </motion.div>
-              )}
-            </AnimatePresence>
-
-            {/* Speech bubble — anchored LEFT of photo so it doesn't go off screen */}
+            {/* Speech bubble */}
             <AnimatePresence>
               {bubbleOpen && (
                 <>
-                  {/* Backdrop */}
                   <motion.div
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
                     onClick={() => setBubbleOpen(false)}
-                    style={{
-                      position: 'fixed', inset: 0,
-                      zIndex: 40,
-                      background: 'rgba(0,0,0,0.25)',
-                      backdropFilter: 'blur(2px)',
-                    }}
+                    style={{ position: 'fixed', inset: 0, zIndex: 40, background: 'rgba(0,0,0,0.25)', backdropFilter: 'blur(2px)' }}
                   />
-
-                  {/* Bubble — positioned to the LEFT of the photo */}
                   <motion.div
                     initial={{ opacity: 0, scale: 0.85, x: 20 }}
                     animate={{ opacity: 1, scale: 1, x: 0 }}
                     exit={{ opacity: 0, scale: 0.85, x: 20 }}
                     transition={{ type: 'spring', stiffness: 320, damping: 26 }}
-                    style={{
-                      position: 'absolute',
-                      right: PHOTO_W + 30,
-                      top: '8%',
-                      width: '260px',
-                      zIndex: 50,
-                    }}
+                    style={{ position: 'absolute', right: '105%', top: '6%', width: '260px', zIndex: 50 }}
                   >
                     <div className="relative rounded-2xl px-5 py-4
                       bg-white/90 dark:bg-[rgba(18,18,24,0.95)]
@@ -214,24 +219,14 @@ export default function Hero() {
                       shadow-[0_8px_40px_rgba(0,113,227,0.25),0_2px_12px_rgba(0,0,0,0.15)]
                       backdrop-blur-xl"
                     >
-                      {/* Close button */}
                       <button
                         onClick={(e) => { e.stopPropagation(); setBubbleOpen(false) }}
-                        className="absolute top-2.5 right-3 text-[#aeaeb2]
-                          hover:text-[#1c1c1e] dark:hover:text-white
-                          text-lg leading-none transition-colors"
+                        className="absolute top-2.5 right-3 text-[#aeaeb2] hover:text-[#1c1c1e] dark:hover:text-white text-lg leading-none transition-colors"
                       >×</button>
 
-                      {/* Header */}
                       <div className="flex items-center gap-2 mb-3">
-                        <span className="font-serif font-semibold text-[1rem]
-                          text-[#1c1c1e] dark:text-[#f5f5f7]">
-                          About Me
-                        </span>
-                        <span className="ml-auto text-[0.65rem] font-medium px-2 py-0.5 rounded-full
-                          bg-[rgba(0,113,227,0.12)] text-[rgb(var(--accent-rgb))]">
-                          AKC
-                        </span>
+                        <span className="font-serif font-semibold text-[1rem] text-[#1c1c1e] dark:text-[#f5f5f7]">About Me</span>
+                        <span className="ml-auto text-[0.65rem] font-medium px-2 py-0.5 rounded-full bg-[rgba(0,113,227,0.12)] text-[rgb(var(--accent-rgb))]">AKC</span>
                       </div>
 
                       <div className="h-px mb-3 bg-gradient-to-r from-transparent via-[rgba(0,113,227,0.3)] to-transparent" />
@@ -242,29 +237,21 @@ export default function Hero() {
                         through real projects.
                       </p>
                       <p className="text-[0.82rem] text-[#48484a] dark:text-[#aeaeb2] leading-[1.7] font-light">
-                        Passionate about tech, aiming to become a computer engineer
-                        and future entrepreneur.
+                        Passionate about tech, aiming to become a computer engineer and future entrepreneur.
                       </p>
 
                       <button
                         onClick={(e) => {
-                          e.stopPropagation()
-                          setBubbleOpen(false)
+                          e.stopPropagation(); setBubbleOpen(false)
                           setTimeout(() => {
                             const el = document.getElementById('about')
-                            if (el) {
-                              const y = el.getBoundingClientRect().top + window.scrollY - 80
-                              window.scrollTo({ top: y, behavior: 'smooth' })
-                            }
+                            if (el) window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - 80, behavior: 'smooth' })
                           }, 300)
                         }}
-                        className="mt-3 text-[0.75rem] font-semibold text-[rgb(var(--accent-rgb))]
-                          hover:underline underline-offset-2 transition-all"
+                        className="mt-3 text-[0.75rem] font-semibold text-[rgb(var(--accent-rgb))] hover:underline underline-offset-2"
                       >
                         Read full About Me →
                       </button>
-
-                      {/* Bubble tail pointing RIGHT toward the photo */}
                       <div className="bubble-tail-right" />
                     </div>
                   </motion.div>
@@ -279,9 +266,9 @@ export default function Hero() {
       <style>{`
         .hero-glow-blob {
           position: absolute;
-          width: 240px; height: 240px;
-          top: 50px;
-          left: ${PHOTO_L + PHOTO_W / 2 - 120}px;
+          width: 230px; height: 230px;
+          top: 80px; left: 50%;
+          transform: translateX(-50%);
           border-radius: 50%;
           background: radial-gradient(circle, rgba(0,113,227,0.30) 0%, rgba(100,30,200,0.16) 55%, transparent 78%);
           filter: blur(24px);
@@ -290,9 +277,9 @@ export default function Hero() {
         }
         .hero-glow-ring {
           position: absolute;
-          width: 240px; height: 240px;
-          top: 50px;
-          left: ${PHOTO_L + PHOTO_W / 2 - 120}px;
+          width: 230px; height: 230px;
+          top: 80px; left: 50%;
+          transform: translateX(-50%);
           border-radius: 50%;
           z-index: 1;
           box-shadow:
@@ -303,26 +290,22 @@ export default function Hero() {
           animation: glowRingPulse 3s ease-in-out infinite;
         }
         @keyframes glowBreath {
-          0%, 100% { opacity: 0.65; transform: scale(1); }
-          50%       { opacity: 1;   transform: scale(1.12); }
+          0%, 100% { opacity: 0.65; transform: translateX(-50%) scale(1); }
+          50%       { opacity: 1;   transform: translateX(-50%) scale(1.12); }
         }
         @keyframes glowRingPulse {
           0%, 100% { box-shadow: 0 0 0 1.5px rgba(0,113,227,0.45), 0 0 25px 8px rgba(0,113,227,0.35), 0 0 55px 18px rgba(0,113,227,0.18), 0 0 90px 28px rgba(120,40,200,0.12); }
           50%       { box-shadow: 0 0 0 2px rgba(0,113,227,0.8), 0 0 40px 14px rgba(0,113,227,0.55), 0 0 80px 28px rgba(0,113,227,0.28), 0 0 130px 45px rgba(120,40,200,0.2); }
         }
-        /* Tail pointing RIGHT */
         .bubble-tail-right {
           position: absolute;
-          top: 28px;
-          right: -10px;
+          top: 28px; right: -10px;
           width: 0; height: 0;
           border-top: 10px solid transparent;
           border-bottom: 10px solid transparent;
           border-left: 11px solid rgba(255,255,255,0.9);
         }
-        .dark .bubble-tail-right {
-          border-left-color: rgba(18,18,24,0.95);
-        }
+        .dark .bubble-tail-right { border-left-color: rgba(18,18,24,0.95); }
       `}</style>
     </section>
   )
