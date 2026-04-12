@@ -1,4 +1,5 @@
-import { motion } from 'framer-motion'
+import { motion, AnimatePresence } from 'framer-motion'
+import { useState } from 'react'
 
 const fadeUp = (delay = 0) => ({
   initial: { opacity: 0, y: 24 },
@@ -6,26 +7,24 @@ const fadeUp = (delay = 0) => ({
   transition: { duration: 0.65, delay, ease: [0.4, 0, 0.2, 1] },
 })
 
-// Above head: 3 chips spread across top of the 300px container
-// Left shoulder: chips sitting just outside left edge
-// Right shoulder: chips sitting just outside right edge
 const skills = [
   // Above head
   { label: 'HTML',          icon: '🌐', x: 0,    y: -48 },
   { label: 'VS Code',       icon: '💻', x: 105,  y: -64 },
   { label: 'CSS',           icon: '🎨', x: 215,  y: -48 },
-
   // Left shoulder
   { label: 'Photoshop',     icon: '🖼️', x: -115, y: 90  },
   { label: 'PixelLab',      icon: '✏️', x: -128, y: 170 },
   { label: 'Alight Motion', icon: '🎬', x: -108, y: 250 },
-
   // Right shoulder
   { label: 'JavaScript',    icon: '⚡', x: 302,  y: 90  },
   { label: 'Java',          icon: '☕', x: 308,  y: 170 },
 ]
 
 export default function Hero() {
+  const [hovered, setHovered]   = useState(false)
+  const [bubbleOpen, setBubbleOpen] = useState(false)
+
   const scrollTo = (href) => {
     const target = document.querySelector(href)
     if (target) window.scrollTo({ top: target.offsetTop - 64, behavior: 'smooth' })
@@ -38,7 +37,6 @@ export default function Hero() {
 
           {/* ── LEFT: Text ── */}
           <div className="flex-1 flex flex-col items-start text-left">
-
             <motion.h1
               {...fadeUp(0)}
               className="font-serif font-normal text-[clamp(2.4rem,5vw,3.6rem)]
@@ -48,15 +46,10 @@ export default function Hero() {
               Adrian Kyle<br />Condeza
             </motion.h1>
 
-            {/* Role */}
-            <motion.p
-              {...fadeUp(0.08)}
-              className="text-base font-medium mb-4 text-[rgb(var(--accent-rgb))]"
-            >
+            <motion.p {...fadeUp(0.08)} className="text-base font-medium mb-4 text-[rgb(var(--accent-rgb))]">
               1st Year IT Student · Aspiring Computer Engineer
             </motion.p>
 
-            {/* "Open to opportunities" badge — now below the name */}
             <motion.div {...fadeUp(0.13)} className="mb-5">
               <div className="inline-flex items-center gap-[7px]
                 bg-white/65 dark:bg-[rgba(28,28,30,0.75)]
@@ -69,7 +62,6 @@ export default function Hero() {
               </div>
             </motion.div>
 
-            {/* Tagline */}
             <motion.p
               {...fadeUp(0.2)}
               className="text-[1.05rem] text-[#48484a] dark:text-[#aeaeb2] font-light
@@ -79,12 +71,8 @@ export default function Hero() {
             </motion.p>
 
             <motion.div {...fadeUp(0.26)} className="flex gap-3 flex-wrap">
-              <button className="btn-primary" onClick={() => scrollTo('#contact')}>
-                Get in Touch
-              </button>
-              <button className="btn-ghost" onClick={() => scrollTo('#about')}>
-                Learn More
-              </button>
+              <button className="btn-primary" onClick={() => scrollTo('#contact')}>Get in Touch</button>
+              <button className="btn-ghost"   onClick={() => scrollTo('#about')}>Learn More</button>
             </motion.div>
           </div>
 
@@ -94,7 +82,7 @@ export default function Hero() {
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.7, delay: 0.1 }}
             className="flex-shrink-0 relative"
-            style={{ width: '300px', height: '460px', flexShrink: 0 }}
+            style={{ width: '300px', height: '460px', flexShrink: 0, marginBottom: '60px' }}
           >
             {/* Skill chips */}
             {skills.map((s, i) => (
@@ -105,25 +93,13 @@ export default function Hero() {
                 transition={{
                   opacity: { duration: 0.35, delay: 0.5 + i * 0.07 },
                   scale:   { duration: 0.35, delay: 0.5 + i * 0.07 },
-                  y: {
-                    duration: 2.6 + i * 0.22,
-                    repeat: Infinity,
-                    ease: 'easeInOut',
-                    delay: i * 0.15,
-                    repeatType: 'loop',
-                  },
+                  y: { duration: 2.6 + i * 0.22, repeat: Infinity, ease: 'easeInOut', delay: i * 0.15, repeatType: 'loop' },
                 }}
-                style={{
-                  position: 'absolute',
-                  left: s.x,
-                  top: s.y,
-                  zIndex: 3,
-                }}
+                style={{ position: 'absolute', left: s.x, top: s.y, zIndex: 3 }}
                 className="flex items-center gap-1.5
                   bg-white/85 dark:bg-[rgba(20,20,28,0.90)]
                   border border-white/60 dark:border-white/12
-                  backdrop-blur-md rounded-full
-                  px-2.5 py-[5px]
+                  backdrop-blur-md rounded-full px-2.5 py-[5px]
                   shadow-[0_4px_24px_rgba(0,0,0,0.25)]
                   text-[0.68rem] font-semibold
                   text-[#1c1c1e] dark:text-[#f0f0f5]
@@ -136,37 +112,171 @@ export default function Hero() {
 
             {/* Glow blob */}
             <div className="hero-glow-blob" />
-
             {/* Glow ring */}
             <div className="hero-glow-ring" />
 
-            {/* Photo */}
-            <div style={{ position: 'absolute', inset: 0, zIndex: 2 }}>
+            {/* ── Photo with hover + click interaction ── */}
+            <div
+              style={{ position: 'absolute', inset: 0, zIndex: 2, cursor: 'pointer' }}
+              onMouseEnter={() => setHovered(true)}
+              onMouseLeave={() => setHovered(false)}
+              onClick={() => setBubbleOpen(v => !v)}
+            >
               <img
                 src="/pfp.png"
                 alt="Adrian Kyle Condeza"
                 style={{
-                  width: '100%',
-                  height: '100%',
-                  objectFit: 'contain',
-                  objectPosition: 'bottom center',
+                  width: '100%', height: '100%',
+                  objectFit: 'contain', objectPosition: 'bottom center',
                   background: 'transparent',
                   filter: 'drop-shadow(0 0 18px rgba(0,113,227,0.5)) drop-shadow(0 0 50px rgba(0,113,227,0.25))',
+                  transition: 'transform 0.3s ease',
+                  transform: hovered ? 'scale(1.03)' : 'scale(1)',
                 }}
               />
-            </div>
-          </motion.div>
 
+              {/* Hover tooltip — "About Me" */}
+              <AnimatePresence>
+                {hovered && !bubbleOpen && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 6, scale: 0.9 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    exit={{ opacity: 0, y: 6, scale: 0.9 }}
+                    transition={{ duration: 0.18 }}
+                    style={{
+                      position: 'absolute',
+                      top: '18%',
+                      left: '50%',
+                      transform: 'translateX(-50%)',
+                      zIndex: 10,
+                      pointerEvents: 'none',
+                    }}
+                    className="px-3 py-1.5 rounded-full text-[0.72rem] font-semibold
+                      bg-[rgba(0,113,227,0.9)] text-white
+                      shadow-[0_4px_20px_rgba(0,113,227,0.5)]
+                      backdrop-blur-md whitespace-nowrap"
+                  >
+                    👆 About Me
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+
+            {/* ── Speech bubble popup ── */}
+            <AnimatePresence>
+              {bubbleOpen && (
+                <>
+                  {/* Backdrop — click outside to close */}
+                  <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    onClick={() => setBubbleOpen(false)}
+                    style={{
+                      position: 'fixed', inset: 0,
+                      zIndex: 40,
+                      background: 'rgba(0,0,0,0.25)',
+                      backdropFilter: 'blur(2px)',
+                    }}
+                  />
+
+                  {/* The speech bubble itself */}
+                  <motion.div
+                    initial={{ opacity: 0, scale: 0.85, y: 20 }}
+                    animate={{ opacity: 1, scale: 1, y: 0 }}
+                    exit={{ opacity: 0, scale: 0.85, y: 20 }}
+                    transition={{ type: 'spring', stiffness: 320, damping: 26 }}
+                    style={{
+                      position: 'absolute',
+                      bottom: '105%',
+                      left: '50%',
+                      transform: 'translateX(-50%)',
+                      width: '300px',
+                      zIndex: 50,
+                    }}
+                  >
+                    {/* Bubble body */}
+                    <div
+                      className="relative rounded-2xl px-5 py-4
+                        bg-white/90 dark:bg-[rgba(18,18,24,0.95)]
+                        border border-black/8 dark:border-white/10
+                        shadow-[0_8px_40px_rgba(0,113,227,0.25),0_2px_12px_rgba(0,0,0,0.15)]
+                        backdrop-blur-xl"
+                    >
+                      {/* Close button */}
+                      <button
+                        onClick={(e) => { e.stopPropagation(); setBubbleOpen(false) }}
+                        className="absolute top-2.5 right-3 text-[#aeaeb2] hover:text-[#1c1c1e]
+                          dark:hover:text-white text-lg leading-none transition-colors"
+                      >
+                        ×
+                      </button>
+
+                      {/* Header */}
+                      <div className="flex items-center gap-2 mb-3">
+                        <span className="text-lg">👋</span>
+                        <span className="font-serif font-semibold text-[1rem]
+                          text-[#1c1c1e] dark:text-[#f5f5f7]">
+                          About Me
+                        </span>
+                        <span className="ml-auto text-[0.65rem] font-medium px-2 py-0.5 rounded-full
+                          bg-[rgba(0,113,227,0.12)] text-[rgb(var(--accent-rgb))]">
+                          AKC
+                        </span>
+                      </div>
+
+                      {/* Divider */}
+                      <div className="h-px mb-3 bg-gradient-to-r from-transparent via-[rgba(0,113,227,0.3)] to-transparent" />
+
+                      {/* Content */}
+                      <p className="text-[0.82rem] text-[#48484a] dark:text-[#aeaeb2]
+                        leading-[1.7] font-light mb-2">
+                        I'm a first-year IT student building my foundation in programming
+                        and web development — learning Java, HTML, CSS, and JavaScript
+                        through real projects.
+                      </p>
+                      <p className="text-[0.82rem] text-[#48484a] dark:text-[#aeaeb2]
+                        leading-[1.7] font-light">
+                        Passionate about tech, aiming to become a computer engineer
+                        and future entrepreneur. 🚀
+                      </p>
+
+                      {/* Read more link */}
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          setBubbleOpen(false)
+                          setTimeout(() => {
+                            const el = document.getElementById('about')
+                            if (el) {
+                              const y = el.getBoundingClientRect().top + window.scrollY - 80
+                              window.scrollTo({ top: y, behavior: 'smooth' })
+                            }
+                          }, 300)
+                        }}
+                        className="mt-3 text-[0.75rem] font-semibold text-[rgb(var(--accent-rgb))]
+                          hover:underline underline-offset-2 transition-all"
+                      >
+                        Read full About Me →
+                      </button>
+
+                      {/* Bubble tail pointing DOWN */}
+                      <div className="bubble-tail" />
+                    </div>
+                  </motion.div>
+                </>
+              )}
+            </AnimatePresence>
+
+          </motion.div>
         </div>
       </div>
 
       <style>{`
         .hero-glow-blob {
           position: absolute;
-          width: 260px;
-          height: 260px;
-          top: 50%;
-          left: 50%;
+          width: 260px; height: 260px;
+          top: 50%; left: 50%;
           transform: translate(-50%, -55%);
           border-radius: 50%;
           background: radial-gradient(circle, rgba(0,113,227,0.30) 0%, rgba(100,30,200,0.16) 55%, transparent 78%);
@@ -176,10 +286,8 @@ export default function Hero() {
         }
         .hero-glow-ring {
           position: absolute;
-          width: 260px;
-          height: 260px;
-          top: 50%;
-          left: 50%;
+          width: 260px; height: 260px;
+          top: 50%; left: 50%;
           transform: translate(-50%, -55%);
           border-radius: 50%;
           z-index: 1;
@@ -195,12 +303,24 @@ export default function Hero() {
           50%       { opacity: 1;   transform: translate(-50%, -55%) scale(1.12); }
         }
         @keyframes glowRingPulse {
-          0%, 100% {
-            box-shadow: 0 0 0 1.5px rgba(0,113,227,0.45), 0 0 25px 8px rgba(0,113,227,0.35), 0 0 55px 18px rgba(0,113,227,0.18), 0 0 90px 28px rgba(120,40,200,0.12);
-          }
-          50% {
-            box-shadow: 0 0 0 2px rgba(0,113,227,0.8), 0 0 40px 14px rgba(0,113,227,0.55), 0 0 80px 28px rgba(0,113,227,0.28), 0 0 130px 45px rgba(120,40,200,0.2);
-          }
+          0%, 100% { box-shadow: 0 0 0 1.5px rgba(0,113,227,0.45), 0 0 25px 8px rgba(0,113,227,0.35), 0 0 55px 18px rgba(0,113,227,0.18), 0 0 90px 28px rgba(120,40,200,0.12); }
+          50%       { box-shadow: 0 0 0 2px rgba(0,113,227,0.8), 0 0 40px 14px rgba(0,113,227,0.55), 0 0 80px 28px rgba(0,113,227,0.28), 0 0 130px 45px rgba(120,40,200,0.2); }
+        }
+
+        /* Speech bubble tail */
+        .bubble-tail {
+          position: absolute;
+          bottom: -10px;
+          left: 50%;
+          transform: translateX(-50%);
+          width: 0; height: 0;
+          border-left: 12px solid transparent;
+          border-right: 12px solid transparent;
+          border-top: 12px solid rgba(255,255,255,0.9);
+          filter: drop-shadow(0 3px 4px rgba(0,113,227,0.15));
+        }
+        .dark .bubble-tail {
+          border-top-color: rgba(18,18,24,0.95);
         }
       `}</style>
     </section>
