@@ -7,24 +7,31 @@ const fadeUp = (delay = 0) => ({
   transition: { duration: 0.65, delay, ease: [0.4, 0, 0.2, 1] },
 })
 
+// Photo is 220px wide, centered inside a 480px wide right column
+// Photo left edge starts at (480-220)/2 = 130px from container left
+// Chips are positioned relative to this 480px container
+const PHOTO_L = 130  // photo left edge inside container
+const PHOTO_W = 220  // photo width
+const PHOTO_MID = PHOTO_L + PHOTO_W / 2  // 240 — horizontal center
+
 const skills = [
-  // Above head — spread across the top of the photo
-  { label: 'HTML',          x: 10,   y: -42 },
-  { label: 'VS Code',       x: 108,  y: -58 },
-  { label: 'CSS',           x: 206,  y: -42 },
+  // Above head — 3 chips, spread horizontally around center
+  { label: 'HTML',          x: PHOTO_MID - 130, y: -38 },
+  { label: 'VS Code',       x: PHOTO_MID - 45,  y: -58 },
+  { label: 'CSS',           x: PHOTO_MID + 52,  y: -38 },
 
-  // Left shoulder — sit just to the left, not too far
-  { label: 'Photoshop',     x: -88,  y: 100 },
-  { label: 'PixelLab',      x: -96,  y: 175 },
-  { label: 'Alight Motion', x: -80,  y: 250 },
+  // Left of photo — stacked vertically
+  { label: 'Photoshop',     x: PHOTO_L - 110,   y: 90  },
+  { label: 'PixelLab',      x: PHOTO_L - 100,   y: 160 },
+  { label: 'Alight Motion', x: PHOTO_L - 118,   y: 230 },
 
-  // Right shoulder — sit just to the right
-  { label: 'JavaScript',    x: 268,  y: 100 },
-  { label: 'Java',          x: 276,  y: 175 },
+  // Right of photo — stacked vertically
+  { label: 'JavaScript',    x: PHOTO_L + PHOTO_W + 10, y: 90  },
+  { label: 'Java',          x: PHOTO_L + PHOTO_W + 18, y: 160 },
 ]
 
 export default function Hero() {
-  const [hovered, setHovered]   = useState(false)
+  const [hovered, setHovered] = useState(false)
   const [bubbleOpen, setBubbleOpen] = useState(false)
 
   const scrollTo = (href) => {
@@ -33,12 +40,12 @@ export default function Hero() {
   }
 
   return (
-    <section id="hero" className="relative z-10 pt-[120px] pb-[80px] px-0 overflow-visible">
-      <div className="max-w-[1100px] mx-auto px-8 overflow-visible">
-        <div className="flex flex-col-reverse md:flex-row items-center justify-between gap-12 md:gap-8 overflow-visible">
+    <section id="hero" className="relative z-10 pt-[120px] pb-[80px]">
+      <div className="max-w-[1100px] mx-auto px-8">
+        <div className="flex flex-col-reverse md:flex-row items-center justify-between gap-8">
 
           {/* ── LEFT: Text ── */}
-          <div className="flex-1 flex flex-col items-start text-left">
+          <div className="flex-1 flex flex-col items-start text-left max-w-[480px]">
             <motion.h1
               {...fadeUp(0)}
               className="font-serif font-normal text-[clamp(2.4rem,5vw,3.6rem)]
@@ -78,20 +85,24 @@ export default function Hero() {
             </motion.div>
           </div>
 
-          {/* ── RIGHT: Photo + Skill chips ── */}
+          {/* ── RIGHT: Wide column to give chips room ── */}
           <motion.div
             initial={{ opacity: 0, x: 30 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.7, delay: 0.1 }}
-            className="flex-shrink-0"
-            style={{ position: 'relative', width: '300px', height: '460px', marginBottom: '60px' }}
+            style={{
+              position: 'relative',
+              width: '480px',
+              height: '500px',
+              flexShrink: 0,
+            }}
           >
-            {/* Skill chips */}
+            {/* Skill chips — all positioned within the 480px wide container */}
             {skills.map((s, i) => (
               <motion.div
                 key={s.label}
                 initial={{ opacity: 0, scale: 0.5 }}
-                animate={{ opacity: 1, scale: 1, y: [0, -8, 0] }}
+                animate={{ opacity: 1, scale: 1, y: [0, -7, 0] }}
                 transition={{
                   opacity: { duration: 0.35, delay: 0.5 + i * 0.07 },
                   scale:   { duration: 0.35, delay: 0.5 + i * 0.07 },
@@ -116,9 +127,17 @@ export default function Hero() {
             {/* Glow ring */}
             <div className="hero-glow-ring" />
 
-            {/* ── Photo with hover + click interaction ── */}
+            {/* Photo */}
             <div
-              style={{ position: 'absolute', inset: 0, zIndex: 2, cursor: 'pointer' }}
+              style={{
+                position: 'absolute',
+                left: PHOTO_L,
+                top: 40,
+                width: PHOTO_W,
+                height: 420,
+                zIndex: 2,
+                cursor: 'pointer',
+              }}
               onMouseEnter={() => setHovered(true)}
               onMouseLeave={() => setHovered(false)}
               onClick={() => setBubbleOpen(v => !v)}
@@ -128,7 +147,8 @@ export default function Hero() {
                 alt="Adrian Kyle Condeza"
                 style={{
                   width: '100%', height: '100%',
-                  objectFit: 'contain', objectPosition: 'bottom center',
+                  objectFit: 'contain',
+                  objectPosition: 'bottom center',
                   background: 'transparent',
                   filter: 'drop-shadow(0 0 18px rgba(0,113,227,0.5)) drop-shadow(0 0 50px rgba(0,113,227,0.25))',
                   transition: 'transform 0.3s ease',
@@ -136,7 +156,7 @@ export default function Hero() {
                 }}
               />
 
-              {/* Hover tooltip — "About Me" */}
+              {/* Hover tooltip */}
               <AnimatePresence>
                 {hovered && !bubbleOpen && (
                   <motion.div
@@ -146,7 +166,7 @@ export default function Hero() {
                     transition={{ duration: 0.18 }}
                     style={{
                       position: 'absolute',
-                      top: '18%',
+                      top: '15%',
                       left: '50%',
                       transform: 'translateX(-50%)',
                       zIndex: 10,
@@ -163,11 +183,11 @@ export default function Hero() {
               </AnimatePresence>
             </div>
 
-            {/* ── Speech bubble popup ── */}
+            {/* Speech bubble — anchored LEFT of photo so it doesn't go off screen */}
             <AnimatePresence>
               {bubbleOpen && (
                 <>
-                  {/* Backdrop — click outside to close */}
+                  {/* Backdrop */}
                   <motion.div
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
@@ -181,37 +201,33 @@ export default function Hero() {
                     }}
                   />
 
-                  {/* The speech bubble itself */}
+                  {/* Bubble — positioned to the LEFT of the photo */}
                   <motion.div
-                    initial={{ opacity: 0, scale: 0.85, y: 20 }}
-                    animate={{ opacity: 1, scale: 1, y: 0 }}
-                    exit={{ opacity: 0, scale: 0.85, y: 20 }}
+                    initial={{ opacity: 0, scale: 0.85, x: 20 }}
+                    animate={{ opacity: 1, scale: 1, x: 0 }}
+                    exit={{ opacity: 0, scale: 0.85, x: 20 }}
                     transition={{ type: 'spring', stiffness: 320, damping: 26 }}
                     style={{
                       position: 'absolute',
-                      bottom: '105%',
-                      left: '50%',
-                      transform: 'translateX(-50%)',
-                      width: '300px',
+                      right: PHOTO_W + 30,
+                      top: '8%',
+                      width: '260px',
                       zIndex: 50,
                     }}
                   >
-                    {/* Bubble body */}
-                    <div
-                      className="relative rounded-2xl px-5 py-4
-                        bg-white/90 dark:bg-[rgba(18,18,24,0.95)]
-                        border border-black/8 dark:border-white/10
-                        shadow-[0_8px_40px_rgba(0,113,227,0.25),0_2px_12px_rgba(0,0,0,0.15)]
-                        backdrop-blur-xl"
+                    <div className="relative rounded-2xl px-5 py-4
+                      bg-white/90 dark:bg-[rgba(18,18,24,0.95)]
+                      border border-black/8 dark:border-white/10
+                      shadow-[0_8px_40px_rgba(0,113,227,0.25),0_2px_12px_rgba(0,0,0,0.15)]
+                      backdrop-blur-xl"
                     >
                       {/* Close button */}
                       <button
                         onClick={(e) => { e.stopPropagation(); setBubbleOpen(false) }}
-                        className="absolute top-2.5 right-3 text-[#aeaeb2] hover:text-[#1c1c1e]
-                          dark:hover:text-white text-lg leading-none transition-colors"
-                      >
-                        ×
-                      </button>
+                        className="absolute top-2.5 right-3 text-[#aeaeb2]
+                          hover:text-[#1c1c1e] dark:hover:text-white
+                          text-lg leading-none transition-colors"
+                      >×</button>
 
                       {/* Header */}
                       <div className="flex items-center gap-2 mb-3">
@@ -225,23 +241,18 @@ export default function Hero() {
                         </span>
                       </div>
 
-                      {/* Divider */}
                       <div className="h-px mb-3 bg-gradient-to-r from-transparent via-[rgba(0,113,227,0.3)] to-transparent" />
 
-                      {/* Content */}
-                      <p className="text-[0.82rem] text-[#48484a] dark:text-[#aeaeb2]
-                        leading-[1.7] font-light mb-2">
+                      <p className="text-[0.82rem] text-[#48484a] dark:text-[#aeaeb2] leading-[1.7] font-light mb-2">
                         I'm a first-year IT student building my foundation in programming
                         and web development — learning Java, HTML, CSS, and JavaScript
                         through real projects.
                       </p>
-                      <p className="text-[0.82rem] text-[#48484a] dark:text-[#aeaeb2]
-                        leading-[1.7] font-light">
+                      <p className="text-[0.82rem] text-[#48484a] dark:text-[#aeaeb2] leading-[1.7] font-light">
                         Passionate about tech, aiming to become a computer engineer
                         and future entrepreneur.
                       </p>
 
-                      {/* Read more link */}
                       <button
                         onClick={(e) => {
                           e.stopPropagation()
@@ -260,8 +271,8 @@ export default function Hero() {
                         Read full About Me →
                       </button>
 
-                      {/* Bubble tail pointing DOWN */}
-                      <div className="bubble-tail" />
+                      {/* Bubble tail pointing RIGHT toward the photo */}
+                      <div className="bubble-tail-right" />
                     </div>
                   </motion.div>
                 </>
@@ -275,9 +286,9 @@ export default function Hero() {
       <style>{`
         .hero-glow-blob {
           position: absolute;
-          width: 260px; height: 260px;
-          top: 50%; left: 50%;
-          transform: translate(-50%, -55%);
+          width: 240px; height: 240px;
+          top: calc(40px + 60px);
+          left: ${PHOTO_L + PHOTO_W / 2 - 120}px;
           border-radius: 50%;
           background: radial-gradient(circle, rgba(0,113,227,0.30) 0%, rgba(100,30,200,0.16) 55%, transparent 78%);
           filter: blur(24px);
@@ -286,9 +297,9 @@ export default function Hero() {
         }
         .hero-glow-ring {
           position: absolute;
-          width: 260px; height: 260px;
-          top: 50%; left: 50%;
-          transform: translate(-50%, -55%);
+          width: 240px; height: 240px;
+          top: calc(40px + 60px);
+          left: ${PHOTO_L + PHOTO_W / 2 - 120}px;
           border-radius: 50%;
           z-index: 1;
           box-shadow:
@@ -299,28 +310,25 @@ export default function Hero() {
           animation: glowRingPulse 3s ease-in-out infinite;
         }
         @keyframes glowBreath {
-          0%, 100% { opacity: 0.65; transform: translate(-50%, -55%) scale(1); }
-          50%       { opacity: 1;   transform: translate(-50%, -55%) scale(1.12); }
+          0%, 100% { opacity: 0.65; transform: scale(1); }
+          50%       { opacity: 1;   transform: scale(1.12); }
         }
         @keyframes glowRingPulse {
           0%, 100% { box-shadow: 0 0 0 1.5px rgba(0,113,227,0.45), 0 0 25px 8px rgba(0,113,227,0.35), 0 0 55px 18px rgba(0,113,227,0.18), 0 0 90px 28px rgba(120,40,200,0.12); }
           50%       { box-shadow: 0 0 0 2px rgba(0,113,227,0.8), 0 0 40px 14px rgba(0,113,227,0.55), 0 0 80px 28px rgba(0,113,227,0.28), 0 0 130px 45px rgba(120,40,200,0.2); }
         }
-
-        /* Speech bubble tail */
-        .bubble-tail {
+        /* Tail pointing RIGHT */
+        .bubble-tail-right {
           position: absolute;
-          bottom: -10px;
-          left: 50%;
-          transform: translateX(-50%);
+          top: 28px;
+          right: -10px;
           width: 0; height: 0;
-          border-left: 12px solid transparent;
-          border-right: 12px solid transparent;
-          border-top: 12px solid rgba(255,255,255,0.9);
-          filter: drop-shadow(0 3px 4px rgba(0,113,227,0.15));
+          border-top: 10px solid transparent;
+          border-bottom: 10px solid transparent;
+          border-left: 11px solid rgba(255,255,255,0.9);
         }
-        .dark .bubble-tail {
-          border-top-color: rgba(18,18,24,0.95);
+        .dark .bubble-tail-right {
+          border-left-color: rgba(18,18,24,0.95);
         }
       `}</style>
     </section>
