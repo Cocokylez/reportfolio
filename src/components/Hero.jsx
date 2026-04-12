@@ -15,19 +15,17 @@ const PHOTO_W = 220  // photo width
 const PHOTO_MID = PHOTO_L + PHOTO_W / 2  // 240 — horizontal center
 
 const skills = [
-  // Above head — 3 chips, spread horizontally around center
-  { label: 'HTML',          x: PHOTO_MID - 130, y: -38 },
-  { label: 'VS Code',       x: PHOTO_MID - 45,  y: -58 },
-  { label: 'CSS',           x: PHOTO_MID + 52,  y: -38 },
+  // Left side — 5 chips stacked vertically beside the circle
+  { label: 'HTML',          x: PHOTO_L - 108,  y: 30  },
+  { label: 'Photoshop',     x: PHOTO_L - 115,  y: 110 },
+  { label: 'PixelLab',      x: PHOTO_L - 105,  y: 190 },
+  { label: 'Alight Motion', x: PHOTO_L - 122,  y: 270 },
+  { label: 'CSS',           x: PHOTO_L - 95,   y: 350 },
 
-  // Left of photo — stacked vertically
-  { label: 'Photoshop',     x: PHOTO_L - 110,   y: 90  },
-  { label: 'PixelLab',      x: PHOTO_L - 100,   y: 160 },
-  { label: 'Alight Motion', x: PHOTO_L - 118,   y: 230 },
-
-  // Right of photo — stacked vertically
-  { label: 'JavaScript',    x: PHOTO_L + PHOTO_W + 10, y: 90  },
-  { label: 'Java',          x: PHOTO_L + PHOTO_W + 18, y: 160 },
+  // Right side — 3 chips stacked vertically beside the circle
+  { label: 'VS Code',       x: PHOTO_L + PHOTO_W + 12, y: 60  },
+  { label: 'JavaScript',    x: PHOTO_L + PHOTO_W + 8,  y: 160 },
+  { label: 'Java',          x: PHOTO_L + PHOTO_W + 18, y: 260 },
 ]
 
 export default function Hero() {
@@ -132,7 +130,7 @@ export default function Hero() {
               style={{
                 position: 'absolute',
                 left: PHOTO_L,
-                top: 40,
+                top: 10,
                 width: PHOTO_W,
                 height: 420,
                 zIndex: 2,
@@ -287,7 +285,7 @@ export default function Hero() {
         .hero-glow-blob {
           position: absolute;
           width: 240px; height: 240px;
-          top: calc(40px + 60px);
+          top: calc(10px + 60px);
           left: ${PHOTO_L + PHOTO_W / 2 - 120}px;
           border-radius: 50%;
           background: radial-gradient(circle, rgba(0,113,227,0.30) 0%, rgba(100,30,200,0.16) 55%, transparent 78%);
@@ -298,7 +296,7 @@ export default function Hero() {
         .hero-glow-ring {
           position: absolute;
           width: 240px; height: 240px;
-          top: calc(40px + 60px);
+          top: calc(10px + 60px);
           left: ${PHOTO_L + PHOTO_W / 2 - 120}px;
           border-radius: 50%;
           z-index: 1;
