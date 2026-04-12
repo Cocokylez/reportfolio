@@ -8,17 +8,19 @@ const fadeUp = (delay = 0) => ({
 })
 
 const skills = [
-  // Above head
-  { label: 'HTML',          icon: '🌐', x: 0,    y: -48 },
-  { label: 'VS Code',       icon: '💻', x: 105,  y: -64 },
-  { label: 'CSS',           icon: '🎨', x: 215,  y: -48 },
-  // Left shoulder
-  { label: 'Photoshop',     icon: '🖼️', x: -115, y: 90  },
-  { label: 'PixelLab',      icon: '✏️', x: -128, y: 170 },
-  { label: 'Alight Motion', icon: '🎬', x: -108, y: 250 },
-  // Right shoulder
-  { label: 'JavaScript',    icon: '⚡', x: 302,  y: 90  },
-  { label: 'Java',          icon: '☕', x: 308,  y: 170 },
+  // Above head — spread across the top of the photo
+  { label: 'HTML',          x: 10,   y: -42 },
+  { label: 'VS Code',       x: 108,  y: -58 },
+  { label: 'CSS',           x: 206,  y: -42 },
+
+  // Left shoulder — sit just to the left, not too far
+  { label: 'Photoshop',     x: -88,  y: 100 },
+  { label: 'PixelLab',      x: -96,  y: 175 },
+  { label: 'Alight Motion', x: -80,  y: 250 },
+
+  // Right shoulder — sit just to the right
+  { label: 'JavaScript',    x: 268,  y: 100 },
+  { label: 'Java',          x: 276,  y: 175 },
 ]
 
 export default function Hero() {
@@ -31,9 +33,9 @@ export default function Hero() {
   }
 
   return (
-    <section id="hero" className="relative z-10 pt-[120px] pb-[80px] px-0">
-      <div className="max-w-[1100px] mx-auto px-8">
-        <div className="flex flex-col-reverse md:flex-row items-center justify-between gap-12 md:gap-16">
+    <section id="hero" className="relative z-10 pt-[120px] pb-[80px] px-0 overflow-visible">
+      <div className="max-w-[1100px] mx-auto px-8 overflow-visible">
+        <div className="flex flex-col-reverse md:flex-row items-center justify-between gap-12 md:gap-8 overflow-visible">
 
           {/* ── LEFT: Text ── */}
           <div className="flex-1 flex flex-col items-start text-left">
@@ -81,8 +83,8 @@ export default function Hero() {
             initial={{ opacity: 0, x: 30 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.7, delay: 0.1 }}
-            className="flex-shrink-0 relative"
-            style={{ width: '300px', height: '460px', flexShrink: 0, marginBottom: '60px' }}
+            className="flex-shrink-0"
+            style={{ position: 'relative', width: '300px', height: '460px', marginBottom: '60px' }}
           >
             {/* Skill chips */}
             {skills.map((s, i) => (
@@ -96,16 +98,15 @@ export default function Hero() {
                   y: { duration: 2.6 + i * 0.22, repeat: Infinity, ease: 'easeInOut', delay: i * 0.15, repeatType: 'loop' },
                 }}
                 style={{ position: 'absolute', left: s.x, top: s.y, zIndex: 3 }}
-                className="flex items-center gap-1.5
+                className="flex items-center
                   bg-white/85 dark:bg-[rgba(20,20,28,0.90)]
                   border border-white/60 dark:border-white/12
-                  backdrop-blur-md rounded-full px-2.5 py-[5px]
+                  backdrop-blur-md rounded-full px-3 py-[5px]
                   shadow-[0_4px_24px_rgba(0,0,0,0.25)]
                   text-[0.68rem] font-semibold
                   text-[#1c1c1e] dark:text-[#f0f0f5]
                   whitespace-nowrap cursor-default select-none"
               >
-                <span className="text-[13px] leading-none">{s.icon}</span>
                 {s.label}
               </motion.div>
             ))}
@@ -156,7 +157,7 @@ export default function Hero() {
                       shadow-[0_4px_20px_rgba(0,113,227,0.5)]
                       backdrop-blur-md whitespace-nowrap"
                   >
-                    👆 About Me
+                    About Me
                   </motion.div>
                 )}
               </AnimatePresence>
@@ -214,7 +215,6 @@ export default function Hero() {
 
                       {/* Header */}
                       <div className="flex items-center gap-2 mb-3">
-                        <span className="text-lg">👋</span>
                         <span className="font-serif font-semibold text-[1rem]
                           text-[#1c1c1e] dark:text-[#f5f5f7]">
                           About Me
@@ -238,7 +238,7 @@ export default function Hero() {
                       <p className="text-[0.82rem] text-[#48484a] dark:text-[#aeaeb2]
                         leading-[1.7] font-light">
                         Passionate about tech, aiming to become a computer engineer
-                        and future entrepreneur. 🚀
+                        and future entrepreneur.
                       </p>
 
                       {/* Read more link */}
