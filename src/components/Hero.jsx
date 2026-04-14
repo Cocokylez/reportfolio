@@ -1,64 +1,89 @@
-import { motion, AnimatePresence } from 'framer-motion'
-import { useState, useEffect, useRef } from 'react'
+import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion'
+import { useState, useRef, useEffect } from 'react'
 
 const SKILLS = ['HTML', 'CSS', 'JavaScript', 'Java', 'VS Code', 'Photoshop', 'PixelLab', 'Alight Motion']
 
-/* Typewriter hook */
-function useTypewriter(text, speed = 38, startDelay = 800) {
-  const [displayed, setDisplayed] = useState('')
+/* ── Typewriter ── */
+function useTypewriter(text, speed = 36, delay = 1200) {
+  const [out, setOut] = useState('')
   useEffect(() => {
-    let i = 0
-    const t = setTimeout(() => {
-      const interval = setInterval(() => {
-        setDisplayed(text.slice(0, ++i))
-        if (i >= text.length) clearInterval(interval)
+    let i = 0, tid
+    const run = () => {
+      tid = setInterval(() => {
+        setOut(text.slice(0, ++i))
+        if (i >= text.length) clearInterval(tid)
       }, speed)
-      return () => clearInterval(interval)
-    }, startDelay)
-    return () => clearTimeout(t)
-  }, [text])
-  return displayed
+    }
+    const start = setTimeout(run, delay)
+    return () => { clearTimeout(start); clearInterval(tid) }
+  }, [])
+  return out
 }
 
-/* About bubble */
+/* ── Particle canvas (very light, ~30 dots) ── */
+function Particles() {
+  const ref = useRef(null)
+  useEffect(() => {
+    const canvas = ref.current
+    if (!canvas) return
+    const ctx = canvas.getContext('2d')
+    let raf
+    const W = canvas.width  = window.innerWidth
+    const H = canvas.height = window.innerHeight
+    const pts = Array.from({ length: 28 }, () => ({
+      x: Math.random() * W,
+      y: Math.random() * H,
+      r: Math.random() * 1.4 + 0.4,
+      vx: (Math.random() - 0.5) * 0.18,
+      vy: (Math.random() - 0.5) * 0.18,
+      a: Math.random() * 0.5 + 0.15,
+    }))
+    const draw = () => {
+      ctx.clearRect(0, 0, W, H)
+      pts.forEach(p => {
+        p.x += p.vx; p.y += p.vy
+        if (p.x < 0) p.x = W
+        if (p.x > W) p.x = 0
+        if (p.y < 0) p.y = H
+        if (p.y > H) p.y = 0
+        ctx.beginPath()
+        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2)
+        ctx.fillStyle = `rgba(59,158,255,${p.a})`
+        ctx.fill()
+      })
+      raf = requestAnimationFrame(draw)
+    }
+    raf = requestAnimationFrame(draw)
+    return () => cancelAnimationFrame(raf)
+  }, [])
+  return <canvas ref={ref} style={{ position:'absolute', inset:0, zIndex:0, pointerEvents:'none', opacity:0.55 }} />
+}
+
+/* ── About bubble ── */
 function AboutBubble({ open, onClose }) {
   return (
     <AnimatePresence>
       {open && (
         <>
           <motion.div
-            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+            initial={{ opacity:0 }} animate={{ opacity:1 }} exit={{ opacity:0 }}
             onClick={onClose}
-            style={{ position: 'fixed', inset: 0, zIndex: 40, background: 'rgba(0,0,0,0.35)', backdropFilter: 'blur(3px)' }}
+            style={{ position:'fixed', inset:0, zIndex:40, background:'rgba(0,0,0,0.45)', backdropFilter:'blur(4px)' }}
           />
           <motion.div
-            initial={{ opacity: 0, scale: 0.9, y: 12 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.9, y: 12 }}
-            transition={{ type: 'spring', stiffness: 360, damping: 28 }}
-            style={{ position: 'fixed', top: '50%', left: '50%', transform: 'translate(-50%,-50%)', width: '300px', zIndex: 50 }}
+            initial={{ opacity:0, scale:0.88, y:16 }}
+            animate={{ opacity:1, scale:1, y:0 }}
+            exit={{ opacity:0, scale:0.88 }}
+            transition={{ type:'spring', stiffness:380, damping:28 }}
+            style={{ position:'fixed', top:'50%', left:'50%', transform:'translate(-50%,-50%)', width:'300px', zIndex:50 }}
           >
-            <div className="akc-bubble">
-              <button onClick={onClose} className="akc-bubble-close">×</button>
-              <p className="akc-bubble-title">About Me</p>
-              <div className="akc-bubble-hr" />
-              <p className="akc-bubble-body">
-                First-year IT student building a foundation in programming and
-                web development — learning Java, HTML, CSS and JavaScript through real projects.
-              </p>
-              <p className="akc-bubble-body" style={{ marginTop: '8px' }}>
-                Passionate about tech, aiming to become a computer engineer and entrepreneur.
-              </p>
-              <button
-                className="akc-bubble-link"
-                onClick={() => {
-                  onClose()
-                  setTimeout(() => {
-                    const el = document.getElementById('about')
-                    if (el) window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - 80, behavior: 'smooth' })
-                  }, 260)
-                }}
-              >Read full About Me →</button>
+            <div className="cin-bubble">
+              <button onClick={onClose} className="cin-bubble-x">×</button>
+              <p className="cin-bubble-h">About Me</p>
+              <div className="cin-bubble-line" />
+              <p className="cin-bubble-p">First-year IT student building a foundation in programming and web development — learning Java, HTML, CSS and JavaScript through real projects.</p>
+              <p className="cin-bubble-p" style={{marginTop:'8px'}}>Passionate about tech, aiming to become a computer engineer and entrepreneur.</p>
+              <button className="cin-bubble-btn" onClick={() => { onClose(); setTimeout(() => { const el = document.getElementById('about'); if(el) window.scrollTo({top:el.getBoundingClientRect().top+window.scrollY-80,behavior:'smooth'}) }, 260) }}>Read full About Me →</button>
             </div>
           </motion.div>
         </>
@@ -67,10 +92,17 @@ function AboutBubble({ open, onClose }) {
   )
 }
 
+/* ══════════════════════════════════════════════════════════════ */
 export default function Hero() {
-  const [hovered, setHovered]       = useState(false)
+  const [hovered,    setHovered]    = useState(false)
   const [bubbleOpen, setBubbleOpen] = useState(false)
+  const sectionRef = useRef(null)
   const typed = useTypewriter('Building skills in web development and programming, one project at a time.')
+
+  /* Parallax — photo drifts up slightly on scroll */
+  const { scrollY } = useScroll()
+  const photoY = useTransform(scrollY, [0, 500], [0, -60])
+  const textY  = useTransform(scrollY, [0, 500], [0, -25])
 
   const scrollTo = (id) => {
     const el = document.querySelector(id)
@@ -78,549 +110,590 @@ export default function Hero() {
   }
 
   return (
-    <section id="hero" className="akc-hero">
+    <section ref={sectionRef} id="hero" className="cin-hero">
 
-      {/* ── Noise texture overlay ── */}
-      <div className="akc-noise" aria-hidden />
+      {/* ── Particles ── */}
+      <Particles />
 
-      {/* ── Diagonal grid lines ── */}
-      <div className="akc-grid" aria-hidden />
+      {/* ── Grid overlay ── */}
+      <div className="cin-grid" aria-hidden />
 
-      {/* ── Scan line ── */}
-      <div className="akc-scan" aria-hidden />
+      {/* ── Gradient spotlight behind photo ── */}
+      <div className="cin-spotlight" aria-hidden />
 
-      {/* ── Photo — right side, full height bleed ── */}
-      <div
-        className="akc-photo-wrap"
-        onMouseEnter={() => setHovered(true)}
-        onMouseLeave={() => setHovered(false)}
-        onClick={() => setBubbleOpen(v => !v)}
-      >
-        {/* Corner bracket decorations */}
-        <div className="akc-bracket akc-bracket-tl" aria-hidden />
-        <div className="akc-bracket akc-bracket-tr" aria-hidden />
-        <div className="akc-bracket akc-bracket-bl" aria-hidden />
-        <div className="akc-bracket akc-bracket-br" aria-hidden />
+      {/* ═══════════ MAIN LAYOUT ═══════════ */}
+      <div className="cin-layout">
 
-        {/* Glow rings */}
-        <div className="akc-ring akc-ring-1" aria-hidden />
-        <div className="akc-ring akc-ring-2" aria-hidden />
+        {/* ── LEFT: All text ── */}
+        <motion.div className="cin-left" style={{ y: textY }}>
 
-        <img
-          src="/pfp.png"
-          alt="Adrian Kyle Condeza"
-          className="akc-photo"
-          style={{ transform: hovered ? 'scale(1.04) translateY(-4px)' : 'scale(1) translateY(0)' }}
-        />
-
-        {/* Hover hint */}
-        <AnimatePresence>
-          {hovered && !bubbleOpen && (
-            <motion.div
-              initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: 6 }} transition={{ duration: 0.15 }}
-              className="akc-photo-hint"
-            >About Me</motion.div>
-          )}
-        </AnimatePresence>
-
-        {/* Vertical name watermark beside photo */}
-        <div className="akc-watermark" aria-hidden>AKC</div>
-      </div>
-
-      {/* ── Left: Text content ── */}
-      <div className="akc-content">
-
-        {/* Badge */}
-        <motion.div
-          initial={{ opacity: 0, x: -16 }} animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.5 }}
-          className="akc-badge"
-        >
-          <span className="akc-badge-dot" />
-          Open to opportunities
-        </motion.div>
-
-        {/* Name — staggered lines */}
-        <div className="akc-name-wrap">
+          {/* Overline */}
           <motion.div
-            initial={{ opacity: 0, y: 28 }} animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.08 }}
-            className="akc-name-line1"
+            initial={{ opacity:0, x:-20 }}
+            animate={{ opacity:1, x:0 }}
+            transition={{ duration:0.6, delay:0.1 }}
+            className="cin-overline"
           >
-            Adrian Kyle
-          </motion.div>
-          <motion.div
-            initial={{ opacity: 0, y: 28 }} animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.16 }}
-            className="akc-name-line2"
-          >
-            Condeza
+            <span className="cin-overline-dot" />
+            Open to opportunities
           </motion.div>
 
-          {/* Accent underline */}
-          <motion.div
-            initial={{ scaleX: 0 }} animate={{ scaleX: 1 }}
-            transition={{ duration: 0.7, delay: 0.5, ease: [0.4, 0, 0.2, 1] }}
-            className="akc-underline"
-          />
-        </div>
-
-        {/* Role */}
-        <motion.p
-          initial={{ opacity: 0 }} animate={{ opacity: 1 }}
-          transition={{ duration: 0.5, delay: 0.28 }}
-          className="akc-role"
-        >
-          1st Year IT Student · Aspiring Computer Engineer
-        </motion.p>
-
-        {/* Typewriter bio */}
-        <motion.p
-          initial={{ opacity: 0 }} animate={{ opacity: 1 }}
-          transition={{ duration: 0.4, delay: 0.6 }}
-          className="akc-bio"
-        >
-          {typed}
-          <span className="akc-cursor" />
-        </motion.p>
-
-        {/* Buttons */}
-        <motion.div
-          initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.38 }}
-          className="akc-btns"
-        >
-          <button className="btn-primary" onClick={() => scrollTo('#contact')}>Get in Touch</button>
-          <button className="btn-ghost"   onClick={() => scrollTo('#about')}>Learn More</button>
-        </motion.div>
-
-      </div>
-
-      {/* ── Skills bar — bottom strip ── */}
-      <motion.div
-        initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.55, delay: 0.5 }}
-        className="akc-skills-bar"
-      >
-        <span className="akc-skills-label">Stack</span>
-        <div className="akc-skills-divider" />
-        <div className="akc-skills-list">
-          {SKILLS.map((s, i) => (
+          {/* Name block */}
+          <div className="cin-name-block">
             <motion.span
-              key={s}
-              initial={{ opacity: 0, y: 8 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.35, delay: 0.55 + i * 0.06 }}
-              className="akc-skill-tag"
+              initial={{ opacity:0, y:32 }}
+              animate={{ opacity:1, y:0 }}
+              transition={{ duration:0.7, delay:0.18, ease:[0.22,1,0.36,1] }}
+              className="cin-name-first"
             >
-              {s}
+              Adrian Kyle
             </motion.span>
+            <motion.span
+              initial={{ opacity:0, y:32 }}
+              animate={{ opacity:1, y:0 }}
+              transition={{ duration:0.7, delay:0.28, ease:[0.22,1,0.36,1] }}
+              className="cin-name-last"
+            >
+              Condeza
+            </motion.span>
+            {/* Animated underline stroke */}
+            <motion.div
+              initial={{ scaleX:0, opacity:0 }}
+              animate={{ scaleX:1, opacity:1 }}
+              transition={{ duration:0.8, delay:0.52, ease:[0.4,0,0.2,1] }}
+              className="cin-name-stroke"
+            />
+          </div>
+
+          {/* Role */}
+          <motion.p
+            initial={{ opacity:0 }}
+            animate={{ opacity:1 }}
+            transition={{ duration:0.5, delay:0.38 }}
+            className="cin-role"
+          >
+            1st Year IT Student · Aspiring Computer Engineer
+          </motion.p>
+
+          {/* Typewriter bio */}
+          <motion.p
+            initial={{ opacity:0 }}
+            animate={{ opacity:1 }}
+            transition={{ duration:0.4, delay:0.7 }}
+            className="cin-bio"
+          >
+            {typed}<span className="cin-caret" />
+          </motion.p>
+
+          {/* Buttons */}
+          <motion.div
+            initial={{ opacity:0, y:12 }}
+            animate={{ opacity:1, y:0 }}
+            transition={{ duration:0.5, delay:0.48 }}
+            className="cin-btns"
+          >
+            <button className="btn-primary" onClick={() => scrollTo('#contact')}>Get in Touch</button>
+            <button className="btn-ghost"   onClick={() => scrollTo('#about')}>Learn More</button>
+          </motion.div>
+
+          {/* Scroll hint */}
+          <motion.div
+            initial={{ opacity:0 }}
+            animate={{ opacity:0.4 }}
+            transition={{ duration:0.6, delay:1.6 }}
+            className="cin-scroll-hint"
+          >
+            <div className="cin-scroll-line" />
+            <span>scroll</span>
+          </motion.div>
+
+        </motion.div>
+
+        {/* ── RIGHT: Photo ── */}
+        <motion.div
+          className="cin-right"
+          style={{ y: photoY }}
+          initial={{ opacity:0, x:40 }}
+          animate={{ opacity:1, x:0 }}
+          transition={{ duration:0.8, delay:0.22, ease:[0.22,1,0.36,1] }}
+        >
+          {/* Decorative ring behind photo */}
+          <div className="cin-ring cin-ring-a" aria-hidden />
+          <div className="cin-ring cin-ring-b" aria-hidden />
+
+          {/* Corner brackets */}
+          {['tl','tr','bl','br'].map(p => (
+            <div key={p} className={`cin-corner cin-corner-${p}`} aria-hidden />
           ))}
+
+          {/* Photo */}
+          <div
+            className="cin-photo-box"
+            onMouseEnter={() => setHovered(true)}
+            onMouseLeave={() => setHovered(false)}
+            onClick={() => setBubbleOpen(v => !v)}
+          >
+            <img
+              src="/pfp.png"
+              alt="Adrian Kyle Condeza"
+              className="cin-photo"
+              style={{ transform: hovered ? 'scale(1.04) translateY(-5px)' : 'scale(1) translateY(0)' }}
+            />
+
+            {/* Hover badge */}
+            <AnimatePresence>
+              {hovered && !bubbleOpen && (
+                <motion.div
+                  initial={{ opacity:0, y:6, scale:0.9 }}
+                  animate={{ opacity:1, y:0, scale:1 }}
+                  exit={{ opacity:0, y:4 }}
+                  transition={{ duration:0.15 }}
+                  className="cin-photo-badge"
+                >About Me</motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+
+          {/* Floating index label */}
+          <div className="cin-index-label" aria-hidden>01 / HERO</div>
+        </motion.div>
+
+      </div>
+
+      {/* ═══════════ SKILLS BAR ═══════════ */}
+      <motion.div
+        initial={{ opacity:0, y:20 }}
+        animate={{ opacity:1, y:0 }}
+        transition={{ duration:0.6, delay:0.65 }}
+        className="cin-skills-wrap"
+      >
+        <div className="cin-skills-inner">
+          <span className="cin-skills-eyebrow">Stack</span>
+          <div className="cin-skills-sep" />
+          <div className="cin-skills-row">
+            {SKILLS.map((s, i) => (
+              <motion.span
+                key={s}
+                initial={{ opacity:0, y:10 }}
+                animate={{ opacity:1, y:0 }}
+                transition={{ duration:0.32, delay:0.72 + i * 0.065 }}
+                className="cin-skill"
+              >
+                {s}
+              </motion.span>
+            ))}
+          </div>
         </div>
       </motion.div>
 
       <AboutBubble open={bubbleOpen} onClose={() => setBubbleOpen(false)} />
 
+      {/* ═══════════ STYLES ═══════════ */}
       <style>{`
-        /* ══ LAYOUT ══ */
-        .akc-hero {
+
+        /* ── Section shell ── */
+        .cin-hero {
           position: relative;
           min-height: 100vh;
-          display: grid;
-          grid-template-columns: 1fr 420px;
-          grid-template-rows: 1fr auto;
-          grid-template-areas:
-            "content photo"
-            "skills  skills";
-          overflow: hidden;
-          padding-top: 80px;
-        }
-
-        /* ══ BACKGROUND LAYERS ══ */
-        .akc-noise {
-          position: absolute; inset: 0; z-index: 0; pointer-events: none;
-          opacity: 0.025;
-          background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-          background-size: 200px;
-        }
-        .akc-grid {
-          position: absolute; inset: 0; z-index: 0; pointer-events: none;
-          background-image:
-            linear-gradient(rgba(59,158,255,0.04) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(59,158,255,0.04) 1px, transparent 1px);
-          background-size: 48px 48px;
-          mask-image: radial-gradient(ellipse 60% 80% at 80% 40%, black 10%, transparent 70%);
-          -webkit-mask-image: radial-gradient(ellipse 60% 80% at 80% 40%, black 10%, transparent 70%);
-        }
-        .akc-scan {
-          position: absolute; left: 0; right: 0; height: 2px; z-index: 1;
-          background: linear-gradient(90deg, transparent, rgba(59,158,255,0.3), rgba(167,139,250,0.2), transparent);
-          animation: scanMove 6s ease-in-out infinite;
-          pointer-events: none;
-        }
-        @keyframes scanMove {
-          0%   { top: 15%; opacity: 0; }
-          10%  { opacity: 1; }
-          90%  { opacity: 1; }
-          100% { top: 85%; opacity: 0; }
-        }
-
-        /* ══ PHOTO ══ */
-        .akc-photo-wrap {
-          grid-area: photo;
-          position: relative;
-          display: flex;
-          align-items: flex-end;
-          justify-content: center;
-          padding-bottom: 40px;
-          cursor: pointer;
-          z-index: 2;
-        }
-        .akc-photo {
-          width: 320px;
-          height: 460px;
-          object-fit: cover;
-          object-position: top center;
-          display: block;
-          position: relative;
-          z-index: 3;
-          transition: transform 0.4s cubic-bezier(0.34,1.56,0.64,1);
-          filter: drop-shadow(0 0 18px rgba(59,158,255,0.4)) drop-shadow(0 0 40px rgba(59,158,255,0.18));
-        }
-
-        /* Glow rings */
-        .akc-ring {
-          position: absolute;
-          border-radius: 50%;
-          z-index: 1;
-          pointer-events: none;
-        }
-        .akc-ring-1 {
-          width: 280px; height: 280px;
-          bottom: 80px; left: 50%; transform: translateX(-50%);
-          background: radial-gradient(circle, rgba(59,158,255,0.18) 0%, rgba(120,40,200,0.10) 50%, transparent 75%);
-          filter: blur(30px);
-          animation: glowBreath 3.5s ease-in-out infinite;
-        }
-        .akc-ring-2 {
-          width: 260px; height: 260px;
-          bottom: 90px; left: 50%; transform: translateX(-50%);
-          box-shadow:
-            0 0 0 1px rgba(59,158,255,0.3),
-            0 0 24px 6px rgba(59,158,255,0.22),
-            0 0 60px 18px rgba(59,158,255,0.10),
-            0 0 100px 32px rgba(120,40,200,0.08);
-          animation: ringPulse 3.5s ease-in-out infinite;
-        }
-        @keyframes glowBreath {
-          0%,100% { opacity:0.7; transform: translateX(-50%) scale(1); }
-          50%      { opacity:1;   transform: translateX(-50%) scale(1.1); }
-        }
-        @keyframes ringPulse {
-          0%,100% { box-shadow: 0 0 0 1px rgba(59,158,255,0.3), 0 0 24px 6px rgba(59,158,255,0.22), 0 0 60px 18px rgba(59,158,255,0.10), 0 0 100px 32px rgba(120,40,200,0.08); }
-          50%      { box-shadow: 0 0 0 1.5px rgba(59,158,255,0.6), 0 0 38px 10px rgba(59,158,255,0.38), 0 0 80px 28px rgba(59,158,255,0.18), 0 0 140px 50px rgba(120,40,200,0.14); }
-        }
-
-        /* Corner brackets */
-        .akc-bracket {
-          position: absolute;
-          width: 22px; height: 22px;
-          z-index: 4; pointer-events: none;
-          opacity: 0.5;
-          transition: opacity 0.3s;
-        }
-        .akc-photo-wrap:hover .akc-bracket { opacity: 0.9; }
-        .akc-bracket-tl { top: 28px; left: 60px;  border-top: 2px solid rgba(59,158,255,0.7);  border-left: 2px solid rgba(59,158,255,0.7); }
-        .akc-bracket-tr { top: 28px; right: 60px; border-top: 2px solid rgba(59,158,255,0.7);  border-right: 2px solid rgba(59,158,255,0.7); }
-        .akc-bracket-bl { bottom: 48px; left: 60px;  border-bottom: 2px solid rgba(167,139,250,0.6); border-left: 2px solid rgba(167,139,250,0.6); }
-        .akc-bracket-br { bottom: 48px; right: 60px; border-bottom: 2px solid rgba(167,139,250,0.6); border-right: 2px solid rgba(167,139,250,0.6); }
-
-        /* Photo hint */
-        .akc-photo-hint {
-          position: absolute;
-          top: 38px; left: 50%;
-          transform: translateX(-50%);
-          background: rgba(59,158,255,0.92);
-          color: #fff;
-          font-size: 0.68rem;
-          font-weight: 700;
-          padding: 4px 14px;
-          border-radius: 999px;
-          white-space: nowrap;
-          letter-spacing: 0.06em;
-          text-transform: uppercase;
-          z-index: 10;
-          pointer-events: none;
-          box-shadow: 0 2px 14px rgba(59,158,255,0.45);
-        }
-
-        /* Watermark */
-        .akc-watermark {
-          position: absolute;
-          right: -8px; top: 50%;
-          transform: translateY(-50%) rotate(90deg);
-          font-family: 'DM Serif Display', serif;
-          font-size: 4.5rem;
-          font-weight: 400;
-          letter-spacing: 0.15em;
-          color: transparent;
-          -webkit-text-stroke: 1px rgba(59,158,255,0.12);
-          pointer-events: none;
-          user-select: none;
-          z-index: 0;
-          white-space: nowrap;
-        }
-
-        /* ══ CONTENT ══ */
-        .akc-content {
-          grid-area: content;
           display: flex;
           flex-direction: column;
-          justify-content: center;
-          padding: 40px 0 40px 60px;
-          z-index: 2;
+          overflow: hidden;
+          background: transparent;
         }
 
-        /* Badge */
-        .akc-badge {
+        /* ── Backgrounds ── */
+        .cin-grid {
+          position: absolute; inset: 0; pointer-events: none; z-index: 0;
+          background-image:
+            linear-gradient(rgba(59,158,255,0.045) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(59,158,255,0.045) 1px, transparent 1px);
+          background-size: 52px 52px;
+          mask-image: radial-gradient(ellipse 75% 90% at 72% 48%, black 0%, transparent 68%);
+          -webkit-mask-image: radial-gradient(ellipse 75% 90% at 72% 48%, black 0%, transparent 68%);
+        }
+        .cin-spotlight {
+          position: absolute;
+          width: 680px; height: 680px;
+          top: -60px; right: -60px;
+          border-radius: 50%;
+          background: radial-gradient(circle, rgba(59,158,255,0.09) 0%, rgba(120,40,200,0.07) 45%, transparent 72%);
+          filter: blur(50px);
+          pointer-events: none; z-index: 0;
+          animation: spotBreath 5s ease-in-out infinite;
+        }
+        @keyframes spotBreath {
+          0%,100% { opacity:0.7; transform:scale(1); }
+          50%      { opacity:1;   transform:scale(1.08); }
+        }
+
+        /* ── Main layout grid ── */
+        .cin-layout {
+          flex: 1;
+          display: grid;
+          grid-template-columns: 1fr 440px;
+          align-items: center;
+          max-width: 1100px;
+          margin: 0 auto;
+          padding: 0 48px;
+          padding-top: 80px;
+          gap: 32px;
+          position: relative;
+          z-index: 2;
+          width: 100%;
+          box-sizing: border-box;
+        }
+
+        /* ── Left text ── */
+        .cin-left {
+          display: flex;
+          flex-direction: column;
+          gap: 0;
+        }
+        .cin-overline {
           display: inline-flex;
           align-items: center;
-          gap: 7px;
-          border: 1px solid rgba(59,158,255,0.2);
-          background: rgba(59,158,255,0.06);
-          padding: 5px 14px;
-          border-radius: 999px;
-          font-size: 0.72rem;
-          font-weight: 500;
-          color: rgba(59,158,255,0.9);
-          margin-bottom: 24px;
-          width: fit-content;
-          letter-spacing: 0.03em;
+          gap: 8px;
+          font-size: 0.73rem;
+          font-weight: 600;
+          letter-spacing: 0.1em;
+          text-transform: uppercase;
+          color: rgba(59,158,255,0.85);
+          margin-bottom: 22px;
         }
-        .akc-badge-dot {
+        .cin-overline-dot {
           width: 7px; height: 7px; border-radius: 50%;
           background: #30d158;
-          box-shadow: 0 0 6px rgba(48,209,88,0.8);
-          animation: dotPulse 2s ease-in-out infinite;
+          box-shadow: 0 0 7px rgba(48,209,88,0.9);
+          animation: greenPulse 2s ease-in-out infinite;
+          flex-shrink: 0;
         }
-        @keyframes dotPulse {
+        @keyframes greenPulse {
           0%,100% { box-shadow: 0 0 5px rgba(48,209,88,0.7); }
-          50%      { box-shadow: 0 0 12px rgba(48,209,88,1); }
+          50%      { box-shadow: 0 0 14px rgba(48,209,88,1); }
         }
 
         /* Name */
-        .akc-name-wrap {
-          margin-bottom: 16px;
+        .cin-name-block {
+          display: flex;
+          flex-direction: column;
+          margin-bottom: 18px;
           position: relative;
         }
-        .akc-name-line1 {
+        .cin-name-first {
           font-family: 'DM Serif Display', serif;
-          font-size: clamp(2.8rem, 5vw, 4.2rem);
+          font-size: clamp(3rem, 5.5vw, 4.6rem);
           font-weight: 400;
-          line-height: 1.05;
-          letter-spacing: -0.02em;
+          line-height: 1.0;
+          letter-spacing: -0.03em;
           color: #f5f5f7;
+          display: block;
         }
-        .akc-name-line2 {
+        .cin-name-last {
           font-family: 'DM Serif Display', serif;
-          font-size: clamp(2.8rem, 5vw, 4.2rem);
+          font-size: clamp(3rem, 5.5vw, 4.6rem);
           font-weight: 400;
-          line-height: 1.05;
-          letter-spacing: -0.02em;
-          background: linear-gradient(120deg, #3b9eff 0%, #a78bfa 50%, #38bdf8 100%);
+          line-height: 1.0;
+          letter-spacing: -0.03em;
+          display: block;
+          background: linear-gradient(125deg, #60a5fa 0%, #a78bfa 40%, #38bdf8 80%);
           -webkit-background-clip: text;
           -webkit-text-fill-color: transparent;
           background-clip: text;
-          background-size: 200% auto;
-          animation: gradientShift 5s ease infinite;
+          background-size: 220% auto;
+          animation: nameGrad 7s ease infinite;
         }
-        @keyframes gradientShift {
+        @keyframes nameGrad {
           0%   { background-position: 0% center; }
           50%  { background-position: 100% center; }
           100% { background-position: 0% center; }
         }
-        .akc-underline {
+        .cin-name-stroke {
           height: 2px;
-          width: 120px;
-          margin-top: 10px;
-          background: linear-gradient(90deg, #3b9eff, #a78bfa, transparent);
-          transform-origin: left;
+          width: 100px;
+          margin-top: 12px;
+          background: linear-gradient(90deg, #60a5fa, #a78bfa 60%, transparent);
           border-radius: 999px;
+          transform-origin: left;
         }
 
-        /* Role */
-        .akc-role {
-          font-size: 0.9rem;
+        /* Role / bio */
+        .cin-role {
+          font-size: 0.88rem;
           font-weight: 500;
-          color: #636366;
-          margin-bottom: 16px;
           letter-spacing: 0.02em;
+          color: #636366;
+          margin-bottom: 14px;
         }
-        .dark .akc-role { color: #8e8e93; }
-
-        /* Bio typewriter */
-        .akc-bio {
+        .dark .cin-role { color: #8e8e93; }
+        .cin-bio {
           font-size: 0.98rem;
-          color: #8e8e93;
-          font-style: italic;
           font-weight: 300;
-          line-height: 1.7;
+          font-style: italic;
+          line-height: 1.72;
+          color: #8e8e93;
           margin-bottom: 32px;
-          max-width: 420px;
-          min-height: 2.8em;
+          max-width: 400px;
+          min-height: 3em;
         }
-        .akc-cursor {
+        .cin-caret {
           display: inline-block;
-          width: 2px; height: 1em;
-          background: rgba(59,158,255,0.8);
+          width: 2px; height: 0.9em;
+          background: rgba(96,165,250,0.85);
           margin-left: 2px;
           vertical-align: text-bottom;
-          animation: blink 1s step-end infinite;
+          border-radius: 1px;
+          animation: caretBlink 1s step-end infinite;
         }
-        @keyframes blink {
-          0%,100% { opacity: 1; }
-          50%      { opacity: 0; }
-        }
+        @keyframes caretBlink { 0%,100%{opacity:1} 50%{opacity:0} }
 
         /* Buttons */
-        .akc-btns { display: flex; gap: 12px; flex-wrap: wrap; }
+        .cin-btns { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 40px; }
 
-        /* ══ SKILLS BAR ══ */
-        .akc-skills-bar {
-          grid-area: skills;
+        /* Scroll hint */
+        .cin-scroll-hint {
           display: flex;
           align-items: center;
-          gap: 20px;
-          padding: 16px 60px;
-          border-top: 1px solid rgba(255,255,255,0.06);
-          background: rgba(255,255,255,0.02);
-          z-index: 2;
-        }
-        .dark .akc-skills-bar { border-top-color: rgba(255,255,255,0.05); }
-        .akc-skills-label {
+          gap: 10px;
           font-size: 0.65rem;
+          font-weight: 600;
+          letter-spacing: 0.12em;
+          text-transform: uppercase;
+          color: #48484a;
+        }
+        .cin-scroll-line {
+          width: 32px; height: 1px;
+          background: linear-gradient(90deg, #60a5fa, transparent);
+          border-radius: 1px;
+        }
+
+        /* ── Right photo ── */
+        .cin-right {
+          position: relative;
+          height: 520px;
+          display: flex;
+          align-items: flex-end;
+          justify-content: center;
+        }
+
+        /* Glow rings */
+        .cin-ring {
+          position: absolute;
+          border-radius: 50%;
+          pointer-events: none;
+          left: 50%;
+          transform: translateX(-50%);
+        }
+        .cin-ring-a {
+          width: 300px; height: 300px;
+          bottom: 60px;
+          background: radial-gradient(circle, rgba(59,158,255,0.16) 0%, rgba(120,40,200,0.09) 50%, transparent 75%);
+          filter: blur(32px);
+          animation: ringBreath 4s ease-in-out infinite;
+        }
+        .cin-ring-b {
+          width: 280px; height: 280px;
+          bottom: 70px;
+          box-shadow:
+            0 0 0 1px rgba(59,158,255,0.25),
+            0 0 28px 8px rgba(59,158,255,0.2),
+            0 0 70px 20px rgba(59,158,255,0.1),
+            0 0 120px 40px rgba(120,40,200,0.07);
+          animation: ringPulse2 4s ease-in-out infinite;
+        }
+        @keyframes ringBreath {
+          0%,100% { opacity:0.65; transform:translateX(-50%) scale(1); }
+          50%      { opacity:1; transform:translateX(-50%) scale(1.09); }
+        }
+        @keyframes ringPulse2 {
+          0%,100% { box-shadow: 0 0 0 1px rgba(59,158,255,0.25), 0 0 28px 8px rgba(59,158,255,0.2), 0 0 70px 20px rgba(59,158,255,0.1), 0 0 120px 40px rgba(120,40,200,0.07); }
+          50%      { box-shadow: 0 0 0 1.5px rgba(59,158,255,0.5), 0 0 44px 14px rgba(59,158,255,0.34), 0 0 100px 32px rgba(59,158,255,0.16), 0 0 170px 60px rgba(120,40,200,0.13); }
+        }
+
+        /* Corner brackets */
+        .cin-corner {
+          position: absolute;
+          width: 20px; height: 20px;
+          z-index: 4; pointer-events: none;
+          opacity: 0.4;
+          transition: opacity 0.3s;
+        }
+        .cin-right:hover .cin-corner { opacity: 1; }
+        .cin-corner-tl { top:20px; left:52px; border-top:2px solid #60a5fa; border-left:2px solid #60a5fa; }
+        .cin-corner-tr { top:20px; right:52px; border-top:2px solid #60a5fa; border-right:2px solid #60a5fa; }
+        .cin-corner-bl { bottom:55px; left:52px; border-bottom:2px solid #a78bfa; border-left:2px solid #a78bfa; }
+        .cin-corner-br { bottom:55px; right:52px; border-bottom:2px solid #a78bfa; border-right:2px solid #a78bfa; }
+
+        /* Photo box */
+        .cin-photo-box {
+          position: relative;
+          z-index: 3;
+          width: 300px;
+          height: 460px;
+          cursor: pointer;
+          border-radius: 8px;
+          overflow: hidden;
+        }
+        .cin-photo {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+          object-position: top center;
+          display: block;
+          background: transparent;
+          transition: transform 0.4s cubic-bezier(0.34,1.56,0.64,1);
+          filter: drop-shadow(0 0 16px rgba(59,158,255,0.38));
+        }
+        .cin-photo-badge {
+          position: absolute;
+          top: 12px; left: 50%;
+          transform: translateX(-50%);
+          background: rgba(59,158,255,0.92);
+          color: #fff;
+          font-size: 0.66rem;
+          font-weight: 700;
+          letter-spacing: 0.08em;
+          text-transform: uppercase;
+          padding: 4px 14px;
+          border-radius: 999px;
+          white-space: nowrap;
+          pointer-events: none;
+          box-shadow: 0 2px 14px rgba(59,158,255,0.5);
+          z-index: 10;
+        }
+
+        /* Index label */
+        .cin-index-label {
+          position: absolute;
+          bottom: 20px; right: 8px;
+          font-size: 0.6rem;
           font-weight: 700;
           letter-spacing: 0.14em;
           text-transform: uppercase;
-          color: #3b9eff;
+          color: rgba(59,158,255,0.35);
+          writing-mode: vertical-rl;
+          user-select: none;
+          pointer-events: none;
+        }
+
+        /* ── Skills bar ── */
+        .cin-skills-wrap {
+          position: relative;
+          z-index: 2;
+          border-top: 1px solid rgba(255,255,255,0.055);
+          background: rgba(255,255,255,0.018);
+        }
+        .cin-skills-inner {
+          max-width: 1100px;
+          margin: 0 auto;
+          padding: 14px 48px;
+          display: flex;
+          align-items: center;
+          gap: 18px;
+        }
+        .cin-skills-eyebrow {
+          font-size: 0.62rem;
+          font-weight: 800;
+          letter-spacing: 0.16em;
+          text-transform: uppercase;
+          color: #60a5fa;
+          flex-shrink: 0;
           white-space: nowrap;
+        }
+        .cin-skills-sep {
+          width: 1px; height: 18px;
+          background: rgba(255,255,255,0.1);
           flex-shrink: 0;
         }
-        .akc-skills-divider {
-          width: 1px; height: 20px;
-          background: rgba(255,255,255,0.12);
-          flex-shrink: 0;
-        }
-        .akc-skills-list {
+        .cin-skills-row {
           display: flex;
           flex-wrap: wrap;
-          gap: 8px;
+          gap: 7px;
         }
-        .akc-skill-tag {
-          font-size: 0.68rem;
+        .cin-skill {
+          font-size: 0.67rem;
           font-weight: 600;
+          letter-spacing: 0.04em;
           color: #8e8e93;
-          padding: 3px 11px;
+          padding: 3px 12px;
           border: 1px solid rgba(255,255,255,0.08);
           border-radius: 999px;
-          background: rgba(255,255,255,0.04);
-          letter-spacing: 0.03em;
-          transition: color 0.2s, border-color 0.2s, background 0.2s, transform 0.2s;
-          cursor: default;
+          background: rgba(255,255,255,0.035);
           white-space: nowrap;
+          cursor: default;
+          transition: color 0.2s, border-color 0.2s, background 0.2s, transform 0.2s;
         }
-        .akc-skill-tag:hover {
-          color: #3b9eff;
-          border-color: rgba(59,158,255,0.35);
-          background: rgba(59,158,255,0.08);
+        .cin-skill:hover {
+          color: #60a5fa;
+          border-color: rgba(96,165,250,0.35);
+          background: rgba(96,165,250,0.08);
           transform: translateY(-2px);
         }
 
-        /* ══ ABOUT BUBBLE ══ */
-        .akc-bubble {
-          background: rgba(12,12,18,0.98);
+        /* ── About bubble ── */
+        .cin-bubble {
+          background: rgba(10,10,16,0.98);
           border: 1px solid rgba(59,158,255,0.18);
           border-radius: 18px;
           padding: 20px 22px;
-          box-shadow: 0 20px 60px rgba(0,0,0,0.5), 0 0 0 1px rgba(59,158,255,0.08), inset 0 1px 0 rgba(255,255,255,0.06);
-          position: relative;
+          box-shadow: 0 24px 70px rgba(0,0,0,0.55), inset 0 1px 0 rgba(255,255,255,0.05);
         }
-        .akc-bubble-close {
-          position: absolute; top: 12px; right: 14px;
-          color: #48484a; font-size: 1.1rem; line-height: 1;
-          background: none; border: none; cursor: pointer;
+        .cin-bubble-x {
+          position:absolute; top:12px; right:14px;
+          color:#48484a; font-size:1.1rem; line-height:1;
+          background:none; border:none; cursor:pointer;
           transition: color 0.15s;
         }
-        .akc-bubble-close:hover { color: #f5f5f7; }
-        .akc-bubble-title {
-          font-family: 'DM Serif Display', serif;
-          font-size: 1rem; color: #f5f5f7;
-          margin-bottom: 10px;
-        }
-        .akc-bubble-hr {
-          height: 1px; margin-bottom: 12px;
-          background: linear-gradient(90deg, rgba(59,158,255,0.4), rgba(167,139,250,0.3), transparent);
-        }
-        .akc-bubble-body {
-          font-size: 0.82rem; color: #8e8e93;
-          line-height: 1.68; font-weight: 300;
-        }
-        .akc-bubble-link {
-          display: inline-block; margin-top: 14px;
-          font-size: 0.75rem; font-weight: 700;
-          color: #3b9eff; background: none; border: none;
-          cursor: pointer; padding: 0; letter-spacing: 0.02em;
-          transition: opacity 0.15s;
-        }
-        .akc-bubble-link:hover { opacity: 0.7; }
+        .cin-bubble-x:hover { color:#f5f5f7; }
+        .cin-bubble-h { font-family:'DM Serif Display',serif; font-size:1rem; color:#f5f5f7; margin-bottom:10px; }
+        .cin-bubble-line { height:1px; margin-bottom:12px; background:linear-gradient(90deg,rgba(96,165,250,0.4),rgba(167,139,250,0.3),transparent); }
+        .cin-bubble-p { font-size:0.81rem; color:#8e8e93; line-height:1.68; font-weight:300; }
+        .cin-bubble-btn { display:inline-block; margin-top:14px; font-size:0.74rem; font-weight:700; color:#60a5fa; background:none; border:none; cursor:pointer; padding:0; transition:opacity 0.15s; }
+        .cin-bubble-btn:hover { opacity:0.7; }
 
-        /* ══ LIGHT MODE ══ */
-        :root:not(.dark) .akc-badge { border-color: rgba(0,113,227,0.25); background: rgba(0,113,227,0.07); color: #0071e3; }
-        :root:not(.dark) .akc-name-line1 { color: #1c1c1e; }
-        :root:not(.dark) .akc-role { color: #48484a; }
-        :root:not(.dark) .akc-bio { color: #636366; }
-        :root:not(.dark) .akc-skills-bar { background: rgba(0,0,0,0.02); border-top-color: rgba(0,0,0,0.07); }
-        :root:not(.dark) .akc-skill-tag { color: #636366; border-color: rgba(0,0,0,0.1); background: rgba(0,0,0,0.03); }
-        :root:not(.dark) .akc-skill-tag:hover { color: #0071e3; border-color: rgba(0,113,227,0.3); background: rgba(0,113,227,0.06); }
-        :root:not(.dark) .akc-skills-divider { background: rgba(0,0,0,0.1); }
-        :root:not(.dark) .akc-watermark { -webkit-text-stroke-color: rgba(0,113,227,0.07); }
-        :root:not(.dark) .akc-grid { background-image: linear-gradient(rgba(0,113,227,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(0,113,227,0.04) 1px, transparent 1px); }
-        :root:not(.dark) .akc-bubble { background: rgba(255,255,255,0.99); border-color: rgba(0,113,227,0.15); box-shadow: 0 20px 60px rgba(0,0,0,0.12); }
-        :root:not(.dark) .akc-bubble-title { color: #1c1c1e; }
-        :root:not(.dark) .akc-bubble-body { color: #48484a; }
-        :root:not(.dark) .akc-bubble-close { color: #aeaeb2; }
-        :root:not(.dark) .akc-bubble-close:hover { color: #1c1c1e; }
+        /* ── Light mode ── */
+        :root:not(.dark) .cin-name-first { color:#1c1c1e; }
+        :root:not(.dark) .cin-role { color:#48484a; }
+        :root:not(.dark) .cin-bio { color:#636366; }
+        :root:not(.dark) .cin-overline { color:#0071e3; }
+        :root:not(.dark) .cin-scroll-hint { color:#aeaeb2; }
+        :root:not(.dark) .cin-skills-wrap { background:rgba(0,0,0,0.018); border-top-color:rgba(0,0,0,0.07); }
+        :root:not(.dark) .cin-skill { color:#636366; border-color:rgba(0,0,0,0.1); background:rgba(0,0,0,0.025); }
+        :root:not(.dark) .cin-skill:hover { color:#0071e3; border-color:rgba(0,113,227,0.3); background:rgba(0,113,227,0.06); }
+        :root:not(.dark) .cin-skills-sep { background:rgba(0,0,0,0.1); }
+        :root:not(.dark) .cin-grid { background-image: linear-gradient(rgba(0,113,227,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(0,113,227,0.04) 1px, transparent 1px); }
+        :root:not(.dark) .cin-bubble { background:rgba(255,255,255,0.99); border-color:rgba(0,113,227,0.15); }
+        :root:not(.dark) .cin-bubble-h { color:#1c1c1e; }
+        :root:not(.dark) .cin-bubble-p { color:#48484a; }
+        :root:not(.dark) .cin-bubble-x:hover { color:#1c1c1e; }
 
-        /* ══ RESPONSIVE ══ */
-        @media (max-width: 820px) {
-          .akc-hero {
+        /* ── Responsive ── */
+        @media (max-width: 860px) {
+          .cin-layout {
             grid-template-columns: 1fr;
-            grid-template-rows: auto auto auto;
-            grid-template-areas:
-              "photo"
-              "content"
-              "skills";
-            padding-top: 80px;
-            min-height: auto;
+            padding: 20px 24px 0;
+            padding-top: 60px;
+            gap: 0;
           }
-          .akc-content { padding: 32px 24px 24px; align-items: center; text-align: center; }
-          .akc-badge { margin: 0 auto 20px; }
-          .akc-underline { margin: 10px auto 0; }
-          .akc-btns { justify-content: center; }
-          .akc-bio { text-align: center; }
-          .akc-photo-wrap { padding: 30px 0 20px; justify-content: center; }
-          .akc-photo { width: 240px; height: 360px; }
-          .akc-ring-1 { width: 210px; height: 210px; bottom: 30px; }
-          .akc-ring-2 { width: 195px; height: 195px; bottom: 38px; }
-          .akc-bracket-tl, .akc-bracket-tr { top: 36px; }
-          .akc-bracket-tl { left: 30px; }
-          .akc-bracket-tr { right: 30px; }
-          .akc-bracket-bl, .akc-bracket-br { bottom: 28px; }
-          .akc-bracket-bl { left: 30px; }
-          .akc-bracket-br { right: 30px; }
-          .akc-watermark { display: none; }
-          .akc-skills-bar { padding: 14px 24px; }
+          .cin-right {
+            order: -1;
+            height: 380px;
+            margin-bottom: 8px;
+          }
+          .cin-photo-box { width: 240px; height: 360px; }
+          .cin-ring-a { width: 230px; height: 230px; bottom: 30px; }
+          .cin-ring-b { width: 215px; height: 215px; bottom: 38px; }
+          .cin-corner-tl,.cin-corner-tr { top:8px; }
+          .cin-corner-tl,.cin-corner-bl { left:28px; }
+          .cin-corner-tr,.cin-corner-br { right:28px; }
+          .cin-corner-bl,.cin-corner-br { bottom:28px; }
+          .cin-left { align-items: center; text-align: center; }
+          .cin-overline { justify-content: center; }
+          .cin-name-stroke { margin: 10px auto 0; }
+          .cin-btns { justify-content: center; }
+          .cin-bio { text-align: center; }
+          .cin-scroll-hint { display: none; }
+          .cin-skills-inner { padding: 12px 24px; }
+          .cin-index-label { display: none; }
         }
       `}</style>
     </section>
