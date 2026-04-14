@@ -16,7 +16,7 @@ export default function App() {
 
   return (
     <div
-      className="min-h-screen bg-[#f2f2f7] dark:bg-[#0d0d0f]
+      className="min-h-screen bg-[#f2f2f7] dark:bg-[#1a1a1a]
         text-[#1c1c1e] dark:text-[#f5f5f7] font-sans
         transition-colors duration-500"
     >

@@ -82,7 +82,7 @@ export default function Navbar({ isDark, toggleDark }) {
                   border border-black/7 dark:border-white/8
                   backdrop-blur-md transition-colors"
               >
-                {isDark ? '☀️' : '🌙'}
+                {isDark ? '☀️' : '🌕'}
               </motion.button>
 
               <button
