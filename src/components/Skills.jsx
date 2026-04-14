@@ -1,11 +1,6 @@
 import { motion } from 'framer-motion'
 
-const SKILLS = [
-  { icon: '🌐', name: 'HTML' },
-  { icon: '🎨', name: 'CSS' },
-  { icon: '⚡', name: 'JavaScript' },
-  { icon: '☕', name: 'Java (Basics)' },
-]
+const SKILLS = ['HTML', 'CSS', 'JavaScript', 'Java (Basics)', 'VS Code', 'Photoshop', 'PixelLab', 'Alight Motion']
 
 const fadeUp = (delay = 0) => ({
   initial: { opacity: 0, y: 24 },
@@ -16,21 +11,19 @@ const fadeUp = (delay = 0) => ({
 
 export default function Skills() {
   return (
-    <section id="skills" className="relative z-10 py-[100px]"> 
+    <section id="skills" className="relative z-10 py-[100px]">
       <div className="max-w-[680px] mx-auto px-6">
         <motion.span {...fadeUp(0)} className="section-label block">
           Skills
         </motion.span>
-
         <motion.div {...fadeUp(0.1)} className="flex flex-wrap gap-2.5 mt-0">
-          {SKILLS.map(({ icon, name }) => (
+          {SKILLS.map((name) => (
             <motion.div
               key={name}
               className="skill-pill"
               whileHover={{ scale: 1.08, y: -2 }}
               whileTap={{ scale: 0.96 }}
             >
-              <span className="text-[1.1rem]">{icon}</span>
               <span className="text-[0.9rem] font-medium text-[#1c1c1e] dark:text-[#f5f5f7]">
                 {name}
               </span>

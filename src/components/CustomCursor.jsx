@@ -1,58 +1,17 @@
-import { useEffect, useRef } from 'react'
+// Classic macOS/iOS SVG arrow cursor
+import { useEffect } from 'react'
+
+const CURSOR_SVG = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+  <path d="M4 1 L4 20 L8.5 15.5 L12 22 L14 21 L10.5 14.5 L17 14.5 Z" fill="white" stroke="#1c1c1e" stroke-width="1.2" stroke-linejoin="round"/>
+</svg>`
+
+const CURSOR_URL = `data:image/svg+xml,${encodeURIComponent(CURSOR_SVG)}`
 
 export default function CustomCursor() {
-  const dotRef   = useRef(null)
-  const trailRef = useRef(null)
-  const pos      = useRef({ x: 0, y: 0, tx: 0, ty: 0, raf: null })
-
   useEffect(() => {
-    const dot   = dotRef.current
-    const trail = trailRef.current
-    if (!dot || !trail) return
-
-    const onMove = (e) => {
-      pos.current.x = e.clientX
-      pos.current.y = e.clientY
-      dot.style.left = e.clientX + 'px'
-      dot.style.top  = e.clientY + 'px'
-    }
-
-    const animate = () => {
-      pos.current.tx += (pos.current.x - pos.current.tx) * 0.13
-      pos.current.ty += (pos.current.y - pos.current.ty) * 0.13
-      trail.style.left = pos.current.tx + 'px'
-      trail.style.top  = pos.current.ty + 'px'
-      pos.current.raf  = requestAnimationFrame(animate)
-    }
-
-    const hoverEls = document.querySelectorAll(
-      'a, button, .skill-pill, .contact-card, .form-input, .avatar-glass'
-    )
-    const addHover = () => document.body.classList.add('cursor-hover')
-    const remHover = () => document.body.classList.remove('cursor-hover')
-
-    hoverEls.forEach((el) => {
-      el.addEventListener('mouseenter', addHover)
-      el.addEventListener('mouseleave', remHover)
-    })
-
-    document.addEventListener('mousemove', onMove)
-    pos.current.raf = requestAnimationFrame(animate)
-
-    return () => {
-      document.removeEventListener('mousemove', onMove)
-      cancelAnimationFrame(pos.current.raf)
-      hoverEls.forEach((el) => {
-        el.removeEventListener('mouseenter', addHover)
-        el.removeEventListener('mouseleave', remHover)
-      })
-    }
+    document.body.style.cursor = `url("${CURSOR_URL}") 4 2, auto`
+    return () => { document.body.style.cursor = '' }
   }, [])
 
-  return (
-    <>
-      <div ref={dotRef}   className="cursor-dot"   />
-      <div ref={trailRef} className="cursor-trail" />
-    </>
-  )
+  return null
 }

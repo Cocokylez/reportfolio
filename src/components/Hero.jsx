@@ -106,7 +106,7 @@ export default function Hero() {
                 left: '50%',
                 top: 0,
                 transform: 'translateX(-50%)',
-                width: '240px',
+                width: '300px',
                 height: '420px',
                 zIndex: 2,
                 cursor: 'pointer',
