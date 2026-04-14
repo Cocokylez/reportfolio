@@ -1,17 +1,20 @@
-// Classic macOS/iOS SVG arrow cursor
+/* Linux / X11-style crosshair cursor — sharp, functional, no frills */
 import { useEffect } from 'react'
 
 const CURSOR_SVG = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
-  <path d="M4 1 L4 20 L8.5 15.5 L12 22 L14 21 L10.5 14.5 L17 14.5 Z" fill="white" stroke="#1c1c1e" stroke-width="1.2" stroke-linejoin="round"/>
+  <line x1="12" y1="1"  x2="12" y2="9"  stroke="white" stroke-width="1.5" stroke-linecap="square"/>
+  <line x1="12" y1="15" x2="12" y2="23" stroke="white" stroke-width="1.5" stroke-linecap="square"/>
+  <line x1="1"  y1="12" x2="9"  y2="12" stroke="white" stroke-width="1.5" stroke-linecap="square"/>
+  <line x1="15" y1="12" x2="23" y2="12" stroke="white" stroke-width="1.5" stroke-linecap="square"/>
+  <rect x="11" y="11" width="2" height="2" fill="white"/>
 </svg>`
 
 const CURSOR_URL = `data:image/svg+xml,${encodeURIComponent(CURSOR_SVG)}`
 
 export default function CustomCursor() {
   useEffect(() => {
-    document.body.style.cursor = `url("${CURSOR_URL}") 4 2, auto`
+    document.body.style.cursor = `url("${CURSOR_URL}") 12 12, crosshair`
     return () => { document.body.style.cursor = '' }
   }, [])
-
   return null
 }
