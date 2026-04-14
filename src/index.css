@@ -373,3 +373,20 @@ body.cursor-hover .cursor-trail { width: 50px; height: 50px; }
   color: rgb(var(--accent-rgb));
   padding-left: 20px;
 }
+
+/* ─── Cursor Background Blob ─────────────────────── */
+.cursor-bg-blob {
+  position: fixed;
+  width: 500px;
+  height: 500px;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 0;
+  transform: translate(-50%, -50%);
+  transition: left 0.12s ease, top 0.12s ease;
+  background: radial-gradient(circle, rgba(0,113,227,0.08) 0%, rgba(120,40,200,0.05) 50%, transparent 70%);
+  filter: blur(40px);
+}
+:root:not(.dark) .cursor-bg-blob {
+  background: radial-gradient(circle, rgba(0,113,227,0.06) 0%, rgba(99,102,241,0.04) 50%, transparent 70%);
+}
