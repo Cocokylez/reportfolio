@@ -1,54 +1,51 @@
 import { motion } from 'framer-motion'
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect } from 'react'
 
 /* ═══════════════════════════════════════════════════════════════
-   TECH ARRAY — THIS IS WHERE YOU ADD / SWAP YOUR LOGOS
-   ---------------------------------------------------------------
-   Each entry:
-     label : string  → shown as tooltip on hover
-     svg   : string  → raw SVG markup (paste any SVG here)
-   ---------------------------------------------------------------
-   To add a new logo:
-     1. Go to https://simpleicons.org or https://devicons.github.io
-     2. Copy the SVG source
-     3. Add a new { label: 'YourTech', svg: `...paste SVG...` }
+   TECH ARRAY — add your logos here
+   Each entry: { label: 'Name', svg: `...paste SVG...` }
+   Get SVGs from: simpleicons.org  (click the < > copy button)
    ═══════════════════════════════════════════════════════════════ */
 const TECH = [
   {
     label: 'HTML5',
-    svg: `<svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg"><path d="M4 2l2.28 25.6L16 30l9.73-2.4L28 2z" fill="#E44D26"/><path d="M16 27.6V4.4h-.01L6.87 6.93l1.57 17.6L16 27.6z" fill="#F16529"/><path d="M21 19.6H16v2.6h4.74l-.45 5.02L16 28.4v2.7l5.89-1.63.43-4.86.55-6.1zM11 12.4l.26 2.6H16v-2.6h-5zM10.5 7H16V4.4H7.8l.7 8h7.5V9.8h-5.2l-.3-2.8z" fill="#EBEBEB"/><path d="M16 19.6v2.6h4.74l-.45 5.02L16 28.4v2.7l5.88-1.63.43-4.86.55-6.1H16zM16 9.8v2.6h6.96l-.23 2.6H16v2.6h6.5l-.65 7.28L16 26.6v2.7l6.5-1.8 1.6-18H16z" fill="#fff"/></svg>`,
+    svg: `<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M1.5 0h21l-1.91 21.563L11.977 24l-8.565-2.438L1.5 0zm7.031 9.75l-.232-2.718 10.059.003.23-2.622L5.412 4.41l.698 8.01h9.126l-.326 3.426-2.91.804-2.955-.81-.188-2.11H6.248l.33 4.171L12 19.351l5.379-1.443.744-8.157H8.531z" fill="#E34F26"/></svg>`,
   },
   {
     label: 'CSS3',
-    svg: `<svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg"><path d="M4 2l2.28 25.6L16 30l9.73-2.4L28 2z" fill="#264de4"/><path d="M16 27.6V4.4h-.01l-9.12 2.53 1.57 17.6L16 27.6z" fill="#2965f1"/><path d="M21 12.4H11l.26 2.6H20.74l-.65 7.28L16 23.6l-4.09-1.32-.28-3.07H9.3l.55 6.13L16 27l6.15-2.26 1.6-18H10.5l.26 2.6H21z" fill="#fff"/></svg>`,
+    svg: `<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M1.5 0h21l-1.91 21.563L11.977 24l-8.564-2.438L1.5 0zm17.09 4.413L5.41 4.41l.213 2.622 10.125.002-.255 2.716h-6.64l.24 2.573h6.182l-.366 3.523-2.91.804-2.956-.81-.188-2.11h-2.61l.29 3.855L12 19.288l5.373-1.53L18.59 4.413z" fill="#1572B6"/></svg>`,
   },
   {
     label: 'JavaScript',
-    svg: `<svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg"><path fill="#F7DF1E" d="M2 2h28v28H2z"/><path d="M20.8 24.5c.5.8 1.1 1.4 2.3 1.4 1 0 1.6-.5 1.6-1.1 0-.8-.65-1.1-1.73-1.56l-.6-.25c-1.7-.72-2.84-1.63-2.84-3.54 0-1.76 1.34-3.1 3.44-3.1 1.5 0 2.57.52 3.34 1.88l-1.83 1.17c-.4-.72-.84-1-1.5-1-.68 0-1.1.43-1.1 1 0 .7.43 1 1.43 1.44l.6.25c2 .86 3.16 1.74 3.16 3.7 0 2.12-1.66 3.27-3.9 3.27-2.18 0-3.59-1.04-4.28-2.4l1.91-1.1zm-9.5.23c.37.65.7 1.2 1.5 1.2.77 0 1.25-.3 1.25-1.47v-7.96h2.34v8c0 2.42-1.42 3.52-3.49 3.52-1.87 0-2.96-1-3.52-2.1l1.92-1.19z"/></svg>`,
+    svg: `<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M0 0h24v24H0V0zm22.034 18.276c-.175-1.095-.888-2.015-3.003-2.873-.736-.345-1.554-.585-1.797-1.14-.091-.33-.105-.51-.046-.705.15-.646.915-.84 1.515-.66.39.12.75.42.976.9 1.034-.676 1.034-.676 1.755-1.125-.27-.42-.404-.601-.586-.78-.63-.705-1.469-1.065-2.834-1.034l-.705.089c-.676.165-1.32.525-1.71 1.005-1.14 1.291-.811 3.541.569 4.471 1.365 1.02 3.361 1.244 3.616 2.205.24 1.17-.87 1.545-1.966 1.41-.811-.18-1.26-.586-1.755-1.336l-1.83 1.051c.21.48.45.689.81 1.109 1.74 1.756 6.09 1.666 6.871-1.004.029-.09.24-.705.074-1.65l.046.067zm-8.983-7.245h-2.248c0 1.938-.009 3.864-.009 5.805 0 1.232.063 2.363-.138 2.711-.33.689-1.18.601-1.566.48-.396-.196-.597-.466-.83-.855-.063-.105-.11-.196-.127-.196l-1.825 1.125c.305.63.75 1.172 1.324 1.517.855.51 2.004.675 3.207.405.783-.226 1.458-.691 1.811-1.411.51-.93.402-2.07.397-3.346.012-2.054 0-4.109 0-6.179l.004-.056z" fill="#F7DF1E"/></svg>`,
   },
   {
     label: 'Java',
-    svg: `<svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg"><path d="M11.5 23.6s-1.1.65.79.87c2.3.26 3.47.22 6-.25 0 0 .67.42 1.6.78-5.68 2.43-12.86-.14-8.39-1.4z" fill="#E76F00"/><path d="M10.8 20.5s-1.24.92.65 1.12c2.44.27 4.37.3 7.7-.4 0 0 .46.47 1.2.73-6.83 2-14.43.16-9.55-1.45z" fill="#E76F00"/><path d="M16.4 14.5c1.39 1.6-.37 3.04-.37 3.04s3.53-1.82 1.91-4.1c-1.51-2.12-2.67-3.17 3.6-6.8 0 0-9.83 2.46-5.14 7.86z" fill="#E76F00"/><path d="M23.1 25.8s.82.67-.9 1.2c-3.27 1-13.6 1.29-16.47.04-1.03-.45.9-1.07 1.5-1.2.63-.14.99-.11.99-.11-1.14-.8-7.38 1.58-3.17 2.26 11.47 1.86 20.9-.84 18.05-2.19z" fill="#E76F00"/><path d="M12 17.4s-5.24 1.25-1.85 1.7c1.42.19 4.25.14 6.88-.07 2.16-.17 4.32-.55 4.32-.55s-.76.32-1.31.7c-5.3 1.4-15.53.75-12.58-.68 2.5-1.2 4.54-1.1 4.54-1.1z" fill="#E76F00"/><path d="M20.2 21.7c5.38-2.8 2.9-5.48 1.15-5.12-.42.09-.61.17-.61.17s.16-.25.46-.35c3.43-1.2 6.07 3.55-1.11 5.44 0 0 .08-.07.11-.14z" fill="#E76F00"/><path d="M17.6 4s2.99 3-2.84 7.6c-4.67 3.69-1.07 5.8 0 8.2-2.73-2.46-4.73-4.63-3.39-6.65C13.29 10.4 18.96 8.97 17.6 4z" fill="#E76F00"/><path d="M12.7 28.9c5.17.33 13.1-.18 13.3-2.6 0 0-.36.93-4.28 1.66-4.43.83-9.9.73-13.14.2 0 0 .66.55 4.12.74z" fill="#E76F00"/></svg>`,
+    svg: `<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M8.851 18.56s-.917.534.653.714c1.902.218 2.874.187 4.969-.211 0 0 .552.346 1.321.646-4.699 2.013-10.633-.118-6.943-1.149M8.276 15.933s-1.028.761.542.924c2.032.209 3.636.227 6.413-.308 0 0 .384.389.987.602-5.679 1.661-12.007.13-7.942-1.218M13.116 11.475c1.158 1.333-.304 2.533-.304 2.533s2.939-1.518 1.589-3.418c-1.261-1.772-2.228-2.652 3.007-5.688 0 0-8.216 2.051-4.292 6.573M19.33 20.504s.679.559-.747 1.002c-2.712.822-11.288 1.069-13.669.033-.856-.373.75-.89 1.254-.998.527-.114.828-.093.828-.093-.953-.671-6.156 1.317-2.643 1.887 9.56 1.553 17.418-.7 14.977-1.831M9.292 13.21s-4.362 1.036-1.544 1.412c1.189.159 3.545.123 5.743-.062 1.798-.153 3.604-.454 3.604-.454s-.634.272-1.092.587c-4.408 1.158-12.927.618-10.478-.568 2.082-.995 3.767-.915 3.767-.915M17.116 17.584c4.503-2.34 2.421-4.589.968-4.285-.355.074-.515.138-.515.138s.132-.207.385-.297c2.875-.998 5.086 2.981-.928 4.562 0-.001.07-.062.09-.118M14.401 0s2.494 2.494-2.365 6.33c-3.896 3.077-.888 4.832-.001 6.836-2.274-2.053-3.943-3.858-2.824-5.54 1.644-2.469 6.197-3.665 5.19-7.626M9.734 23.924c4.322.277 10.959-.153 11.116-2.198 0 0-.302.775-3.572 1.391-3.688.694-8.239.613-10.937.168 0-.001.553.457 3.393.639" fill="#007396"/></svg>`,
   },
   {
     label: 'Git',
-    svg: `<svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg"><path fill="#F05033" d="M30.4 14.6L17.4 1.6a2.03 2.03 0 00-2.86 0L11.86 4.3l3.6 3.6a2.41 2.41 0 013.05 3.07l3.47 3.47a2.41 2.41 0 11-1.45 1.37l-3.24-3.24v8.53a2.41 2.41 0 11-1.98-.07V12.5a2.41 2.41 0 01-1.31-3.17L10.42 5.8 1.6 14.63a2.03 2.03 0 000 2.86l13 13a2.03 2.03 0 002.86 0l12.94-12.94a2.03 2.03 0 000-2.86z"/></svg>`,
+    svg: `<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M23.546 10.93L13.067.452c-.604-.603-1.582-.603-2.188 0L8.708 2.627l2.76 2.76c.645-.215 1.379-.07 1.889.441.516.515.658 1.258.438 1.9l2.658 2.66c.645-.223 1.387-.078 1.9.435.721.72.721 1.884 0 2.604-.719.719-1.881.719-2.6 0-.539-.541-.674-1.337-.404-1.996L12.86 8.955v6.525c.176.086.342.203.488.348.713.721.713 1.883 0 2.6-.719.721-1.889.721-2.609 0-.719-.719-.719-1.879 0-2.598.182-.18.387-.316.605-.406V8.835c-.217-.091-.424-.222-.605-.404-.545-.545-.676-1.342-.396-2.009L7.636 3.7.45 10.881c-.6.605-.6 1.584 0 2.189l10.48 10.477c.604.604 1.582.604 2.186 0l10.43-10.43c.605-.603.605-1.582 0-2.187" fill="#F05032"/></svg>`,
   },
   {
     label: 'VS Code',
-    svg: `<svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg"><path d="M29.3 3.6L22.4.3a1.5 1.5 0 00-1.7.3L.5 19.4a1 1 0 000 1.5l1.8 1.7a1 1 0 001.3.1L27 6.3l2.2 1.1V5.1a1.5 1.5 0 00-.9-1.5z" fill="#0065A9"/><path d="M29.3 28.4L22.4 31.7a1.5 1.5 0 01-1.7-.3L.5 12.6a1 1 0 010-1.5l1.8-1.7a1 1 0 011.3-.1L27 25.7l2.2-1.1v2.3a1.5 1.5 0 01-.9 1.5z" fill="#007ACC"/><path d="M22.4 31.7a1.5 1.5 0 01-1.7-.3 1.5 1.5 0 001.7.3l7.9-3.3a1.5 1.5 0 00.9-1.4v-.2a1.5 1.5 0 01-.9 1.6l-7.9 3.3z" fill="#1F9CF0"/><path d="M27 6.3L3.6 22.7a1 1 0 01-1.3-.1L.5 20.9l-.1.1a1 1 0 000 1.5l1.8 1.7a1 1 0 001.3.1L27 7.7V6.3z" fill="#0065A9" opacity=".25"/></svg>`,
+    svg: `<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M23.15 2.587L18.21.21a1.494 1.494 0 0 0-1.705.29l-9.46 8.63-4.12-3.128a.999.999 0 0 0-1.276.057L.327 7.261A1 1 0 0 0 .326 8.74L3.899 12 .326 15.26a1 1 0 0 0 .001 1.479L1.65 17.94a.999.999 0 0 0 1.276.057l4.12-3.128 9.46 8.63a1.492 1.492 0 0 0 1.704.29l4.942-2.377A1.5 1.5 0 0 0 24 19.995V4.005a1.5 1.5 0 0 0-.85-1.418zm-5.146 14.861L10.826 12l7.178-5.448v10.896z" fill="#007ACC"/></svg>`,
   },
   {
-    label: 'Tailwind',
-    svg: `<svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M16 6.4c-4.267 0-6.933 2.133-8 6.4 1.6-2.133 3.467-2.933 5.6-2.4 1.218.304 2.088 1.186 3.051 2.163C18.192 14.126 19.84 15.84 24 15.84c4.267 0 6.933-2.133 8-6.4-1.6 2.133-3.467 2.933-5.6 2.4-1.218-.304-2.088-1.186-3.051-2.163C21.808 8.114 20.16 6.4 16 6.4zM8 15.84c-4.267 0-6.933 2.133-8 6.4 1.6-2.133 3.467-2.933 5.6-2.4 1.218.304 2.088 1.186 3.051 2.163C10.192 23.566 11.84 25.28 16 25.28c4.267 0 6.933-2.133 8-6.4-1.6 2.133-3.467 2.933-5.6 2.4-1.218-.304-2.088-1.186-3.051-2.163C13.808 17.554 12.16 15.84 8 15.84z" fill="#38BDF8"/></svg>`,
+    label: 'Tailwind CSS',
+    svg: `<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12.001 4.8c-3.2 0-5.2 1.6-6 4.8 1.2-1.6 2.6-2.2 4.2-1.8.913.228 1.565.89 2.288 1.624C13.666 10.618 15.027 12 18.001 12c3.2 0 5.2-1.6 6-4.8-1.2 1.6-2.6 2.2-4.2 1.8-.913-.228-1.565-.89-2.288-1.624C16.337 6.182 14.976 4.8 12.001 4.8zm-6 7.2c-3.2 0-5.2 1.6-6 4.8 1.2-1.6 2.6-2.2 4.2-1.8.913.228 1.565.89 2.288 1.624 1.177 1.194 2.538 2.576 5.512 2.576 3.2 0 5.2-1.6 6-4.8-1.2 1.6-2.6 2.2-4.2 1.8-.913-.228-1.565-.89-2.288-1.624C10.337 13.382 8.976 12 6.001 12z" fill="#06B6D4"/></svg>`,
   },
   {
     label: 'React',
-    svg: `<svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg"><circle cx="16" cy="16" r="2.8" fill="#61DAFB"/><path d="M16 10.5c5.8 0 10.8 1.1 13.5 2.8.9.5 1.5 1.1 1.5 1.7s-.6 1.2-1.5 1.7C26.8 18.4 21.8 19.5 16 19.5S5.2 18.4 2.5 16.7C1.6 16.2 1 15.6 1 15s.6-1.2 1.5-1.7C5.2 11.6 10.2 10.5 16 10.5z" stroke="#61DAFB" stroke-width="1.5" fill="none"/><path d="M11.3 12.75c2.9-5 6.5-8.5 9.2-9.4.9-.3 1.7-.2 2.2.3s.6 1.3.3 2.2c-.9 2.7-4.4 6.3-9.4 9.2-5 2.9-9.8 4.1-12.5 3.2-.9-.3-1.4-.9-1.4-1.6s.5-1.5 1.4-2.1c1.8-1.2 4.8-2 8.2-1.8" stroke="#61DAFB" stroke-width="1.5" fill="none"/><path d="M11.3 17.25c-5-2.9-8.5-6.5-9.4-9.2-.3-.9-.2-1.7.3-2.2s1.3-.6 2.2-.3c2.7.9 6.3 4.4 9.2 9.4 2.9 5 4.1 9.8 3.2 12.5-.3.9-.9 1.4-1.6 1.4s-1.5-.5-2.1-1.4c-1.2-1.8-2-4.8-1.8-8.2" stroke="#61DAFB" stroke-width="1.5" fill="none"/></svg>`,
+    svg: `<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M14.23 12.004a2.236 2.236 0 0 1-2.235 2.236 2.236 2.236 0 0 1-2.236-2.236 2.236 2.236 0 0 1 2.235-2.236 2.236 2.236 0 0 1 2.236 2.236zm2.648-10.69c-1.346 0-3.107.96-4.888 2.622-1.78-1.653-3.542-2.602-4.887-2.602-.41 0-.783.093-1.106.278-1.375.793-1.683 3.264-.973 6.365C1.98 8.917 0 10.42 0 12.004c0 1.59 1.99 3.097 5.043 4.03-.704 3.113-.39 5.588.988 6.38.32.187.69.275 1.102.275 1.345 0 3.107-.96 4.888-2.624 1.78 1.654 3.542 2.603 4.887 2.603.41 0 .783-.09 1.106-.275 1.374-.792 1.683-3.263.973-6.365C22.02 15.096 24 13.59 24 12.004c0-1.59-1.99-3.097-5.043-4.032.704-3.11.39-5.587-.988-6.38-.318-.184-.688-.277-1.092-.278zm-.005 1.09c.445 0 .719.1.938.227.664.383.897 1.707.498 3.442-.09.361-.20.737-.35 1.12-.656-.22-1.373-.414-2.128-.563a34.159 34.159 0 0 0-1.457-1.946c.557-.526 1.103-.984 1.61-1.325.5-.336.937-.555 1.389-.555zm-7.617.002c.447 0 .882.217 1.386.55.506.34 1.052.8 1.608 1.325a34.007 34.007 0 0 0-1.455 1.943c-.752.148-1.467.34-2.12.56-.152-.384-.27-.759-.36-1.12-.4-1.73-.166-3.054.495-3.438.217-.127.488-.226.928-.226zm4.807 3.87c.35.107.693.225 1.022.35-.106.346-.228.7-.368 1.058-.136-.27-.275-.542-.42-.813-.147-.27-.298-.538-.452-.797.073-.004.145-.012.218-.012zm-2.002.002c-.157.26-.31.527-.456.8-.143.268-.281.539-.415.806a21.77 21.77 0 0 1-.37-1.056c.328-.125.67-.242 1.02-.35.073.004.148.012.22.012zm4.782 2.513c.193.57.355 1.148.484 1.716-.568.12-1.156.22-1.764.296a21.04 21.04 0 0 0 .828-1.232c.15-.26.302-.527.452-.78zm-7.572 0c.15.253.302.52.452.78.254.42.534.836.826 1.232-.607-.076-1.194-.175-1.763-.295.13-.57.29-1.148.485-1.717zm8.867-.65c.344.134.673.276.982.428-.08.256-.175.51-.285.758-.24-.127-.486-.25-.74-.368.015-.27.03-.545.043-.818zm-10.16 0c.013.273.028.547.043.817-.254.118-.498.24-.738.367-.11-.248-.205-.502-.286-.758.31-.152.637-.294.98-.427zm4.97.8c.386.204.77.418 1.145.645a23.26 23.26 0 0 1-.587.587c-.19-.19-.385-.384-.587-.577.01-.218.02-.437.03-.655zm-3.78 0c.01.218.02.437.03.655-.202.193-.396.387-.587.577a23.26 23.26 0 0 1-.585-.587c.374-.227.758-.44 1.143-.645zm1.89 1.104c.304.306.597.617.878.935-.293-.01-.586-.018-.878-.018-.293 0-.586.008-.878.02.28-.32.574-.632.878-.937zm0 3.547c-.304-.306-.597-.617-.878-.935.292.01.585.017.878.017.293 0 .586-.007.878-.018-.28.318-.574.63-.878.936zm-1.89-2.443c-.386-.203-.77-.418-1.143-.644.19-.2.383-.395.585-.587.2.19.396.385.587.577-.01.218-.02.437-.03.654zm3.78 0c-.01-.217-.02-.436-.03-.653.19-.193.386-.387.587-.577.202.192.395.387.585.587-.374.226-.758.44-1.143.643zM8.336 17.95c-.15-.254-.302-.52-.453-.78a22.7 22.7 0 0 0-.826-1.232c.607.076 1.194.175 1.763.295-.13.57-.29 1.148-.484 1.717zm7.572 0c-.195-.57-.356-1.148-.485-1.718.569-.12 1.156-.22 1.764-.295a21.08 21.08 0 0 0-.828 1.232c-.15.26-.302.527-.451.78zm-9.027-.866c-.344-.133-.672-.275-.98-.427.08-.256.174-.51.285-.758.24.127.485.25.74.368-.015.27-.03.545-.044.817zm10.16 0c-.014-.272-.03-.546-.044-.817.254-.118.498-.24.738-.367.11.248.205.502.286.758-.31.152-.637.294-.98.427zm-5.055 3.14c-.446 0-.72-.1-.938-.228-.664-.382-.897-1.706-.498-3.441.09-.362.2-.738.35-1.12.655.22 1.372.413 2.127.562.463.63.956 1.248 1.458 1.946-.557.526-1.103.984-1.61 1.326-.5.335-.936.555-1.389.555zm3.808-1.317c.4 1.73.166 3.054-.495 3.438-.217.128-.489.226-.93.226-.445 0-.882-.218-1.385-.55-.506-.34-1.052-.8-1.608-1.326a33.832 33.832 0 0 0 1.456-1.943c.752-.148 1.467-.34 2.12-.56.152.384.27.759.36 1.12l.482-.405zm2.434-4.32c3.053.933 5.043 2.44 5.043 4.03 0 1.585-1.98 3.09-5.025 4.024.7-3.113.39-5.588-.988-6.38-.31-.183-.68-.276-1.09-.277 1.34 0 3.1-.96 4.882-2.622 1.78 1.654 3.54 2.603 4.885 2.603z" fill="#61DAFB"/></svg>`,
+  },
+  {
+    label: 'Node.js',
+    svg: `<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M11.998 24c-.321 0-.641-.084-.922-.247l-2.936-1.737c-.438-.245-.224-.332-.08-.383.585-.203.703-.25 1.328-.605.065-.037.151-.023.218.017l2.256 1.339c.082.045.198.045.275 0l8.795-5.076c.082-.047.134-.141.134-.238V6.921c0-.099-.053-.19-.137-.242l-8.791-5.072c-.081-.047-.189-.047-.271 0L3.075 6.68c-.084.053-.139.146-.139.241v10.15c0 .097.055.189.139.235l2.409 1.392c1.307.654 2.108-.116 2.108-.891V7.787c0-.142.114-.253.256-.253h1.115c.139 0 .255.111.255.253v10.021c0 1.745-.95 2.745-2.604 2.745-.508 0-.909 0-2.026-.551L2.28 18.675c-.57-.329-.922-.943-.922-1.604V6.921c0-.661.352-1.275.922-1.603l8.795-5.082c.557-.315 1.296-.315 1.848 0l8.794 5.082c.57.329.924.943.924 1.603v10.15c0 .661-.354 1.275-.924 1.604l-8.794 5.078c-.282.163-.6.247-.925.247zm2.718-6.979c-3.855 0-4.663-1.772-4.663-3.259 0-.142.114-.253.256-.253h1.138c.127 0 .233.092.253.217.172 1.161.683 1.748 3.018 1.748 1.857 0 2.646-.42 2.646-1.405 0-.568-.224-.99-3.112-1.273-2.415-.238-3.907-.773-3.907-2.708 0-1.784 1.503-2.845 4.022-2.845 2.829 0 4.231.981 4.406 3.091.006.07-.019.138-.063.189-.045.05-.108.079-.175.079h-1.143c-.12 0-.225-.084-.251-.199-.276-1.222-.946-1.613-2.774-1.613-2.041 0-2.278.711-2.278 1.244 0 .646.281.835 3.017 1.199 2.709.361 3.997.872 3.997 2.77 0 1.926-1.606 3.017-4.406 3.017z" fill="#339933"/></svg>`,
   },
 ]
 
-/* ── Typewriter hook ──────────────────────────────────────────── */
+/* ── Typewriter hook ─────────────────────────────────────────── */
 function useTypewriter(text, speed = 38, delay = 900) {
   const [out, setOut] = useState('')
   useEffect(() => {
@@ -65,37 +62,30 @@ function useTypewriter(text, speed = 38, delay = 900) {
   return out
 }
 
-/* ── Single spinning icon card ───────────────────────────────── */
+/* ── Single icon card ────────────────────────────────────────── */
 function TechIcon({ label, svg }) {
   const [hovered, setHovered] = useState(false)
-
   return (
     <div
       className="tech-icon-wrap"
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
     >
-      {/* Icon */}
       <div
-        className={`tech-icon-img ${hovered ? 'spin-slow' : 'spin-fast'}`}
+        className={`tech-icon-img ${hovered ? 'icon-hovered' : ''}`}
         dangerouslySetInnerHTML={{ __html: svg }}
       />
-
-      {/* Name tooltip — fades in below the icon on hover */}
-      <div className={`tech-icon-label ${hovered ? 'visible' : ''}`}>
+      <div className={`tech-icon-label ${hovered ? 'label-visible' : ''}`}>
         {label}
       </div>
     </div>
   )
 }
 
-/* ── Marquee ticker ──────────────────────────────────────────── */
+/* ── Marquee ─────────────────────────────────────────────────── */
 function TechMarquee() {
-  const trackRef = useRef(null)
   const [paused, setPaused] = useState(false)
-
-  // Duplicate items so the loop is seamless
-  const items = [...TECH, ...TECH]
+  const items = [...TECH, ...TECH, ...TECH]   // triple so center is always full
 
   return (
     <div
@@ -103,14 +93,11 @@ function TechMarquee() {
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
     >
-      {/* Fade edges */}
-      <div className="marquee-fade-l" />
-      <div className="marquee-fade-r" />
+      {/* The spotlight: only logos near the center are fully visible */}
+      <div className="marquee-spotlight-l" />
+      <div className="marquee-spotlight-r" />
 
-      <div
-        ref={trackRef}
-        className={`marquee-track ${paused ? 'paused' : ''}`}
-      >
+      <div className={`marquee-track ${paused ? 'marquee-paused' : ''}`}>
         {items.map((t, i) => (
           <TechIcon key={`${t.label}-${i}`} label={t.label} svg={t.svg} />
         ))}
@@ -119,7 +106,9 @@ function TechMarquee() {
   )
 }
 
-/* ══════════════════════════════════════════════════════════════ */
+/* ════════════════════════════════════════════════════════════════
+   HERO
+   ════════════════════════════════════════════════════════════════ */
 export default function Hero() {
   const typed = useTypewriter('1ST YEAR IT STUDENT  •  ASPIRING IT EXPERT')
 
@@ -131,7 +120,7 @@ export default function Hero() {
   return (
     <section id="hero" className="hero-section">
 
-      {/* ── Status badge ── */}
+      {/* Status badge */}
       <motion.div
         initial={{ opacity: 0, y: -16 }}
         animate={{ opacity: 1, y: 0 }}
@@ -142,7 +131,7 @@ export default function Hero() {
         OPEN TO OPPORTUNITIES
       </motion.div>
 
-      {/* ── Name ── */}
+      {/* Name */}
       <motion.h1
         initial={{ opacity: 0, y: 28 }}
         animate={{ opacity: 1, y: 0 }}
@@ -152,7 +141,7 @@ export default function Hero() {
         ADRIAN KYLE CONDEZA
       </motion.h1>
 
-      {/* ── Role typewriter ── */}
+      {/* Role typewriter */}
       <motion.p
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
@@ -162,7 +151,7 @@ export default function Hero() {
         {typed}<span className="hero-caret" />
       </motion.p>
 
-      {/* ── CTA buttons ── */}
+      {/* CTA buttons */}
       <motion.div
         initial={{ opacity: 0, y: 14 }}
         animate={{ opacity: 1, y: 0 }}
@@ -187,7 +176,7 @@ export default function Hero() {
         </motion.button>
       </motion.div>
 
-      {/* ── Spinning marquee ── */}
+      {/* Marquee */}
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
@@ -197,10 +186,9 @@ export default function Hero() {
         <TechMarquee />
       </motion.div>
 
-      {/* ══ ALL STYLES SCOPED HERE ══════════════════════════════ */}
+      {/* ══ STYLES ══════════════════════════════════════════════ */}
       <style>{`
 
-        /* ── Section shell ── */
         .hero-section {
           min-height: 100vh;
           display: flex;
@@ -209,12 +197,11 @@ export default function Hero() {
           justify-content: center;
           text-align: center;
           padding: 80px 24px 40px;
-          gap: 0;
           background: transparent;
           position: relative;
         }
 
-        /* ── Status badge ── */
+        /* ── Badge ── */
         .hero-badge {
           display: inline-flex;
           align-items: center;
@@ -227,7 +214,7 @@ export default function Hero() {
           letter-spacing: 0.14em;
           color: #e0e0e0;
           margin-bottom: 44px;
-          box-shadow: 0 0 24px rgba(255,255,255,0.05), inset 0 0 20px rgba(255,255,255,0.02);
+          box-shadow: 0 0 24px rgba(255,255,255,0.05);
         }
         .hero-badge-dot {
           width: 8px; height: 8px; border-radius: 50%;
@@ -275,7 +262,7 @@ export default function Hero() {
         /* ── Buttons ── */
         .hero-btns {
           display: flex; gap: 20px; flex-wrap: wrap;
-          justify-content: center; margin-bottom: 60px;
+          justify-content: center; margin-bottom: 64px;
         }
         .hero-btn-primary {
           background: #2563eb; color: #fff; border: none;
@@ -292,53 +279,65 @@ export default function Hero() {
           cursor: crosshair;
         }
 
-        /* ══════════════════════════════════════════════
-           MARQUEE — horizontal infinite scroll
-           ══════════════════════════════════════════════ */
+        /* ══ MARQUEE ═══════════════════════════════════════════ */
         .marquee-outer {
           position: relative;
           width: 100%;
           overflow: hidden;
-          padding: 8px 0 16px;
+          padding: 12px 0 20px;
         }
-        /* Fade-out edges so it looks infinite */
-        .marquee-fade-l,
-        .marquee-fade-r {
+
+        /*
+          THE SPOTLIGHT EFFECT
+          Two overlapping gradients from each side.
+          They leave only the center ~40% of the width fully visible.
+          Everything else fades to the background color (#0a0a0a).
+        */
+        .marquee-spotlight-l,
+        .marquee-spotlight-r {
           position: absolute;
           top: 0; bottom: 0;
-          width: 120px;
+          width: 30%;          /* how wide each fade zone is */
           z-index: 2;
           pointer-events: none;
         }
-        .marquee-fade-l {
+        .marquee-spotlight-l {
           left: 0;
-          background: linear-gradient(to right, #0a0a0a, transparent);
+          background: linear-gradient(
+            to right,
+            #0a0a0a 0%,
+            #0a0a0a 30%,
+            transparent 100%
+          );
         }
-        .marquee-fade-r {
+        .marquee-spotlight-r {
           right: 0;
-          background: linear-gradient(to left, #0a0a0a, transparent);
+          background: linear-gradient(
+            to left,
+            #0a0a0a 0%,
+            #0a0a0a 30%,
+            transparent 100%
+          );
         }
 
         /* The scrolling track */
         .marquee-track {
           display: flex;
           align-items: center;
-          gap: 40px;
+          gap: 52px;
           width: max-content;
-          animation: marqueeScroll 28s linear infinite;
+          /* 50% because items = TECH*3, scroll 1/3 of total = 33% of 3x */
+          animation: marqueeScroll 40s linear infinite;
         }
-        .marquee-track.paused {
+        .marquee-track.marquee-paused {
           animation-play-state: paused;
         }
         @keyframes marqueeScroll {
           from { transform: translateX(0); }
-          /* Move exactly half — because we duplicated the list */
-          to   { transform: translateX(-50%); }
+          to   { transform: translateX(calc(-100% / 3)); }
         }
 
-        /* ══════════════════════════════════════════════
-           INDIVIDUAL ICON CARD
-           ══════════════════════════════════════════════ */
+        /* ══ ICON CARD ═════════════════════════════════════════ */
         .tech-icon-wrap {
           position: relative;
           display: flex;
@@ -349,63 +348,52 @@ export default function Hero() {
           flex-shrink: 0;
         }
 
-        /* The SVG icon itself */
         .tech-icon-img {
-          width: 48px;
-          height: 48px;
+          width: 44px;
+          height: 44px;
           display: flex;
           align-items: center;
           justify-content: center;
-          transition: filter 0.3s ease, transform 0.3s ease;
-          filter: grayscale(0.2) opacity(0.7);
+          filter: grayscale(0.3) opacity(0.55);
+          transition: filter 0.25s ease, transform 0.25s ease;
         }
         .tech-icon-img svg {
           width: 100%;
           height: 100%;
         }
 
-        /* Normal state: spinning fast */
-        .spin-fast {
-          animation: spinY 4s linear infinite;
+        /* Hover: full color + glow + scale */
+        .tech-icon-img.icon-hovered {
+          filter: grayscale(0) opacity(1) drop-shadow(0 0 8px rgba(255,255,255,0.25));
+          transform: scale(1.25) translateY(-3px);
         }
 
-        /* Hovered state: spin slows + full color + glow */
-        .spin-slow {
-          animation: spinY 12s linear infinite;
-          filter: grayscale(0) opacity(1) drop-shadow(0 0 10px rgba(255,255,255,0.3));
-          transform: scale(1.2);
-        }
-
-        @keyframes spinY {
-          from { transform: rotateY(0deg); }
-          to   { transform: rotateY(360deg); }
-        }
-
-        /* Name label — hidden by default, slides up on hover */
+        /* Name label */
         .tech-icon-label {
-          font-size: 0.62rem;
+          font-size: 0.6rem;
           font-weight: 700;
           letter-spacing: 0.1em;
           text-transform: uppercase;
           color: #60a5fa;
           opacity: 0;
-          transform: translateY(4px);
+          transform: translateY(5px);
           transition: opacity 0.2s ease, transform 0.2s ease;
           white-space: nowrap;
           pointer-events: none;
         }
-        .tech-icon-label.visible {
+        .tech-icon-label.label-visible {
           opacity: 1;
           transform: translateY(0);
         }
 
-        /* ── Responsive ── */
         @media (max-width: 600px) {
-          .hero-badge { margin-bottom: 32px; }
-          .hero-name { margin-bottom: 16px; }
-          .hero-role { margin-bottom: 32px; }
-          .hero-btns { margin-bottom: 44px; }
-          .tech-icon-img { width: 38px; height: 38px; }
+          .hero-badge  { margin-bottom: 28px; }
+          .hero-name   { margin-bottom: 16px; }
+          .hero-role   { margin-bottom: 28px; }
+          .hero-btns   { margin-bottom: 44px; gap: 12px; }
+          .tech-icon-img { width: 36px; height: 36px; }
+          .marquee-spotlight-l,
+          .marquee-spotlight-r { width: 20%; }
         }
       `}</style>
     </section>
