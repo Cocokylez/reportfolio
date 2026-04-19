@@ -1,17 +1,24 @@
 import { motion } from 'framer-motion'
-const fadeUp = (delay=0) => ({ initial:{opacity:0,y:24}, whileInView:{opacity:1,y:0}, viewport:{once:true,margin:'-30px'}, transition:{duration:0.65,delay,ease:[0.4,0,0.2,1]} })
+
+const flip = (delay = 0) => ({
+  initial: { opacity: 0, rotateX: 60, y: 40, scale: 0.95 },
+  whileInView: { opacity: 1, rotateX: 0, y: 0, scale: 1 },
+  viewport: { once: true, margin: '-60px' },
+  transition: { duration: 0.75, delay, ease: [0.22, 1, 0.36, 1] },
+})
+
 export default function About() {
   return (
-    <section id="about" className="relative z-10 py-[100px]">
+    <section id="about" className="relative z-10 py-[100px]" style={{ perspective: '1200px' }}>
       <div className="max-w-[680px] mx-auto px-6">
-        <motion.div {...fadeUp(0)} className="glass-card">
+        <motion.div {...flip(0)} style={{ transformOrigin: 'top center' }} className="glass-card">
           <span className="section-label">About Me</span>
-          <p className="text-[1.02rem] leading-[1.78] font-light" style={{color:'#666'}}>
+          <p className="text-[1.02rem] leading-[1.78] font-light" style={{ color: '#666' }}>
             I am a first-year Information Technology student currently building my foundation in
             programming and web development. I have learned the basics of Java, HTML, CSS, and
             JavaScript, and I am continuously improving my skills through practice and projects.
           </p>
-          <p className="mt-3.5 text-[1.02rem] leading-[1.78] font-light" style={{color:'#666'}}>
+          <p className="mt-3.5 text-[1.02rem] leading-[1.78] font-light" style={{ color: '#666' }}>
             I am passionate about technology and aim to become a computer engineer and future
             entrepreneur. I focus on learning, consistency, and developing real-world skills.
           </p>
