@@ -35,7 +35,7 @@ export default function Contact() {
     setStatus('sending')
 
     try {
-      const res = await fetch('http://localhost:3001/api/contact', {
+      const res = await fetch('/api/contact', {
         method:  'POST',
         headers: { 'Content-Type': 'application/json' },
         body:    JSON.stringify({ name, email, message }),
@@ -137,13 +137,7 @@ export default function Contact() {
             {btnLabel}
           </motion.button>
 
-          {/* Helper text */}
-          <p style={{color:'#333', fontSize:'0.72rem', textAlign:'center', marginTop:'4px'}}>
-            Make sure the server is running with{' '}
-            <code style={{color:'#60a5fa', background:'rgba(96,165,250,0.1)', padding:'1px 6px', borderRadius:'4px'}}>
-              npm run server
-            </code>
-          </p>
+
         </motion.div>
 
       </div>

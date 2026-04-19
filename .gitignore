@@ -4,9 +4,10 @@ node_modules/
 # Build output
 dist/
 
-# Environment variables — NEVER upload this
-server/.env
+# Environment variables — NEVER upload these
 .env
+.env.local
+server/.env
 
 # OS files
 .DS_Store
