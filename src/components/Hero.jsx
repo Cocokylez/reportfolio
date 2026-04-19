@@ -94,8 +94,6 @@ function TechMarquee() {
       onMouseLeave={() => setPaused(false)}
     >
       {/* The spotlight: only logos near the center are fully visible */}
-      <div className="marquee-spotlight-l" />
-      <div className="marquee-spotlight-r" />
 
       <div className={`marquee-track ${paused ? 'marquee-paused' : ''}`}>
         {items.map((t, i) => (
@@ -283,42 +281,24 @@ export default function Hero() {
         .marquee-outer {
           position: relative;
           width: 100%;
-          overflow: hidden;
-          padding: 12px 0 20px;
-        }
-
-        /*
-          THE SPOTLIGHT EFFECT
-          Two overlapping gradients from each side.
-          They leave only the center ~40% of the width fully visible.
-          Everything else fades to the background color (#0a0a0a).
-        */
-        .marquee-spotlight-l,
-        .marquee-spotlight-r {
-          position: absolute;
-          top: 0; bottom: 0;
-          width: 30%;          /* how wide each fade zone is */
-          z-index: 2;
-          pointer-events: none;
-        }
-        .marquee-spotlight-l {
-          left: 0;
-          background: linear-gradient(
+          padding: 24px 0 32px;
+          /* mask fades logos in/out smoothly on edges — no hard lines, no overflow clip */
+          -webkit-mask-image: linear-gradient(
             to right,
-            #0a0a0a 0%,
-            #0a0a0a 30%,
+            transparent 0%,
+            black 22%,
+            black 78%,
+            transparent 100%
+          );
+          mask-image: linear-gradient(
+            to right,
+            transparent 0%,
+            black 22%,
+            black 78%,
             transparent 100%
           );
         }
-        .marquee-spotlight-r {
-          right: 0;
-          background: linear-gradient(
-            to left,
-            #0a0a0a 0%,
-            #0a0a0a 30%,
-            transparent 100%
-          );
-        }
+        .marquee-outer::after { content: none; }
 
         /* The scrolling track */
         .marquee-track {
@@ -346,6 +326,7 @@ export default function Hero() {
           gap: 8px;
           cursor: crosshair;
           flex-shrink: 0;
+          padding: 8px;
         }
 
         .tech-icon-img {
@@ -355,7 +336,7 @@ export default function Hero() {
           align-items: center;
           justify-content: center;
           filter: grayscale(0.3) opacity(0.55);
-          transition: filter 0.25s ease, transform 0.25s ease;
+          transition: filter 0.3s ease, transform 0.3s ease;
         }
         .tech-icon-img svg {
           width: 100%;
@@ -364,8 +345,8 @@ export default function Hero() {
 
         /* Hover: full color + glow + scale */
         .tech-icon-img.icon-hovered {
-          filter: grayscale(0) opacity(1) drop-shadow(0 0 8px rgba(255,255,255,0.25));
-          transform: scale(1.25) translateY(-3px);
+          filter: grayscale(0) opacity(1) drop-shadow(0 0 12px rgba(255,255,255,0.5));
+          transform: scale(1.35) translateY(-4px);
         }
 
         /* Name label */
@@ -392,8 +373,6 @@ export default function Hero() {
           .hero-role   { margin-bottom: 28px; }
           .hero-btns   { margin-bottom: 44px; gap: 12px; }
           .tech-icon-img { width: 36px; height: 36px; }
-          .marquee-spotlight-l,
-          .marquee-spotlight-r { width: 20%; }
         }
       `}</style>
     </section>
