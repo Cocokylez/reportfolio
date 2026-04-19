@@ -88,36 +88,27 @@ function TechMarquee() {
   const items = [...TECH, ...TECH, ...TECH]
 
   return (
-    /* outer wrapper: clips X for scrolling, but we push overflow-y visible via the inner layer */
-    <div style={{ position:'relative', width:'100%', paddingTop:'32px', paddingBottom:'40px' }}>
-
-      {/* Clip container: only hides horizontal overflow, inner padding lets glow breathe vertically */}
-      <div style={{ overflow:'hidden', width:'100%', padding:'20px 0' }}>
-        <div
-          onMouseEnter={() => setPaused(true)}
-          onMouseLeave={() => setPaused(false)}
-        >
-          <div className={`marquee-track ${paused ? 'marquee-paused' : ''}`}>
-            {items.map((t, i) => (
-              <TechIcon key={`${t.label}-${i}`} label={t.label} svg={t.svg} />
-            ))}
-          </div>
+    /* mask-image fades edges left/right only — glow is NOT clipped top/bottom */
+    <div style={{
+      position: 'relative',
+      width: '100%',
+      paddingTop: '32px',
+      paddingBottom: '40px',
+      overflow: 'hidden',
+      WebkitMaskImage: 'linear-gradient(to right, transparent 0%, black 12%, black 88%, transparent 100%)',
+      maskImage: 'linear-gradient(to right, transparent 0%, black 12%, black 88%, transparent 100%)',
+    }}>
+      <div
+        style={{ padding: '24px 0' }}
+        onMouseEnter={() => setPaused(true)}
+        onMouseLeave={() => setPaused(false)}
+      >
+        <div className={`marquee-track ${paused ? 'marquee-paused' : ''}`}>
+          {items.map((t, i) => (
+            <TechIcon key={`${t.label}-${i}`} label={t.label} svg={t.svg} />
+          ))}
         </div>
       </div>
-
-      {/* Left fade overlay — on top, fades icons out smoothly */}
-      <div style={{
-        position:'absolute', left:0, top:0, bottom:0, width:'160px',
-        background:'linear-gradient(to right, #0a0a0a 40%, transparent 100%)',
-        zIndex:10, pointerEvents:'none'
-      }} />
-
-      {/* Right fade overlay */}
-      <div style={{
-        position:'absolute', right:0, top:0, bottom:0, width:'160px',
-        background:'linear-gradient(to left, #0a0a0a 40%, transparent 100%)',
-        zIndex:10, pointerEvents:'none'
-      }} />
     </div>
   )
 }
