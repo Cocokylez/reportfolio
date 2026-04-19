@@ -85,20 +85,39 @@ function TechIcon({ label, svg }) {
 /* ── Marquee ─────────────────────────────────────────────────── */
 function TechMarquee() {
   const [paused, setPaused] = useState(false)
-  const items = [...TECH, ...TECH, ...TECH]   // triple so center is always full
+  const items = [...TECH, ...TECH, ...TECH]
 
   return (
-    <div
-      className="marquee-outer"
-      onMouseEnter={() => setPaused(true)}
-      onMouseLeave={() => setPaused(false)}
-    >
-      {/* The spotlight: only logos near the center are fully visible */}
+    /* outer wrapper clips horizontally via overflow hidden but only on X */
+    <div style={{ position:'relative', width:'100%', paddingTop:'32px', paddingBottom:'40px' }}>
 
-      <div className={`marquee-track ${paused ? 'marquee-paused' : ''}`}>
-        {items.map((t, i) => (
-          <TechIcon key={`${t.label}-${i}`} label={t.label} svg={t.svg} />
-        ))}
+      {/* Left fade overlay — sits ON TOP, doesn't clip glow */}
+      <div style={{
+        position:'absolute', left:0, top:0, bottom:0, width:'180px',
+        background:'linear-gradient(to right, #0a0a0a 30%, transparent 100%)',
+        zIndex:10, pointerEvents:'none'
+      }} />
+
+      {/* Right fade overlay */}
+      <div style={{
+        position:'absolute', right:0, top:0, bottom:0, width:'180px',
+        background:'linear-gradient(to left, #0a0a0a 30%, transparent 100%)',
+        zIndex:10, pointerEvents:'none'
+      }} />
+
+      {/* Track wrapper — clips X overflow but NOT Y so glow shows fully */}
+      <div style={{ overflow:'hidden', width:'100%' }}>
+        <div
+          style={{ paddingTop:'16px', paddingBottom:'16px' }}
+          onMouseEnter={() => setPaused(true)}
+          onMouseLeave={() => setPaused(false)}
+        >
+          <div className={`marquee-track ${paused ? 'marquee-paused' : ''}`}>
+            {items.map((t, i) => (
+              <TechIcon key={`${t.label}-${i}`} label={t.label} svg={t.svg} />
+            ))}
+          </div>
+        </div>
       </div>
     </div>
   )
@@ -179,7 +198,7 @@ export default function Hero() {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.6, delay: 0.9 }}
-        style={{ width: '100%' }}
+        style={{ width: '100%', overflow: 'visible' }}
       >
         <TechMarquee />
       </motion.div>
@@ -278,29 +297,6 @@ export default function Hero() {
         }
 
         /* ══ MARQUEE ═══════════════════════════════════════════ */
-        .marquee-outer {
-          position: relative;
-          width: 100%;
-          padding: 24px 0 32px;
-          /* mask fades logos in/out smoothly on edges — no hard lines, no overflow clip */
-          -webkit-mask-image: linear-gradient(
-            to right,
-            transparent 0%,
-            black 22%,
-            black 78%,
-            transparent 100%
-          );
-          mask-image: linear-gradient(
-            to right,
-            transparent 0%,
-            black 22%,
-            black 78%,
-            transparent 100%
-          );
-        }
-        .marquee-outer::after { content: none; }
-
-        /* The scrolling track */
         .marquee-track {
           display: flex;
           align-items: center;
