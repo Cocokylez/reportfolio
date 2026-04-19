@@ -1,11 +1,11 @@
 import { useRef, useState } from 'react'
 import { motion } from 'framer-motion'
 
-const flip = (delay=0) => ({
-  initial:{opacity:0,rotateX:60,y:40,scale:0.95},
-  whileInView:{opacity:1,rotateX:0,y:0,scale:1},
+const blurIn = (delay=0) => ({
+  initial:{opacity:0,filter:"blur(12px)",y:16,scale:0.97},
+  whileInView:{opacity:1,filter:"blur(0px)",y:0,scale:1},
   viewport:{once:true,margin:'-30px'},
-  transition:{duration:0.75,delay,ease:[0.22,1,0.36,1]}
+  transition:{duration:0.85,delay,ease:[0.22,1,0.36,1]}
 })
 
 export default function Contact() {
@@ -74,13 +74,13 @@ export default function Contact() {
   }[status] || {}
 
   return (
-    <section id="contact" className="relative z-10 py-[100px]" style={{ perspective: '1200px' }}>
+    <section id="contact" className="relative z-10 py-[100px]">
       <div className="max-w-[680px] mx-auto px-6">
 
-        <motion.span {...flip(0)} className="section-label block">Contact</motion.span>
+        <motion.span {...blurIn(0)} className="section-label block">Contact</motion.span>
 
         {/* Contact links */}
-        <motion.div {...flip(0.1)} className="flex flex-col gap-2.5 mb-8">
+        <motion.div {...blurIn(0.1)} className="flex flex-col gap-2.5 mb-8">
           <a href="mailto:kuyag100621@gmail.com" className="contact-card">
             <span className="text-[1.4rem] shrink-0">✉️</span>
             <div className="flex-1 flex flex-col gap-0.5">
@@ -100,7 +100,7 @@ export default function Contact() {
         </motion.div>
 
         {/* Form */}
-        <motion.div {...flip(0.2)} className="flex flex-col gap-3">
+        <motion.div {...blurIn(0.2)} animate={{ scale: [1, 1.012, 1], transition: { duration: 4.5, ease: "easeInOut", repeat: Infinity } }} className="flex flex-col gap-3">
           <input
             ref={nameRef}
             type="text"
