@@ -88,27 +88,12 @@ function TechMarquee() {
   const items = [...TECH, ...TECH, ...TECH]
 
   return (
-    /* outer wrapper clips horizontally via overflow hidden but only on X */
+    /* outer wrapper: clips X for scrolling, but we push overflow-y visible via the inner layer */
     <div style={{ position:'relative', width:'100%', paddingTop:'32px', paddingBottom:'40px' }}>
 
-      {/* Left fade overlay — sits ON TOP, doesn't clip glow */}
-      <div style={{
-        position:'absolute', left:0, top:0, bottom:0, width:'180px',
-        background:'linear-gradient(to right, #0a0a0a 30%, transparent 100%)',
-        zIndex:10, pointerEvents:'none'
-      }} />
-
-      {/* Right fade overlay */}
-      <div style={{
-        position:'absolute', right:0, top:0, bottom:0, width:'180px',
-        background:'linear-gradient(to left, #0a0a0a 30%, transparent 100%)',
-        zIndex:10, pointerEvents:'none'
-      }} />
-
-      {/* Track wrapper — clips X overflow but NOT Y so glow shows fully */}
-      <div style={{ overflow:'hidden', width:'100%' }}>
+      {/* Clip container: only hides horizontal overflow, inner padding lets glow breathe vertically */}
+      <div style={{ overflow:'hidden', width:'100%', padding:'20px 0' }}>
         <div
-          style={{ paddingTop:'16px', paddingBottom:'16px' }}
           onMouseEnter={() => setPaused(true)}
           onMouseLeave={() => setPaused(false)}
         >
@@ -119,6 +104,20 @@ function TechMarquee() {
           </div>
         </div>
       </div>
+
+      {/* Left fade overlay — on top, fades icons out smoothly */}
+      <div style={{
+        position:'absolute', left:0, top:0, bottom:0, width:'160px',
+        background:'linear-gradient(to right, #0a0a0a 40%, transparent 100%)',
+        zIndex:10, pointerEvents:'none'
+      }} />
+
+      {/* Right fade overlay */}
+      <div style={{
+        position:'absolute', right:0, top:0, bottom:0, width:'160px',
+        background:'linear-gradient(to left, #0a0a0a 40%, transparent 100%)',
+        zIndex:10, pointerEvents:'none'
+      }} />
     </div>
   )
 }
@@ -302,6 +301,7 @@ export default function Hero() {
           align-items: center;
           gap: 52px;
           width: max-content;
+          overflow: visible;
           /* 50% because items = TECH*3, scroll 1/3 of total = 33% of 3x */
           animation: marqueeScroll 40s linear infinite;
         }
@@ -323,6 +323,7 @@ export default function Hero() {
           cursor: crosshair;
           flex-shrink: 0;
           padding: 8px;
+          overflow: visible;
         }
 
         .tech-icon-img {
