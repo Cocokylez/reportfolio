@@ -1,9 +1,8 @@
-const { Resend } = require('resend')
+import { Resend } from 'resend'
 
 const resend = new Resend(process.env.RESEND_API_KEY)
 
-module.exports = async function handler(req, res) {
-  // Only allow POST
+export default async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' })
   }
@@ -36,7 +35,7 @@ module.exports = async function handler(req, res) {
     })
 
     if (error) {
-      console.error('Resend returned error:', JSON.stringify(error))
+      console.error('Resend error:', JSON.stringify(error))
       return res.status(500).json({ error: error.message })
     }
 
