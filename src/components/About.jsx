@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion'
 import TiltCard from './TiltCard'
 
-const fadeUp = (delay=0) => ({ initial:{opacity:0,y:24}, whileInView:{opacity:1,y:0}, viewport:{once:true,margin:'-30px'}, transition:{duration:0.65,delay,ease:[0.4,0,0.2,1]} })
+const fadeUp = (delay=0) => ({ initial:{opacity:0,y:24}, whileInView:{opacity:1,y:0}, viewport:{once:false,margin:'-30px'}, transition:{duration:0.65,delay,ease:[0.4,0,0.2,1]} })
 
 export default function About() {
   return (
