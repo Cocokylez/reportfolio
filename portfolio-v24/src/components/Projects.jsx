@@ -35,13 +35,13 @@ export default function Projects() {
             </div>
 
             <a
-              href="https://github.com/Cocokylez/FitSched"
+              href="https://fitsched.vercel.app/"
               target="_blank"
               rel="noopener noreferrer"
               className="text-[0.86rem] uppercase tracking-[0.18em] transition-colors hover:text-white"
               style={{color:'#aaa'}}
             >
-              View GitHub Repo
+              View Live App
             </a>
           </TiltCard>
         </motion.div>
