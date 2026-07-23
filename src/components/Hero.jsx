@@ -59,7 +59,7 @@ export default function Hero() {
               className="hero-actions"
             >
               <button className="hero-action-primary" onClick={() => scrollTo('#projects')}>
-                VIEW PROJECTS <span aria-hidden="true">↘</span>
+                VIEW PROJECTS
               </button>
               <button className="hero-action-secondary" onClick={() => scrollTo('#contact')}>
                 CONTACT ME
@@ -87,7 +87,7 @@ export default function Hero() {
               <span>IN PROGRESS</span>
               <span>35%</span>
             </div>
-            <button onClick={() => scrollTo('#projects')}>SEE THE PROJECT ↘</button>
+            <button onClick={() => scrollTo('#projects')}>SEE THE PROJECT</button>
           </motion.aside>
         </div>
 
@@ -117,10 +117,10 @@ export default function Hero() {
         .hero-section::after {
           content: '';
           position: absolute;
-          right: -18vw;
-          top: 8%;
-          width: 48vw;
-          height: 48vw;
+          right: -12vw;
+          top: -48vw;
+          width: 58vw;
+          height: 58vw;
           border: 1px solid rgba(255,255,255,0.035);
           border-radius: 50%;
           pointer-events: none;
@@ -227,7 +227,6 @@ export default function Hero() {
           color: #0a0a0a;
         }
 
-        .hero-action-primary span { margin-left: 8px; }
         .hero-action-primary:hover { transform: translateY(-2px); background: #fff; }
 
         .hero-action-secondary {
@@ -243,8 +242,25 @@ export default function Hero() {
         }
 
         .hero-project-note {
-          padding: 2px 0 4px 30px;
-          border-left: 1px solid rgba(255,255,255,0.12);
+          position: relative;
+          overflow: hidden;
+          padding: 30px;
+          border: 1px solid rgba(255,255,255,0.07);
+          border-radius: 20px;
+          background: rgba(255,255,255,0.04);
+          box-shadow: 0 18px 54px rgba(0,0,0,0.34), inset 0 1px 0 rgba(255,255,255,0.04);
+          backdrop-filter: blur(14px);
+          -webkit-backdrop-filter: blur(14px);
+        }
+
+        .hero-project-note::before {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: 0;
+          right: 0;
+          height: 1px;
+          background: linear-gradient(90deg, transparent, rgba(255,255,255,0.08), transparent);
         }
 
         .hero-note-topline,
@@ -356,9 +372,7 @@ export default function Hero() {
 
           .hero-project-note {
             max-width: 520px;
-            padding: 24px 0 0;
-            border-top: 1px solid rgba(255,255,255,0.12);
-            border-left: 0;
+            padding: 26px;
           }
 
           .hero-toolkit {
