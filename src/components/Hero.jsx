@@ -50,7 +50,7 @@ export default function Hero() {
               transition={{ duration: 0.55, delay: 0.38, ease }}
               className="hero-intro"
             >
-              Learning by building practical web projects — currently working on FitSched.
+              Learning by building practical web projects.
             </motion.p>
 
             <motion.div
@@ -77,10 +77,9 @@ export default function Hero() {
             <TiltCard className="hero-project-note">
               <div className="hero-note-topline">
                 <span>READY TO PUBLISH</span>
-                <span>01</span>
               </div>
               <h2>FitSched</h2>
-              <p>An AI-powered workout scheduler that fits training into your available time.</p>
+              <p>A workout scheduler that fits training into your available time.</p>
               <p className="hero-release-note">
                 Remaining steps: fund the custom domain and FitToken rollout, complete Google Play registration, and finish the final security audit.
               </p>
@@ -117,18 +116,6 @@ export default function Hero() {
           padding: clamp(110px, 13vh, 160px) 28px 52px;
           position: relative;
           overflow: hidden;
-        }
-
-        .hero-section::after {
-          content: '';
-          position: absolute;
-          right: -12vw;
-          top: -48vw;
-          width: 58vw;
-          height: 58vw;
-          border: 1px solid rgba(255,255,255,0.035);
-          border-radius: 50%;
-          pointer-events: none;
         }
 
         .hero-shell {

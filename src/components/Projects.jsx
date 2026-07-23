@@ -8,7 +8,7 @@ const projects = [
     name: 'FitSched',
     status: 'Ready to Publish',
     progress: 99,
-    description: 'An AI-powered workout scheduler that syncs with Google Calendar to fit training into available time.',
+    description: 'A workout scheduler that syncs with Google Calendar to fit training into available time.',
     note: 'Remaining steps: fund the custom domain and FitToken rollout, complete Google Play registration, and finish the final security audit.',
     href: 'https://fitsched.vercel.app/',
   },
