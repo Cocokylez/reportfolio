@@ -344,7 +344,7 @@ export default function Skills() {
         @media (max-width: 560px) {
           .tools-toggle { gap: 12px; padding: 17px 16px; }
           .tools-preview { display: none; }
-          .tools-summary { max-width: 220px; }
+          .tools-summary { display: none; }
           .tools-grid-inner { grid-template-columns: 1fr; padding: 0 16px 16px; }
         }
 
