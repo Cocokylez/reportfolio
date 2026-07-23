@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion'
 import TiltCard from './TiltCard'
 
-const TOOLKIT = ['HTML', 'CSS', 'JavaScript', 'Java', 'Git', 'Tailwind CSS']
+const TOOLKIT = ['VS Code', 'ChatGPT', 'Codex', 'Claude Code', 'Microsoft Office']
 const ease = [0.22, 1, 0.36, 1]
 
 export default function Hero() {

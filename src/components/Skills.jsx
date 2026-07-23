@@ -1,4 +1,5 @@
-import { motion } from 'framer-motion'
+import { useState } from 'react'
+import { AnimatePresence, motion } from 'framer-motion'
 
 const SKILLS = [
   {
@@ -19,9 +20,89 @@ const SKILLS = [
   },
 ]
 
+const TOOLS = [
+  { name: 'VS Code', group: 'Development', kind: 'vscode' },
+  { name: 'ChatGPT', group: 'AI assistant', kind: 'chatgpt' },
+  { name: 'Codex', group: 'AI coding', kind: 'codex' },
+  { name: 'Claude Code', group: 'AI coding', kind: 'claude' },
+  { name: 'Microsoft Word', group: 'Microsoft Office', kind: 'office', mark: 'W', color: '#185ABD', panel: '#2B7CD3' },
+  { name: 'Microsoft Excel', group: 'Microsoft Office', kind: 'office', mark: 'X', color: '#107C41', panel: '#21A366' },
+  { name: 'Microsoft PowerPoint', group: 'Microsoft Office', kind: 'office', mark: 'P', color: '#B7472A', panel: '#D24726' },
+  { name: 'Microsoft Outlook', group: 'Microsoft Office', kind: 'office', mark: 'O', color: '#0364B8', panel: '#0078D4' },
+  { name: 'Microsoft OneNote', group: 'Microsoft Office', kind: 'office', mark: 'N', color: '#7719AA', panel: '#9B4F96' },
+  { name: 'Microsoft Access', group: 'Microsoft Office', kind: 'office', mark: 'A', color: '#A4373A', panel: '#C0504D' },
+  { name: 'Microsoft Teams', group: 'Microsoft Office', kind: 'office', mark: 'T', color: '#5059C9', panel: '#7B83EB' },
+  { name: 'Microsoft OneDrive', group: 'Microsoft Office', kind: 'onedrive' },
+]
+
+function OfficeLogo({ mark, color, panel }) {
+  return (
+    <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+      <rect x="7" y="2.5" width="15" height="19" rx="3" fill={panel} />
+      <rect x="2" y="5" width="13" height="14" rx="2.5" fill={color} />
+      <text x="8.5" y="15.1" textAnchor="middle" fill="#fff" fontSize="9.3" fontFamily="Arial, sans-serif" fontWeight="700">{mark}</text>
+    </svg>
+  )
+}
+
+function ToolLogo({ tool }) {
+  if (tool.kind === 'office') {
+    return <OfficeLogo mark={tool.mark} color={tool.color} panel={tool.panel} />
+  }
+
+  if (tool.kind === 'vscode') {
+    return (
+      <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+        <path fill="#23A8F2" d="M20.1 2.7 9.1 11.5 4.2 7.8 1.8 10l4.6 4-4.6 4 2.4 2.2 4.9-3.7 11 4.8c1 .43 2.1-.3 2.1-1.4V4.1c0-1.1-1.1-1.83-2.1-1.4Z" />
+        <path fill="#007ACC" d="m19 7.2-7.2 6.8 7.2 6.8V7.2Z" />
+      </svg>
+    )
+  }
+
+  if (tool.kind === 'chatgpt') {
+    return (
+      <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false">
+        <circle cx="12" cy="6.2" r="3.25" stroke="#E8E8E8" strokeWidth="1.55" />
+        <circle cx="17.05" cy="9.1" r="3.25" stroke="#E8E8E8" strokeWidth="1.55" />
+        <circle cx="17.05" cy="14.9" r="3.25" stroke="#E8E8E8" strokeWidth="1.55" />
+        <circle cx="12" cy="17.8" r="3.25" stroke="#E8E8E8" strokeWidth="1.55" />
+        <circle cx="6.95" cy="14.9" r="3.25" stroke="#E8E8E8" strokeWidth="1.55" />
+        <circle cx="6.95" cy="9.1" r="3.25" stroke="#E8E8E8" strokeWidth="1.55" />
+      </svg>
+    )
+  }
+
+  if (tool.kind === 'codex') {
+    return (
+      <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false">
+        <rect x="1.5" y="1.5" width="21" height="21" rx="6" fill="#101114" stroke="#34363D" />
+        <path d="m8 7-4 5 4 5M16 7l4 5-4 5M14.5 5.5l-5 13" stroke="#60A5FA" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" />
+      </svg>
+    )
+  }
+
+  if (tool.kind === 'claude') {
+    return (
+      <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false">
+        <rect x="1.5" y="1.5" width="21" height="21" rx="6" fill="#D97757" />
+        <path d="M12 5v14M5 12h14M7.05 7.05l9.9 9.9M16.95 7.05l-9.9 9.9M8.35 4.9l7.3 14.2M19.1 8.35 4.9 15.65M15.65 4.9 8.35 19.1M4.9 8.35l14.2 7.3" stroke="#FFF7ED" strokeWidth="1.35" strokeLinecap="round" />
+      </svg>
+    )
+  }
+
+  return (
+    <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+      <path fill="#0078D4" d="M9.5 17.5h9.2a3.3 3.3 0 0 0 .6-6.55A5.6 5.6 0 0 0 8.8 8.8a4.4 4.4 0 0 0 .7 8.7Z" />
+      <path fill="#36A9E1" d="M4.9 18h10.6a3.05 3.05 0 0 0 .25-6.1 4.8 4.8 0 0 0-8.95-1.75A4 4 0 0 0 4.9 18Z" />
+    </svg>
+  )
+}
+
 const fadeUp = (delay=0) => ({ initial:{opacity:0,y:32,scale:0.96}, whileInView:{opacity:1,y:0,scale:1}, viewport:{once:false,margin:'-30px'}, transition:{duration:0.65,delay,ease:[0.4,0,0.2,1]} })
 
 export default function Skills() {
+  const [showTools, setShowTools] = useState(false)
+
   return (
     <section id="skills" className="relative z-10 py-[100px]">
       <div className="max-w-[680px] mx-auto px-6">
@@ -43,7 +124,235 @@ export default function Skills() {
             </motion.div>
           ))}
         </div>
+
+        <motion.div {...fadeUp(0.48)} className="tools-panel">
+          <button
+            type="button"
+            className="tools-toggle"
+            aria-expanded={showTools}
+            aria-controls="current-tools"
+            onClick={() => setShowTools((current) => !current)}
+          >
+            <span className="tools-toggle-copy">
+              <span className="tools-heading">Tools I Use</span>
+              <span className="tools-summary">Coding assistants, VS Code, and Microsoft Office</span>
+            </span>
+
+            <span className="tools-preview" aria-hidden="true">
+              {TOOLS.slice(0, 4).map((tool) => (
+                <span className="tools-preview-icon" key={tool.name}>
+                  <ToolLogo tool={tool} />
+                </span>
+              ))}
+            </span>
+
+            <span className="tools-toggle-action">
+              {showTools ? 'HIDE' : 'VIEW ALL'}
+              <svg className={showTools ? 'tools-chevron is-open' : 'tools-chevron'} viewBox="0 0 16 16" aria-hidden="true">
+                <path d="m4 6 4 4 4-4" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            </span>
+          </button>
+
+          <AnimatePresence initial={false}>
+            {showTools && (
+              <motion.div
+                id="current-tools"
+                className="tools-grid"
+                initial={{ opacity: 0, height: 0, y: -8 }}
+                animate={{ opacity: 1, height: 'auto', y: 0 }}
+                exit={{ opacity: 0, height: 0, y: -8 }}
+                transition={{ duration: 0.34, ease: [0.22, 1, 0.36, 1] }}
+              >
+                <div className="tools-grid-inner">
+                  {TOOLS.map((tool) => (
+                    <motion.div
+                      className="tool-item"
+                      key={tool.name}
+                      initial={{ opacity: 0, y: 8 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.28 }}
+                    >
+                      <span className="tool-logo"><ToolLogo tool={tool} /></span>
+                      <span className="tool-copy">
+                        <span className="tool-name">{tool.name}</span>
+                        <span className="tool-group">{tool.group}</span>
+                      </span>
+                    </motion.div>
+                  ))}
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </motion.div>
       </div>
+
+      <style>{`
+        .tools-panel {
+          margin-top: 30px;
+          overflow: hidden;
+          border: 1px solid rgba(255,255,255,0.08);
+          border-radius: 18px;
+          background: rgba(255,255,255,0.025);
+          box-shadow: 0 16px 44px rgba(0,0,0,0.22), inset 0 1px 0 rgba(255,255,255,0.025);
+        }
+
+        .tools-toggle {
+          width: 100%;
+          min-height: 84px;
+          display: flex;
+          align-items: center;
+          gap: 18px;
+          padding: 18px 20px;
+          border: 0;
+          background: transparent;
+          color: inherit;
+          text-align: left;
+          cursor: pointer;
+        }
+
+        .tools-toggle-copy {
+          min-width: 0;
+          display: flex;
+          flex: 1;
+          flex-direction: column;
+          gap: 5px;
+        }
+
+        .tools-heading {
+          color: #c9c9c9;
+          font-size: 0.8rem;
+          font-weight: 600;
+          letter-spacing: 0.11em;
+          text-transform: uppercase;
+        }
+
+        .tools-summary {
+          overflow: hidden;
+          color: #5e5e5e;
+          font-size: 0.76rem;
+          font-weight: 300;
+          line-height: 1.4;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+        }
+
+        .tools-preview {
+          display: flex;
+          align-items: center;
+          padding-left: 8px;
+        }
+
+        .tools-preview-icon {
+          width: 29px;
+          height: 29px;
+          display: grid;
+          place-items: center;
+          margin-left: -8px;
+          padding: 5px;
+          border: 1px solid rgba(255,255,255,0.1);
+          border-radius: 9px;
+          background: #111;
+        }
+
+        .tools-preview-icon svg,
+        .tool-logo svg {
+          display: block;
+          width: 100%;
+          height: 100%;
+        }
+
+        .tools-toggle-action {
+          display: inline-flex;
+          align-items: center;
+          gap: 7px;
+          color: #777;
+          font-size: 0.61rem;
+          font-weight: 600;
+          letter-spacing: 0.14em;
+          white-space: nowrap;
+        }
+
+        .tools-chevron {
+          width: 14px;
+          height: 14px;
+          transition: transform 220ms ease;
+        }
+
+        .tools-chevron.is-open { transform: rotate(180deg); }
+
+        .tools-grid { overflow: hidden; }
+
+        .tools-grid-inner {
+          display: grid;
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+          gap: 10px;
+          padding: 0 20px 20px;
+        }
+
+        .tool-item {
+          min-width: 0;
+          display: flex;
+          align-items: center;
+          gap: 12px;
+          padding: 13px;
+          border: 1px solid rgba(255,255,255,0.065);
+          border-radius: 13px;
+          background: rgba(255,255,255,0.025);
+          transition: border-color 180ms ease, background 180ms ease, transform 180ms ease;
+        }
+
+        .tool-item:hover {
+          transform: translateY(-2px);
+          border-color: rgba(255,255,255,0.13);
+          background: rgba(255,255,255,0.045);
+        }
+
+        .tool-logo {
+          width: 34px;
+          height: 34px;
+          flex: 0 0 auto;
+        }
+
+        .tool-copy {
+          min-width: 0;
+          display: flex;
+          flex-direction: column;
+          gap: 3px;
+        }
+
+        .tool-name {
+          overflow: hidden;
+          color: #b8b8b8;
+          font-size: 0.78rem;
+          font-weight: 500;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+        }
+
+        .tool-group {
+          overflow: hidden;
+          color: #505050;
+          font-size: 0.62rem;
+          font-weight: 500;
+          letter-spacing: 0.06em;
+          text-overflow: ellipsis;
+          text-transform: uppercase;
+          white-space: nowrap;
+        }
+
+        @media (max-width: 560px) {
+          .tools-toggle { gap: 12px; padding: 17px 16px; }
+          .tools-preview { display: none; }
+          .tools-summary { max-width: 220px; }
+          .tools-grid-inner { grid-template-columns: 1fr; padding: 0 16px 16px; }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+          .tools-chevron,
+          .tool-item { transition: none; }
+        }
+      `}</style>
     </section>
   )
 }
