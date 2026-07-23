@@ -127,7 +127,7 @@ export default function LoadingScreen() {
         }
 
         .cog-loader-stage {
-          width: clamp(126px, 14vw, 174px);
+          width: clamp(88px, 8vw, 108px);
           transform: translateY(-2vh);
           animation: cogLoaderFloat 1.25s ease-in-out infinite;
         }
