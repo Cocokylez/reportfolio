@@ -21,7 +21,7 @@ export default function LoadingScreen() {
       setVisible(false)
       releaseTimer = window.setTimeout(() => {
         document.body.style.overflow = previousOverflow
-      }, 580)
+      }, 820)
     }
 
     const onLoad = () => {
@@ -59,9 +59,23 @@ export default function LoadingScreen() {
             className="cog-loader-screen"
             role="status"
             aria-label="Loading Adrian Kyle's portfolio"
-            initial={{ y: 0 }}
-            exit={{ y: '-100%' }}
-            transition={{ duration: 0.56, ease: [0.76, 0, 0.24, 1] }}
+            initial={{
+              opacity: 1,
+              scale: 1,
+              filter: 'blur(0px)',
+              backgroundColor: 'rgba(5, 5, 5, 1)',
+              backdropFilter: 'blur(18px)',
+              WebkitBackdropFilter: 'blur(18px)',
+            }}
+            exit={{
+              opacity: 0,
+              scale: 1.035,
+              filter: 'blur(14px)',
+              backgroundColor: 'rgba(5, 5, 5, 0)',
+              backdropFilter: 'blur(0px)',
+              WebkitBackdropFilter: 'blur(0px)',
+            }}
+            transition={{ duration: 0.78, ease: [0.22, 1, 0.36, 1] }}
           >
             <div className="cog-loader-stage" aria-hidden="true">
               <svg viewBox="0 0 180 160" focusable="false">
@@ -106,7 +120,10 @@ export default function LoadingScreen() {
           display: grid;
           place-items: center;
           overflow: hidden;
-          background: #63c7f1;
+          background: #050505;
+          backdrop-filter: blur(18px);
+          -webkit-backdrop-filter: blur(18px);
+          will-change: opacity, filter, transform, backdrop-filter;
         }
 
         .cog-loader-stage {
@@ -126,16 +143,17 @@ export default function LoadingScreen() {
           transform-box: view-box;
           transform-origin: 90px 78px;
           animation: cogLoaderTurn 2.6s linear infinite;
+          filter: drop-shadow(0 0 14px rgba(96,165,250,0.13));
         }
 
         .cog-loader-inner-ring {
           fill: none;
-          stroke: rgba(99,199,241,0.42);
+          stroke: rgba(96,165,250,0.58);
           stroke-width: 2;
         }
 
         .cog-loader-shadow {
-          fill: rgba(9,90,126,0.16);
+          fill: rgba(96,165,250,0.14);
           transform-box: fill-box;
           transform-origin: center;
           animation: cogLoaderShadow 1.25s ease-in-out infinite;
