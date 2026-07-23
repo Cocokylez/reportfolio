@@ -63,8 +63,8 @@ export default function Contact() {
   const btnLabel = {
     idle:    'Send Message',
     sending: 'Sending...',
-    sent:    '✓ Message Sent!',
-    error:   '✗ Failed — check server',
+    sent:    'Message Sent',
+    error:   'Failed - check server',
   }[status]
 
   const btnStyle = {
@@ -83,7 +83,13 @@ export default function Contact() {
           <TiltCard className="glass-card" style={{ marginBottom: '20px' }}>
             <div className="flex flex-col gap-2.5">
               <a href="mailto:kuyag100621@gmail.com" className="contact-card">
-                <span className="text-[1.4rem] shrink-0">✉️</span>
+                <span
+                  className="grid h-8 w-8 shrink-0 place-items-center rounded-lg border border-white/10 text-[0.8rem] font-semibold"
+                  style={{color:'#777'}}
+                  aria-hidden="true"
+                >
+                  @
+                </span>
                 <div className="flex-1 flex flex-col gap-0.5">
                   <span className="text-[0.72rem] font-semibold tracking-[0.1em] uppercase" style={{color:'#444'}}>Email</span>
                   <span className="text-[0.92rem] font-medium" style={{color:'#bbb'}}>kuyag100621@gmail.com</span>
@@ -91,7 +97,13 @@ export default function Contact() {
                 <span className="contact-arrow text-base" style={{color:'#444'}}>→</span>
               </a>
               <a href="https://github.com/Cocokylez" target="_blank" rel="noopener noreferrer" className="contact-card">
-                <span className="text-[1.4rem] shrink-0">🐙</span>
+                <span
+                  className="grid h-8 w-8 shrink-0 place-items-center rounded-lg border border-white/10 text-[0.68rem] font-semibold tracking-[0.05em]"
+                  style={{color:'#777'}}
+                  aria-hidden="true"
+                >
+                  GH
+                </span>
                 <div className="flex-1 flex flex-col gap-0.5">
                   <span className="text-[0.72rem] font-semibold tracking-[0.1em] uppercase" style={{color:'#444'}}>GitHub</span>
                   <span className="text-[0.92rem] font-medium" style={{color:'#bbb'}}>github.com/Cocokylez</span>

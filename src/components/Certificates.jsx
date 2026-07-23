@@ -10,7 +10,12 @@ export default function Certificates() {
         <motion.span {...fadeUp(0)} className="section-label block">Certificates</motion.span>
         <motion.div {...fadeUp(0.1)}>
           <TiltCard className="glass-card flex flex-col items-center text-center py-12 px-9">
-            <span className="text-[2.5rem] mb-3.5">🎓</span>
+            <span
+              className="mb-4 text-[0.63rem] font-semibold tracking-[0.18em]"
+              style={{color:'#666'}}
+            >
+              LEARNING PATH
+            </span>
             <h3 className="font-serif font-normal text-2xl mb-2.5" style={{color:'#ccc'}}>Coming Soon</h3>
             <p className="text-[0.95rem] leading-[1.7] font-light max-w-[340px]" style={{color:'#555'}}>
               Actively learning and planning to earn certifications in programming and IT.

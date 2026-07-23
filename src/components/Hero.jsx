@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion'
+import TiltCard from './TiltCard'
 
 const TOOLKIT = ['HTML', 'CSS', 'JavaScript', 'Java', 'Git', 'Tailwind CSS']
 const ease = [0.22, 1, 0.36, 1]
@@ -71,23 +72,27 @@ export default function Hero() {
             initial={{ opacity: 0, x: 24 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.65, delay: 0.42, ease }}
-            className="hero-project-note"
             aria-label="Current project"
           >
-            <div className="hero-note-topline">
-              <span>NOW BUILDING</span>
-              <span>01</span>
-            </div>
-            <h2>FitSched</h2>
-            <p>A fitness scheduling app for organizing workouts and training plans.</p>
-            <div className="hero-progress" aria-label="FitSched is 35 percent complete">
-              <span />
-            </div>
-            <div className="hero-progress-meta">
-              <span>IN PROGRESS</span>
-              <span>35%</span>
-            </div>
-            <button onClick={() => scrollTo('#projects')}>SEE THE PROJECT</button>
+            <TiltCard className="hero-project-note">
+              <div className="hero-note-topline">
+                <span>READY TO PUBLISH</span>
+                <span>01</span>
+              </div>
+              <h2>FitSched</h2>
+              <p>An AI-powered workout scheduler that fits training into your available time.</p>
+              <p className="hero-release-note">
+                Remaining steps: fund the custom domain and FitToken rollout, complete Google Play registration, and finish the final security audit.
+              </p>
+              <div className="hero-progress" aria-label="FitSched is 99 percent complete">
+                <span />
+              </div>
+              <div className="hero-progress-meta">
+                <span>FINAL CHECKS</span>
+                <span>99%</span>
+              </div>
+              <button onClick={() => scrollTo('#projects')}>SEE THE PROJECT</button>
+            </TiltCard>
           </motion.aside>
         </div>
 
@@ -290,6 +295,13 @@ export default function Hero() {
           line-height: 1.65;
         }
 
+        .hero-project-note .hero-release-note {
+          margin-top: 15px;
+          color: #555;
+          font-size: 0.76rem;
+          line-height: 1.6;
+        }
+
         .hero-progress {
           height: 2px;
           margin: 26px 0 10px;
@@ -299,7 +311,7 @@ export default function Hero() {
 
         .hero-progress span {
           display: block;
-          width: 35%;
+          width: 99%;
           height: 100%;
           background: #60a5fa;
         }
