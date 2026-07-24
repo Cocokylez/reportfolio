@@ -153,7 +153,7 @@ export default function Contact() {
                 className="btn-primary w-full"
                 style={{
                   opacity: status === 'sending' ? 0.7 : 1,
-                  cursor: status === 'sending' ? 'wait' : 'crosshair',
+                  cursor: status === 'sending' ? 'wait' : 'default',
                   ...btnStyle,
                 }}
               >

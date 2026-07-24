@@ -36,8 +36,6 @@ const SKILLS = [
   },
 ]
 
-const ANTIGRAVITY_ICON_URL = 'https://antigravity.google/assets/image/brand/antigravity-icon__full-color.png'
-
 const TOOLS = [
   { name: 'VS Code', group: 'Development', kind: 'vscode' },
   { name: 'Cursor', group: 'AI editor', kind: 'cursor' },
@@ -50,138 +48,60 @@ const TOOLS = [
   { name: 'Tailwind CSS', group: 'Styling', kind: 'tailwind' },
   { name: 'Supabase', group: 'Backend platform', kind: 'supabase' },
   { name: 'Resend', group: 'Email API', kind: 'resend' },
-  { name: 'Microsoft Word', group: 'Microsoft Office', kind: 'office', mark: 'W', color: '#185ABD', panel: '#2B7CD3' },
-  { name: 'Microsoft Excel', group: 'Microsoft Office', kind: 'office', mark: 'X', color: '#107C41', panel: '#21A366' },
-  { name: 'Microsoft PowerPoint', group: 'Microsoft Office', kind: 'office', mark: 'P', color: '#B7472A', panel: '#D24726' },
-  { name: 'Microsoft Outlook', group: 'Microsoft Office', kind: 'office', mark: 'O', color: '#0364B8', panel: '#0078D4' },
-  { name: 'Microsoft OneNote', group: 'Microsoft Office', kind: 'office', mark: 'N', color: '#7719AA', panel: '#9B4F96' },
-  { name: 'Microsoft Access', group: 'Microsoft Office', kind: 'office', mark: 'A', color: '#A4373A', panel: '#C0504D' },
-  { name: 'Microsoft Teams', group: 'Microsoft Office', kind: 'office', mark: 'T', color: '#5059C9', panel: '#7B83EB' },
+  { name: 'Microsoft Word', group: 'Microsoft Office', kind: 'office', mark: 'W' },
+  { name: 'Microsoft Excel', group: 'Microsoft Office', kind: 'office', mark: 'X' },
+  { name: 'Microsoft PowerPoint', group: 'Microsoft Office', kind: 'office', mark: 'P' },
+  { name: 'Microsoft Outlook', group: 'Microsoft Office', kind: 'office', mark: 'O' },
+  { name: 'Microsoft OneNote', group: 'Microsoft Office', kind: 'office', mark: 'N' },
+  { name: 'Microsoft Access', group: 'Microsoft Office', kind: 'office', mark: 'A' },
+  { name: 'Microsoft Teams', group: 'Microsoft Office', kind: 'office', mark: 'T' },
   { name: 'Microsoft OneDrive', group: 'Microsoft Office', kind: 'onedrive' },
 ]
 
 const TOOL_PREVIEW = ['VS Code', 'ChatGPT', 'Supabase', 'Microsoft Word']
   .map((name) => TOOLS.find((tool) => tool.name === name))
 
-function OfficeLogo({ mark, color, panel }) {
-  return (
-    <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-      <rect x="7" y="2.5" width="15" height="19" rx="3" fill={panel} />
-      <rect x="2" y="5" width="13" height="14" rx="2.5" fill={color} />
-      <text x="8.5" y="15.1" textAnchor="middle" fill="#fff" fontSize="9.3" fontFamily="Arial, sans-serif" fontWeight="700">{mark}</text>
-    </svg>
-  )
+const TOOL_ICON_BY_KIND = {
+  vscode: { file: 'visual-studio-code.svg' },
+  cursor: { file: 'cursor.svg', inverted: true },
+  antigravity: { file: 'antigravity.png' },
+  chatgpt: { file: 'openai.svg', inverted: true },
+  codex: { file: 'openai.svg', inverted: true },
+  claude: { file: 'claude.svg' },
+  typescript: { file: 'typescript.svg' },
+  nextjs: { file: 'nextjs.svg', inverted: true },
+  tailwind: { file: 'tailwindcss.svg' },
+  supabase: { file: 'supabase.svg' },
+  resend: { file: 'resend.svg', inverted: true },
+  onedrive: { file: 'microsoft-onedrive.svg' },
 }
 
-function ToolLogo({ tool }) {
-  if (tool.kind === 'office') {
-    return <OfficeLogo mark={tool.mark} color={tool.color} panel={tool.panel} />
-  }
+const OFFICE_ICON_BY_MARK = {
+  W: 'microsoft-word.svg',
+  X: 'microsoft-excel.svg',
+  P: 'microsoft-powerpoint.svg',
+  O: 'microsoft-outlook.svg',
+  N: 'microsoft-onenote.svg',
+  A: 'microsoft-access.svg',
+  T: 'microsoft-teams.svg',
+}
 
-  if (tool.kind === 'vscode') {
-    return (
-      <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-        <path fill="#23A8F2" d="M20.1 2.7 9.1 11.5 4.2 7.8 1.8 10l4.6 4-4.6 4 2.4 2.2 4.9-3.7 11 4.8c1 .43 2.1-.3 2.1-1.4V4.1c0-1.1-1.1-1.83-2.1-1.4Z" />
-        <path fill="#007ACC" d="m19 7.2-7.2 6.8 7.2 6.8V7.2Z" />
-      </svg>
-    )
-  }
+function AccurateToolLogo({ tool }) {
+  const icon = tool.kind === 'office'
+    ? { file: OFFICE_ICON_BY_MARK[tool.mark] }
+    : TOOL_ICON_BY_KIND[tool.kind]
 
-  if (tool.kind === 'cursor') {
-    return (
-      <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false">
-        <rect x="1.5" y="1.5" width="21" height="21" rx="5.5" fill="#111" stroke="#414141" />
-        <path d="m6.4 5.4 11.35 7.04-5.04 1.05-2.15 5.06L6.4 5.4Z" fill="#F4F4F4" />
-        <path d="m11.95 13.3 4.2 4.2" stroke="#F4F4F4" strokeWidth="1.55" strokeLinecap="round" />
-      </svg>
-    )
-  }
-
-  if (tool.kind === 'antigravity') {
-    return <img src={ANTIGRAVITY_ICON_URL} alt="" loading="lazy" decoding="async" />
-  }
-
-  if (tool.kind === 'chatgpt') {
-    return (
-      <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false">
-        <circle cx="12" cy="6.2" r="3.25" stroke="#E8E8E8" strokeWidth="1.55" />
-        <circle cx="17.05" cy="9.1" r="3.25" stroke="#E8E8E8" strokeWidth="1.55" />
-        <circle cx="17.05" cy="14.9" r="3.25" stroke="#E8E8E8" strokeWidth="1.55" />
-        <circle cx="12" cy="17.8" r="3.25" stroke="#E8E8E8" strokeWidth="1.55" />
-        <circle cx="6.95" cy="14.9" r="3.25" stroke="#E8E8E8" strokeWidth="1.55" />
-        <circle cx="6.95" cy="9.1" r="3.25" stroke="#E8E8E8" strokeWidth="1.55" />
-      </svg>
-    )
-  }
-
-  if (tool.kind === 'codex') {
-    return (
-      <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false">
-        <rect x="1.5" y="1.5" width="21" height="21" rx="6" fill="#101114" stroke="#34363D" />
-        <path d="m8 7-4 5 4 5M16 7l4 5-4 5M14.5 5.5l-5 13" stroke="#60A5FA" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" />
-      </svg>
-    )
-  }
-
-  if (tool.kind === 'claude') {
-    return (
-      <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false">
-        <rect x="1.5" y="1.5" width="21" height="21" rx="6" fill="#D97757" />
-        <path d="M12 5v14M5 12h14M7.05 7.05l9.9 9.9M16.95 7.05l-9.9 9.9M8.35 4.9l7.3 14.2M19.1 8.35 4.9 15.65M15.65 4.9 8.35 19.1M4.9 8.35l14.2 7.3" stroke="#FFF7ED" strokeWidth="1.35" strokeLinecap="round" />
-      </svg>
-    )
-  }
-
-  if (tool.kind === 'typescript') {
-    return (
-      <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-        <rect width="24" height="24" rx="3.5" fill="#3178C6" />
-        <path d="M4.2 9.2h8.3v2.1H9.55v8.1H7.16v-8.1H4.2V9.2Zm9.1 9.6v-2.35c.82.68 1.9 1.08 2.98 1.08 1.16 0 1.74-.38 1.74-1.12 0-.31-.13-.56-.4-.75-.26-.2-.85-.46-1.75-.79-1.02-.37-1.76-.82-2.2-1.34-.45-.52-.67-1.17-.67-1.94 0-.93.36-1.66 1.08-2.19.72-.53 1.67-.8 2.85-.8 1.04 0 1.9.14 2.58.4v2.2a4.64 4.64 0 0 0-2.45-.67c-1.03 0-1.55.35-1.55 1.04 0 .29.12.52.36.7.24.18.76.42 1.58.72 1.08.39 1.86.85 2.34 1.39.48.53.72 1.22.72 2.04 0 .98-.36 1.73-1.07 2.25-.71.52-1.7.78-2.97.78-1.24 0-2.3-.22-3.17-.66Z" fill="#fff" />
-      </svg>
-    )
-  }
-
-  if (tool.kind === 'nextjs') {
-    return (
-      <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-        <circle cx="12" cy="12" r="11" fill="#F5F5F5" />
-        <path d="M7.4 6.8h2.3l6.48 8.95V6.8h1.95v10.4h-2.27L9.35 8.27v8.93H7.4V6.8Z" fill="#111" />
-        <path d="m10.1 7.2 7.7 10.6" stroke="#111" strokeWidth=".55" />
-      </svg>
-    )
-  }
-
-  if (tool.kind === 'tailwind') {
-    return (
-      <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-        <path d="M12 5.2c-3.2 0-5.2 1.6-6 4.8 1.2-1.6 2.6-2.2 4.2-1.8.91.23 1.56.89 2.28 1.62C13.65 11 15 12.4 18 12.4c3.2 0 5.2-1.6 6-4.8-1.2 1.6-2.6 2.2-4.2 1.8-.91-.23-1.56-.89-2.28-1.62C16.35 6.6 15 5.2 12 5.2ZM6 12.4c-3.2 0-5.2 1.6-6 4.8 1.2-1.6 2.6-2.2 4.2-1.8.91.23 1.56.89 2.28 1.62C7.65 18.2 9 19.6 12 19.6c3.2 0 5.2-1.6 6-4.8-1.2 1.6-2.6 2.2-4.2 1.8-.91-.23-1.56-.89-2.28-1.62C10.35 13.8 9 12.4 6 12.4Z" fill="#38BDF8" />
-      </svg>
-    )
-  }
-
-  if (tool.kind === 'supabase') {
-    return (
-      <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-        <path d="M13.35 21.5c-.43.55-1.32.25-1.33-.45l-.15-7.42H4.73c-.75 0-1.17-.87-.7-1.45L10.65 3.9c.43-.54 1.3-.24 1.31.45l.16 7.43h7.16c.75 0 1.17.87.7 1.45l-6.63 8.27Z" fill="#3ECF8E" />
-        <path d="m12.12 11.78-.1 9.27c0 .7.9 1 1.33.45l6.63-8.27c.47-.58.05-1.45-.7-1.45h-7.16Z" fill="#2AB47F" />
-      </svg>
-    )
-  }
-
-  if (tool.kind === 'resend') {
-    return (
-      <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false">
-        <rect x="1.5" y="1.5" width="21" height="21" rx="5.5" fill="#0B0B0B" stroke="#414141" />
-        <path d="M7 18V6h5.35c3.12 0 5.05 1.54 5.05 4.18 0 1.9-1.03 3.25-2.8 3.83L18 18h-3.25l-3.02-3.62H9.65V18H7Zm2.65-5.9h2.48c1.7 0 2.57-.59 2.57-1.78 0-1.2-.87-1.8-2.57-1.8H9.65v3.58Z" fill="#F5F5F5" />
-      </svg>
-    )
-  }
+  if (!icon?.file) return null
 
   return (
-    <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-      <path fill="#0078D4" d="M9.5 17.5h9.2a3.3 3.3 0 0 0 .6-6.55A5.6 5.6 0 0 0 8.8 8.8a4.4 4.4 0 0 0 .7 8.7Z" />
-      <path fill="#36A9E1" d="M4.9 18h10.6a3.05 3.05 0 0 0 .25-6.1 4.8 4.8 0 0 0-8.95-1.75A4 4 0 0 0 4.9 18Z" />
-    </svg>
+    <img
+      src={`/brand-icons/${icon.file}`}
+      className={icon.inverted ? 'tool-logo-image is-inverted' : 'tool-logo-image'}
+      alt=""
+      loading="lazy"
+      decoding="async"
+      aria-hidden="true"
+    />
   )
 }
 
@@ -229,7 +149,7 @@ export default function Skills() {
             <span className="tools-preview" aria-hidden="true">
               {TOOL_PREVIEW.map((tool) => (
                 <span className="tools-preview-icon" key={tool.name}>
-                  <ToolLogo tool={tool} />
+                  <AccurateToolLogo tool={tool} />
                 </span>
               ))}
             </span>
@@ -263,7 +183,7 @@ export default function Skills() {
                       animate={{ opacity: 1, y: 0 }}
                       transition={reduceMotion ? { duration: 0 } : { duration: 0.28 }}
                     >
-                      <span className="tool-logo"><ToolLogo tool={tool} /></span>
+                      <span className="tool-logo"><AccurateToolLogo tool={tool} /></span>
                       <span className="tool-copy">
                         <span className="tool-name">{tool.name}</span>
                         <span className="tool-group">{tool.group}</span>
@@ -358,6 +278,10 @@ export default function Skills() {
           width: 100%;
           height: 100%;
           object-fit: contain;
+        }
+
+        .tool-logo-image.is-inverted {
+          filter: invert(1);
         }
 
         .tools-toggle-action {

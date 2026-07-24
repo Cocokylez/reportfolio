@@ -1,6 +1,4 @@
 import LoadingScreen  from './components/LoadingScreen'
-import CustomCursor   from './components/CustomCursor'
-import CursorBackground from './components/CursorBackground'
 import Navbar         from './components/Navbar'
 import Hero           from './components/Hero'
 import About          from './components/About'
@@ -14,8 +12,6 @@ export default function App() {
   return (
     <div className="min-h-screen font-sans" style={{ background: '#0a0a0a', color: '#e0e0e0' }}>
       <LoadingScreen />
-      <CursorBackground />
-      <CustomCursor />
       <Navbar />
       <main className="relative z-10">
         <Hero />
