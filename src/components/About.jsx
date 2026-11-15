@@ -12,8 +12,8 @@ export default function About() {
             <span className="section-label">About Me</span>
             <p className="text-[1.02rem] leading-[1.78] font-light" style={{color:'#666'}}>
               I am a first-year Information Technology student currently building my foundation in
-              programming and web development. I have learned the basics of Java, HTML, CSS, and
-              JavaScript, and I am continuously improving my skills through practice and projects.
+              programming and web development. I have learned the basics of Java and HTML,
+              and I am continuously improving my skills through practice and projects.
             </p>
             <p className="mt-3.5 text-[1.02rem] leading-[1.78] font-light" style={{color:'#666'}}>
               I am passionate about technology and aim to become a computer engineer and future

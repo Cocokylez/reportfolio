@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react'
+import { useState } from 'react'
 import { motion } from 'framer-motion'
 import TiltCard from './TiltCard'
 
@@ -9,68 +9,54 @@ const fadeUp = (delay=0) => ({
   transition:{duration:0.65,delay,ease:[0.4,0,0.2,1]}
 })
 
+const sendFailure = 'Your message could not be sent. Try the email link above.'
+
 export default function Contact() {
-  const nameRef  = useRef(null)
-  const emailRef = useRef(null)
-  const msgRef   = useRef(null)
+  const [sending, setSending] = useState(false)
+  const [feedback, setFeedback] = useState(null)
 
-  const [status, setStatus]  = useState('idle')
-  const [errors, setErrors]  = useState({})
+  const handleSend = async (event) => {
+    event.preventDefault()
+    if (sending) return
 
-  const handleSend = async () => {
-    const name    = nameRef.current.value.trim()
-    const email   = emailRef.current.value.trim()
-    const message = msgRef.current.value.trim()
+    const form = event.currentTarget
+    const fields = new FormData(form)
+    const name = String(fields.get('name') ?? '').trim()
+    const email = String(fields.get('email') ?? '').trim()
+    const message = String(fields.get('message') ?? '').trim()
 
-    const err = {}
-    if (!name)    err.name  = true
-    if (!email)   err.email = true
-    if (!message) err.msg   = true
-    if (Object.keys(err).length) {
-      setErrors(err)
-      setTimeout(() => setErrors({}), 1800)
+    if (!name || !email || !message) {
+      setFeedback({ type: 'error', message: 'Please fill in all fields.' })
       return
     }
 
-    setStatus('sending')
+    setSending(true)
+    setFeedback(null)
 
     try {
-      const res = await fetch('/api/contact', {
-        method:  'POST',
+      const response = await fetch('/api/contact', {
+        method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body:    JSON.stringify({ name, email, message }),
+        body: JSON.stringify({ name, email, message }),
       })
+      const result = await response.json().catch(() => null)
 
-      if (res.ok) {
-        setStatus('sent')
-        nameRef.current.value  = ''
-        emailRef.current.value = ''
-        msgRef.current.value   = ''
-        setTimeout(() => setStatus('idle'), 4000)
-      } else {
-        setStatus('error')
-        setTimeout(() => setStatus('idle'), 4000)
+      if (!response.ok || result?.success !== true) {
+        const feedbackMessage = response.status === 400 && typeof result?.error === 'string'
+          ? result.error
+          : sendFailure
+        setFeedback({ type: 'error', message: feedbackMessage })
+        return
       }
+
+      form.reset()
+      setFeedback({ type: 'success', message: 'Message submitted.' })
     } catch {
-      setStatus('error')
-      setTimeout(() => setStatus('idle'), 4000)
+      setFeedback({ type: 'error', message: sendFailure })
+    } finally {
+      setSending(false)
     }
   }
-
-  const ic = (f) =>
-    `form-input${errors[f] ? ' !border-red-500/40 !shadow-[0_0_0_3px_rgba(239,68,68,0.08)]' : ''}`
-
-  const btnLabel = {
-    idle:    'Send Message',
-    sending: 'Sending...',
-    sent:    'Message Sent',
-    error:   'Failed - check server',
-  }[status]
-
-  const btnStyle = {
-    sent:  { background: '#16a34a', boxShadow: '0 4px 18px rgba(22,163,74,.35)' },
-    error: { background: '#dc2626', boxShadow: '0 4px 18px rgba(220,38,38,.35)' },
-  }[status] || {}
 
   return (
     <section id="contact" className="relative z-10 py-[100px]">
@@ -124,42 +110,54 @@ export default function Contact() {
         {/* Form */}
         <motion.div {...fadeUp(0.2)}>
           <TiltCard className="glass-card">
-            <div className="flex flex-col gap-3">
+            <form className="flex flex-col gap-3" onSubmit={handleSend} aria-busy={sending}>
               <input
-                ref={nameRef}
+                name="name"
                 type="text"
                 placeholder="Your Name"
-                className={ic('name')}
-                disabled={status === 'sending'}
+                aria-label="Your name"
+                autoComplete="name"
+                className="form-input"
+                required
+                disabled={sending}
               />
               <input
-                ref={emailRef}
+                name="email"
                 type="email"
                 placeholder="Your Email"
-                className={ic('email')}
-                disabled={status === 'sending'}
+                aria-label="Your email"
+                autoComplete="email"
+                className="form-input"
+                required
+                disabled={sending}
               />
               <textarea
-                ref={msgRef}
+                name="message"
                 placeholder="Your Message"
-                className={`${ic('msg')} min-h-[120px]`}
-                disabled={status === 'sending'}
+                aria-label="Your message"
+                className="form-input min-h-[120px]"
+                required
+                disabled={sending}
               />
               <motion.button
-                onClick={handleSend}
-                whileHover={status === 'idle' ? { scale: 1.02 } : {}}
-                whileTap={status === 'idle' ? { scale: 0.97 } : {}}
-                disabled={status === 'sending'}
+                type="submit"
+                whileHover={sending ? undefined : { scale: 1.02 }}
+                whileTap={sending ? undefined : { scale: 0.97 }}
+                disabled={sending}
                 className="btn-primary w-full"
-                style={{
-                  opacity: status === 'sending' ? 0.7 : 1,
-                  cursor: status === 'sending' ? 'wait' : 'default',
-                  ...btnStyle,
-                }}
+                style={{ opacity: sending ? 0.7 : 1, cursor: sending ? 'wait' : 'pointer' }}
               >
-                {btnLabel}
+                {sending ? 'Sending...' : 'Send Message'}
               </motion.button>
-            </div>
+              {feedback && (
+                <p
+                  className={feedback.type === 'error' ? 'text-sm text-red-300' : 'text-sm text-green-300'}
+                  role={feedback.type === 'error' ? 'alert' : 'status'}
+                >
+                  {feedback.message}
+                </p>
+              )}
+            </form>
           </TiltCard>
         </motion.div>
 
