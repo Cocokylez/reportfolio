@@ -15,34 +15,15 @@ export default function Hero() {
       <div className="hero-shell">
         <div className="hero-grid">
           <div className="hero-copy">
-            <motion.div
-              initial={{ opacity: 0, y: 12 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.08, ease }}
-              className="hero-status"
-            >
-              <span className="hero-status-dot" />
-              OPEN TO OPPORTUNITIES
-            </motion.div>
-
             <motion.h1
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.75, delay: 0.16, ease }}
-              className="hero-name"
+              className="hero-name font-display"
             >
               <span>ADRIAN KYLE</span>
               <span>CONDEZA</span>
             </motion.h1>
-
-            <motion.p
-              initial={{ opacity: 0, y: 14 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.55, delay: 0.3, ease }}
-              className="hero-role"
-            >
-              FIRST-YEAR IT STUDENT
-            </motion.p>
 
             <motion.p
               initial={{ opacity: 0, y: 14 }}
@@ -78,7 +59,7 @@ export default function Hero() {
               <div className="hero-note-topline">
                 <span>READY TO PUBLISH</span>
               </div>
-              <h2>FitSched</h2>
+              <h2 className="font-display">FitSched</h2>
               <p>A workout scheduler that fits training into your available time.</p>
               <p className="hero-release-note">
                 Remaining steps: fund the custom domain and FitToken rollout, complete Google Play registration, and finish the final security audit.
@@ -134,34 +115,9 @@ export default function Hero() {
 
         .hero-copy { min-width: 0; }
 
-        .hero-status {
-          display: inline-flex;
-          align-items: center;
-          gap: 10px;
-          margin-bottom: 34px;
-          color: #9a9a9a;
-          font-size: 0.68rem;
-          font-weight: 600;
-          letter-spacing: 0.16em;
-        }
-
-        .hero-status-dot {
-          width: 7px;
-          height: 7px;
-          border-radius: 50%;
-          background: #30d158;
-          box-shadow: 0 0 0 4px rgba(48,209,88,0.08);
-          animation: heroStatusPulse 2.4s ease-in-out infinite;
-        }
-
-        @keyframes heroStatusPulse {
-          50% { box-shadow: 0 0 0 7px rgba(48,209,88,0.02); }
-        }
-
         .hero-name {
           margin: 0;
           color: #f3f3f3;
-          font-family: 'DM Serif Display', serif;
           font-size: clamp(4rem, 7.35vw, 7.15rem);
           font-weight: 400;
           letter-spacing: -0.045em;
@@ -171,14 +127,6 @@ export default function Hero() {
 
         .hero-name span { display: block; }
         .hero-name span:last-child { color: #c8c8c8; }
-
-        .hero-role {
-          margin: 30px 0 0;
-          color: #60a5fa;
-          font-size: clamp(0.72rem, 1vw, 0.82rem);
-          font-weight: 600;
-          letter-spacing: 0.15em;
-        }
 
         .hero-intro {
           max-width: 570px;
@@ -269,7 +217,6 @@ export default function Hero() {
         .hero-project-note h2 {
           margin: 26px 0 12px;
           color: #e7e7e7;
-          font-family: 'DM Serif Display', serif;
           font-size: 2.35rem;
           font-weight: 400;
         }
@@ -390,7 +337,6 @@ export default function Hero() {
         }
 
         @media (prefers-reduced-motion: reduce) {
-          .hero-status-dot { animation: none; }
           .hero-actions button { transition: none; }
         }
       `}</style>

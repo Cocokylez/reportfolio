@@ -32,7 +32,7 @@ export default function Projects() {
             <motion.div key={project.name} {...fadeUp(0.1 + index * 0.08)}>
               <TiltCard className="glass-card flex min-h-[440px] flex-col items-start text-left py-12 px-9">
                 <span className="section-label mb-4">{project.status}</span>
-                <h3 className="font-serif font-normal text-3xl mb-3" style={{color:'#ccc'}}>{project.name}</h3>
+                <h3 className="font-display font-normal text-3xl mb-3" style={{color:'#ccc'}}>{project.name}</h3>
                 <p className="text-[0.95rem] leading-[1.7] font-light max-w-[440px]" style={{color:'#777'}}>
                   {project.description}
                 </p>

@@ -16,7 +16,7 @@ export default function Certificates() {
             >
               LEARNING PATH
             </span>
-            <h3 className="font-serif font-normal text-2xl mb-2.5" style={{color:'#ccc'}}>Coming Soon</h3>
+            <h3 className="font-display font-normal text-2xl mb-2.5" style={{color:'#ccc'}}>Coming Soon</h3>
             <p className="text-[0.95rem] leading-[1.7] font-light max-w-[340px]" style={{color:'#555'}}>
               Actively learning and planning to earn certifications in programming and IT.
             </p>

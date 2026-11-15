@@ -7,6 +7,7 @@ export default {
       fontFamily: {
         sans: ['"DM Sans"', '-apple-system', 'sans-serif'],
         serif: ['"DM Serif Display"', 'serif'],
+        display: ['Avila', '"DM Serif Display"', 'serif'],
       },
       colors: {
         accent: {
